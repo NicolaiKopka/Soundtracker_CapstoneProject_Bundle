@@ -29,10 +29,4 @@ jobs:
           distribution: 'adopt'
       - name: Build with Maven
         run: mvn -B package --file backend/pom.xml
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
+
