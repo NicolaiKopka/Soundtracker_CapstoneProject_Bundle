@@ -1,12 +1,38 @@
-name: ci
-on: [push, pull_request]
+name: Tests
+
+on:
+  push:
+    branches-ignore:
+      - main
+
 jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
   build-backend:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v2
+      - name: Set up JDK 18
+        uses: actions/setup-java@v2
         with:
-          java-version: 17
-      - name: verify
-        run: mvn -B verify
+          java-version: '18'
+          distribution: 'adopt'
+      - name: Build with Maven
+        run: mvn -B package --file backend/pom.xml
+Footer
+© 2022 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
