@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.github.gossie</groupId>
-        <artifactId>spring-boot-react-bundle-parent</artifactId>
+        <groupId>com.github.NicolaiKopka</groupId>
+        <artifactId>soundtracker-capstone-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>spring-boot-react-bundle-backend</artifactId>
+    <artifactId>soundtracker-capstone-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-boot-react-bundle-backend</name>
+    <name>soundtracker-capstone-backend</name>
     <description>Demo to deploy frontend and backend</description>
     <dependencies>
         <dependency>
@@ -53,6 +53,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.oltu.oauth2</groupId>
+            <artifactId>org.apache.oltu.oauth2.client</artifactId>
+            <version>0.31</version>
         </dependency>
     </dependencies>
 
