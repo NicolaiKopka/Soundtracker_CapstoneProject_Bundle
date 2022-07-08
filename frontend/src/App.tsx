@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import MainPageGallery from "./MainPageGallery/MainPageGallery";
 
 function App() {
