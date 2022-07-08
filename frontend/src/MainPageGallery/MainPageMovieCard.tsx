@@ -9,7 +9,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     return (
         <div>
             <div className={"movie-card"}>
-                <img src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path}/>
+                <img src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"}/>
                 <br/>
                 {props.movie.title}
                 <br/>
