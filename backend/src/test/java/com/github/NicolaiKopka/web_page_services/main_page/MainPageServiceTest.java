@@ -11,8 +11,8 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.util.List;
+
 
 class MainPageServiceTest {
 
@@ -60,7 +60,7 @@ class MainPageServiceTest {
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
-        Mockito.when(spotifyApiConnect.getSpotifyListOfMovieAlbums("noMovie")).thenThrow(NullPointerException.class);
+        Mockito.when(spotifyApiConnect.getSpotifyListOfMovieAlbums("noMovie")).thenReturn(List.of());
 
         MainPageService mainPageService = new MainPageService(movieDBApiConnect, spotifyApiConnect);
 
