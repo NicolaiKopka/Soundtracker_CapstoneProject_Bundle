@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,30 +30,24 @@ public class MainPageService {
         StreamingStatusDTO streamingStatusDTO = new StreamingStatusDTO();
         streamingStatusDTO.setMovieName(movieName);
 
-        try {
-            List<SpotifyAlbum> albums = spotifyApiConnect.getSpotifyListOfMovieAlbums(movieName);
+        List<SpotifyAlbum> albums = spotifyApiConnect.getSpotifyListOfMovieAlbums(movieName);
 
-            SpotifyAlbum album = checkForExactSoundtrack(albums, movieName);
-            String link = album.getExternalURLs().getAlbumUrl();
-            streamingStatusDTO.getStreamingServiceStatus().put("spotify", true);
-            streamingStatusDTO.getAlbumLinks().put("spotify", link);
-
-        } catch (Exception e) {
-            streamingStatusDTO.getStreamingServiceStatus().put("spotify", false);
-        }
+        checkForExactSoundtrack(albums, movieName).ifPresentOrElse(
+                album -> {
+                    String link = album.getExternalURLs().getAlbumUrl();
+                    streamingStatusDTO.getStreamingServiceStatus().put("spotify", true);
+                    streamingStatusDTO.getAlbumLinks().put("spotify", link);
+                },
+                () -> streamingStatusDTO.getStreamingServiceStatus().put("spotify", false)
+        );
 
         return streamingStatusDTO;
     }
 
-    private SpotifyAlbum checkForExactSoundtrack(List<SpotifyAlbum> albumList, String movieName) {
-        for(SpotifyAlbum album: albumList) {
-            if(checkForExactTitle(album.getName(), movieName) && checkForKeywords(album)) {
-                return album;
-            }
-        }
-        return null;
-
-
+    private Optional<SpotifyAlbum> checkForExactSoundtrack(List<SpotifyAlbum> albumList, String movieName) {
+        return albumList.stream()
+                .filter(album -> checkForExactTitle(album.getName(), movieName) && checkForKeywords(album))
+                .findFirst();
     }
     private boolean checkForKeywords(SpotifyAlbum album) {
         return album.getName().toLowerCase().contains("official") || album.getName().toLowerCase().contains("motion picture")
@@ -60,7 +55,7 @@ public class MainPageService {
     }
     private boolean checkForExactTitle(String albumTitle, String movieName){
         String albumTitleLower = albumTitle.split("\\(")[0].toLowerCase();
-        if (albumTitleLower.toCharArray()[albumTitleLower.length() - 1] == ' ') {
+        if (albumTitleLower.charAt(albumTitleLower.length() - 1) == ' ') {
             StringBuilder builder = new StringBuilder(albumTitleLower);
             albumTitleLower = builder.deleteCharAt(albumTitleLower.length() - 1)
                     .toString();
@@ -72,8 +67,10 @@ public class MainPageService {
     }
 
     public Collection<Movie> getMoviesByQuery(String query) {
-
-        return movieDBApiConnect.getMoviesByQuery(query);
-
+        Collection<Movie> movies = movieDBApiConnect.getMoviesByQuery(query);
+        if(movies.isEmpty()) {
+            throw new RuntimeException("No movies found");
+        }
+        return movies;
     }
 }

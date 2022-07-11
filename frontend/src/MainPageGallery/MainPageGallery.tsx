@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {FormEvent, useEffect, useState} from "react";
 import {MovieItem} from "../models"
 import {getStarterPageMovies, searchForMovie} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
@@ -16,8 +16,10 @@ export default function MainPageGallery() {
         getStarterPageMovies().then((data: any) => setMovies(data))
         }, [])
 
-    function search() {
+    function search(ev: FormEvent) {
+        ev.preventDefault()
         searchForMovie(searchQuery).then(data => setSearchMovies(data))
+            .catch()
     }
 
     const tenMovies = movies?.slice(0, 10)
@@ -31,8 +33,10 @@ export default function MainPageGallery() {
         <div >
             <h2>Movie Search</h2>
             <div>
-                <input type={"text"} placeholder={"search for movie"} value={searchQuery} onChange={ev => setSearchQuery(ev.target.value)}/>
-                <button onClick={search}>send</button>
+                <form onSubmit={search}>
+                    <input type={"text"} placeholder={"search for movie"} value={searchQuery} onChange={ev => setSearchQuery(ev.target.value)}/>
+                    <button type={"submit"}>send</button>
+                </form>
             </div>
             {searchMovies && <div className={"gallery"}>{searchComponents}</div>}
             <h2>Top 10 Movies</h2>

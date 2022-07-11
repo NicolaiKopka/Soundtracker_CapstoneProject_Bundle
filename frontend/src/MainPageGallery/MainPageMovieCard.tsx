@@ -26,7 +26,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     return (
         <div>
             <div className={"movie-card"}>
-                <button onClick={getMovieDetails}><img src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"}/></button>
+                <button onClick={getMovieDetails}><img src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"} onError={undefined}/></button>
                 <br/>
                 {props.movie.title}
                 {spotifyStatus? <div><a href={spotifyLink}>Link to Spotify</a></div> : <div>Spotify not available</div>}

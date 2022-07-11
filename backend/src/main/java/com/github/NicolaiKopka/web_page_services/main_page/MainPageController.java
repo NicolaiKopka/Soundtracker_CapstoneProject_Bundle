@@ -6,6 +6,8 @@ import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -38,7 +40,11 @@ public class MainPageController {
     }
 
     @GetMapping("/search/{query}")
-    public Collection<Movie> getMoviesByQuery(@PathVariable String query) {
-        return mainPageService.getMoviesByQuery(query);
+    public ResponseEntity getMoviesByQuery(@PathVariable String query) {
+        try {
+            return ResponseEntity.ok(mainPageService.getMoviesByQuery(query));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
