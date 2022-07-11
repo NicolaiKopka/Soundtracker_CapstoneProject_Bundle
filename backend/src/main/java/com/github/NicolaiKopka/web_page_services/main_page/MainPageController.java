@@ -2,14 +2,14 @@ package com.github.NicolaiKopka.web_page_services.main_page;
 
 
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
+import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.stream.Stream;
 
 @CrossOrigin
 @RestController
@@ -19,8 +19,9 @@ public class MainPageController {
 
     private final MainPageService mainPageService;
 
+    // TODO add bucket4j to limit request count
     @GetMapping
-    public List<Movie> getAllMovies() {
+    public List<Movie> getPopularMovies() {
         return mainPageService.getPopularMovies();
     }
 
@@ -29,8 +30,9 @@ public class MainPageController {
 //        return mainPageService.getMovieById(id);
 //    }
 
-    @GetMapping("/spotify")
-    public void getMovieOnSpotify() throws OAuthProblemException, OAuthSystemException {
-        mainPageService.getSoundtrackOnSpotify();
+    // TODO add bucket4j to limit request count
+    @GetMapping("/streaming/{movieName}")
+    public StreamingStatusDTO getMovieSoundtrackOnSpotify(@PathVariable String movieName) throws OAuthProblemException, OAuthSystemException {
+        return mainPageService.getSoundtrackOnSpotify(movieName);
     }
 }

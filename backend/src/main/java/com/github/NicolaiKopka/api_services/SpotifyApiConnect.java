@@ -1,6 +1,6 @@
 package com.github.NicolaiKopka.api_services;
-
-
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumQueryObject;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyFirstQueryObject;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
@@ -17,7 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Array;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class SpotifyApiConnect {
@@ -32,29 +33,7 @@ public class SpotifyApiConnect {
         this.SPOTIFY_SECRET = SPOTIFY_SECRET;
     }
 
-    private String getAccessToken() throws OAuthSystemException, OAuthProblemException {
-//        String tokenUrl = "https://accounts.spotify.com/api/token";
-//        String idAndSecretNotEncoded = SPOTIFY_ID + ":" + SPOTIFY_SECRET;
-//        String idAndSecretBase64Encoded = Base64.getEncoder().encodeToString(idAndSecretNotEncoded.getBytes(StandardCharsets.UTF_8));
-//
-//        String authValue = "Basic " + idAndSecretBase64Encoded;
-//
-//        HttpHeaders header = new HttpHeaders();
-//        header.setBasicAuth(SPOTIFY_ID, SPOTIFY_SECRET);
-//        header.set("Authorization", authValue);
-//        header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//
-//        Map<String, String> body = new HashMap<>();
-//        body.put("grant_type", "client_credentials");
-//
-//        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, header);
-//
-//        ResponseEntity<SpotifyClientCredentials> tokenResponse = restTemplate.exchange(tokenUrl,
-//                HttpMethod.POST,
-//                request,
-//                SpotifyClientCredentials.class);
-//
-//        System.out.println(tokenResponse.getBody().getAccessToken());
+    public String getAccessToken() throws OAuthSystemException, OAuthProblemException {
 
         OAuthClientRequest clientReqAccessToken = OAuthClientRequest
                 .tokenLocation("https://accounts.spotify.com/api/token")
@@ -68,12 +47,14 @@ public class SpotifyApiConnect {
 
     }
 
-
-    public Array getSpotifyStatusForMovie() throws OAuthProblemException, OAuthSystemException {
+    // TODO find a way to check if correct movie is returned, including netflix
+    public List<SpotifyAlbum> getSpotifyListOfMovieAlbums(String movieName) throws OAuthProblemException, OAuthSystemException {
         String accessToken = getAccessToken();
-        //System.out.println(accessToken);
 
-        String queryUrl = "https://api.spotify.com/v1/search?q=Doctor Strange in the Multiverse of Madness&type=album";
+        String queryUrl = "https://api.spotify.com/v1/search?q="
+                + movieName
+//                + " motion picture"
+                + "&type=album";
 
         ResponseEntity<SpotifyFirstQueryObject> queryResponse = restTemplate.exchange(
                 queryUrl,
@@ -81,13 +62,11 @@ public class SpotifyApiConnect {
                 new HttpEntity<>(createAuthBearerHeader(accessToken)),
                 SpotifyFirstQueryObject.class);
 
-        System.out.println(queryResponse.getBody().getAlbums().getAlbumQueryList().stream().toList());
+        //Throws NullPointerException if empty
+        SpotifyAlbumQueryObject albumQuery = Objects.requireNonNull(queryResponse.getBody()).getAlbums();
 
-//        System.out.println(queryResponse.getBody().getAlbumQueryList().get(0).getName());
+        return albumQuery.getAlbumQueryList();
 
-
-        Object[] spotifyStatus = new Object[2];
-        return null;
     }
 
     private HttpHeaders createAuthBearerHeader(String token) {
