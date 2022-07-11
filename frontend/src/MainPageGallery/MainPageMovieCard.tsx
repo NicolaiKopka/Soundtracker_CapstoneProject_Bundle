@@ -2,7 +2,6 @@ import {MovieItem} from "../models";
 import "./MainPageMovieCard.css"
 import {getStreamingDetails} from "../api_methods";
 import {useEffect, useState} from "react";
-import userEvent from "@testing-library/user-event";
 interface MainPageGalleryProps {
     movie: MovieItem;
 }
@@ -27,7 +26,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     return (
         <div>
             <div className={"movie-card"}>
-                <a href={"#"} onClick={getMovieDetails}><img src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"}/></a>
+                <button onClick={getMovieDetails}><img src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"}/></button>
                 <br/>
                 {props.movie.title}
                 {spotifyStatus? <div><a href={spotifyLink}>Link to Spotify</a></div> : <div>Spotify not available</div>}
