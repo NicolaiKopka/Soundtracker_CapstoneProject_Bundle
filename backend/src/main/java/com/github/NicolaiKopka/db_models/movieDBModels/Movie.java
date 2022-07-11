@@ -1,12 +1,11 @@
 package com.github.NicolaiKopka.db_models.movieDBModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.bson.codecs.pojo.annotations.BsonId;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Movie {

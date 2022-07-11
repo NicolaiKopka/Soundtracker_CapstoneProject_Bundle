@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {MovieItem} from "../models"
 import {getStarterPageMovies} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
+import "./MainPageGallery.css"
 
 
 
@@ -15,12 +16,12 @@ export default function MainPageGallery() {
 
     const tenMovies = movies?.slice(0, 10)
 
-    const components = tenMovies?.map(movie => <MainPageMovieCard movie={movie}/>)
+    const components = tenMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie}/>)
 
     console.log(components)
 
     return (
-        <div>
+        <div className={"gallery"}>
             {components}
             <br/>
         </div>
