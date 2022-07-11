@@ -8,10 +8,16 @@ import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumExternalURLs;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.Collection;
 import java.util.List;
+
+import static com.mongodb.assertions.Assertions.fail;
 
 
 class MainPageServiceTest {
@@ -68,6 +74,47 @@ class MainPageServiceTest {
 
         Assertions.assertThat(actual.getMovieName()).isEqualTo("noMovie");
         Assertions.assertThat(actual.getStreamingServiceStatus().get("spotify")).isEqualTo(false);
+    }
+
+    @Test
+    void shouldReturnListOfMoviesFromSearchQuery() {
+        Movie movie1 = Movie.builder().title("movie1").build();
+        Movie movie2 = Movie.builder().title("movie2").build();
+
+        List<Movie> expected = List.of(movie1, movie2);
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+        Mockito.when(movieDBApiConnect.getMoviesByQuery("movie")).thenReturn(List.of(movie1, movie2));
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        MainPageService mainPageService = new MainPageService(movieDBApiConnect, spotifyApiConnect);
+
+        Collection<Movie> actual = mainPageService.getMoviesByQuery("movie");
+
+        Assertions.assertThat(actual).containsAll(expected);
+    }
+
+    @Test
+    void shouldFailSearchQueryIfNoMoviesFound() {
+        Movie movie1 = Movie.builder().title("movie1").build();
+        Movie movie2 = Movie.builder().title("movie2").build();
+
+        List<Movie> expected = List.of(movie1, movie2);
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+        Mockito.when(movieDBApiConnect.getMoviesByQuery("movie")).thenReturn(List.of(movie1, movie2));
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        MainPageService mainPageService = new MainPageService(movieDBApiConnect, spotifyApiConnect);
+
+        try {
+            mainPageService.getMoviesByQuery("noMovie");
+            fail();
+        } catch (RuntimeException e) {
+            Assertions.assertThat(e.getMessage()).isEqualTo("No movies found");
+        }
     }
 
 }
