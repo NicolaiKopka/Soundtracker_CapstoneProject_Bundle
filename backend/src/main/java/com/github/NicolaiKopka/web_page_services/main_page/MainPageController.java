@@ -8,6 +8,7 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -34,5 +35,10 @@ public class MainPageController {
     @GetMapping("/streaming/{movieName}")
     public StreamingStatusDTO getMovieSoundtrackOnSpotify(@PathVariable String movieName) throws OAuthProblemException, OAuthSystemException {
         return mainPageService.getSoundtrackOnSpotify(movieName);
+    }
+
+    @GetMapping("/search/{query}")
+    public Collection<Movie> getMoviesByQuery(@PathVariable String query) {
+        return mainPageService.getMoviesByQuery(query);
     }
 }

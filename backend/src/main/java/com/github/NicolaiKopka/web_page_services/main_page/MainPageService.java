@@ -11,6 +11,7 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -68,5 +69,11 @@ public class MainPageService {
         String movieNameLower = movieName.toLowerCase();
 
         return albumTitleLower.equals(movieNameLower);
+    }
+
+    public Collection<Movie> getMoviesByQuery(String query) {
+
+        return movieDBApiConnect.getMoviesByQuery(query);
+
     }
 }
