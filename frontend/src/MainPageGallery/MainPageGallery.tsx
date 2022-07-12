@@ -3,10 +3,13 @@ import {MovieItem} from "../models"
 import {getStarterPageMovies, searchForMovie} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
+import Header from "../Header/Header";
 
+interface AppProps {
+    setErrorMessage: Function
+}
 
-
-export default function MainPageGallery() {
+export default function MainPageGallery(props: AppProps) {
 
     const [movies, setMovies] = useState<Array<MovieItem>>()
     const [searchMovies, setSearchMovies] = useState<Array<MovieItem>>([])
@@ -19,7 +22,7 @@ export default function MainPageGallery() {
     function search(ev: FormEvent) {
         ev.preventDefault()
         searchForMovie(searchQuery).then(data => setSearchMovies(data))
-            .catch()
+            .catch(() => props.setErrorMessage("No Movies Found"))
     }
 
     const tenMovies = movies?.slice(0, 10)
@@ -30,7 +33,8 @@ export default function MainPageGallery() {
     console.log(components)
 
     return (
-        <div >
+        <div>
+            <Header />
             <h2>Movie Search</h2>
             <div>
                 <form onSubmit={search}>

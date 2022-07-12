@@ -18,6 +18,14 @@ export interface StreamingStatusDTO {
     }
 }
 
+export interface RegisterUserDTO {
+    username: string
+}
+
+export interface LoginResponseDTO {
+    token: string
+}
+
 // const o = {}
 // let keys = Object.keys(o)
 // keys.forEach(key => o[key])

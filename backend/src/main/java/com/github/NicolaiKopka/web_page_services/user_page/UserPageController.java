@@ -1,13 +1,15 @@
 package com.github.NicolaiKopka.web_page_services.user_page;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/soundtracker/user")
+@RequestMapping("api/soundtracker/user")
+@RequiredArgsConstructor
 public class UserPageController {
 
-    private UserPageService userPageService;
+    private final UserPageService userPageService;
 
 //    @GetMapping
 //    public Collection<Movie> getAllMoviesInDB() {
