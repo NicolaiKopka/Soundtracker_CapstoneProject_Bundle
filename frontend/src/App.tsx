@@ -4,7 +4,7 @@ import MainPageGallery from "./MainPageGallery/MainPageGallery";
 function App() {
     return (
         <div className="App">
-            Hallo
+            <h1>Soundtracker</h1>
             <MainPageGallery />
         </div>
     );
