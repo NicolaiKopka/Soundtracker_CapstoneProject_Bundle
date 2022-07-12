@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import MainPageGallery from "./MainPageGallery/MainPageGallery";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import LoginPage from "./Register_Login/LoginPage";
-import Header from "./Header/Header";
 import RegisterPage from "./Register_Login/RegisterPage";
 
 function App() {
