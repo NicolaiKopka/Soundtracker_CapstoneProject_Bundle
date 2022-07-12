@@ -6,14 +6,15 @@ import "./MainPageGallery.css"
 import {NavLink, useNavigate} from "react-router-dom";
 import Header from "../Header/Header";
 
+interface AppProps {
+    setErrorMessage: Function
+}
 
-
-export default function MainPageGallery() {
+export default function MainPageGallery(props: AppProps) {
 
     const [movies, setMovies] = useState<Array<MovieItem>>()
     const [searchMovies, setSearchMovies] = useState<Array<MovieItem>>([])
     const [searchQuery, setSearchQuery] = useState("")
-    const nav = useNavigate()
 
     useEffect(() => {
         getStarterPageMovies().then((data: any) => setMovies(data))
@@ -22,7 +23,7 @@ export default function MainPageGallery() {
     function search(ev: FormEvent) {
         ev.preventDefault()
         searchForMovie(searchQuery).then(data => setSearchMovies(data))
-            .catch()
+            .catch(() => props.setErrorMessage("No Movies Found"))
     }
 
     const tenMovies = movies?.slice(0, 10)

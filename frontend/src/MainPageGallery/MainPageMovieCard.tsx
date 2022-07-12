@@ -8,7 +8,7 @@ interface MainPageGalleryProps {
 
 export default function MainPageMovieCard(props: MainPageGalleryProps) {
 
-    const [spotifyStatus, setSpotifStatus] = useState(false);
+    const [spotifyStatus, setSpotifyStatus] = useState(false);
     const [spotifyLink, setSpotifyLink] = useState("")
 
     useEffect(() => {
@@ -18,7 +18,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     function getMovieDetails() {
         getStreamingDetails(props.movie.title)
             .then(data => {
-                setSpotifStatus(data.streamingServiceStatus["spotify"])
+                setSpotifyStatus(data.streamingServiceStatus["spotify"])
                 setSpotifyLink(data.albumLinks["spotify"])
             })
     }

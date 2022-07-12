@@ -4,7 +4,7 @@ package com.github.NicolaiKopka.web_page_services.user_page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/soundtracker/user")
+@RequestMapping("api/soundtracker/user")
 public class UserPageController {
 
     private UserPageService userPageService;

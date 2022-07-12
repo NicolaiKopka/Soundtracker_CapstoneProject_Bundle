@@ -39,7 +39,6 @@ public class MovieDBApiConnect {
                 API_KEY + "&query=" + query + "&include_adult=false";
 
         MovieList response = restTemplate.getForObject(discoverByPopularityEndpoint, MovieList.class);
-        List<Movie> movies = response.getResults().stream().toList();
-        return movies;
+        return response.getResults().stream().toList();
     }
 }
