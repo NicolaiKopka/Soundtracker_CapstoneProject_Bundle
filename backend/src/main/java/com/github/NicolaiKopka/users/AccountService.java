@@ -16,7 +16,8 @@ public class AccountService {
     private final PasswordEncoder encoder;
     public MyUser registerUser(RegisterData registerData) {
 
-        if(registerData.getUsername().isBlank() || registerData.getPassword().isBlank() || registerData.getCheckPassword().isBlank()) {
+        if(registerData.getUsername().isBlank() || registerData.getPassword().isBlank() || registerData.getCheckPassword().isBlank()  ||
+                registerData.getUsername() == null || registerData.getPassword() == null || registerData.getCheckPassword() == null) {
             throw new IllegalArgumentException("No empty fields allowed");
         }
         if(myUserRepo.findByUsername(registerData.getUsername()).isPresent()) {
