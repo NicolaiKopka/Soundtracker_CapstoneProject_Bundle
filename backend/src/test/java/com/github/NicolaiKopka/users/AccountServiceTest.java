@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ class AccountServiceTest {
         PasswordEncoder encoder = Mockito.mock(PasswordEncoder.class);
         Mockito.when(encoder.encode("password")).thenReturn("hashedPassword");
 
-        MyUser expectedUser = MyUser.builder().username("user").password("hashedPassword").build();
+        MyUser expectedUser = MyUser.builder().username("user").password("hashedPassword").roles(List.of("user")).build();
 
         AccountService accountService = new AccountService(myUserRepo, encoder);
         accountService.registerUser(newUser);
