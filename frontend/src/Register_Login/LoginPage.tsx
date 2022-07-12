@@ -16,9 +16,11 @@ export default function LoginPage(props: AppProps) {
     function login(ev: FormEvent) {
         ev.preventDefault()
         loginUser(username, password)
-            .then(data => localStorage.setItem("jwt", data.token))
+            .then(data => {
+                localStorage.setItem("jwt", data.token)
+            })
             .then(() => nav("/"))
-            .catch(() => props.setErrorMessage("Oops wrong credentials"))
+            .catch(() => props.setErrorMessage("Oops, wrong credentials"))
     }
 
     return (
