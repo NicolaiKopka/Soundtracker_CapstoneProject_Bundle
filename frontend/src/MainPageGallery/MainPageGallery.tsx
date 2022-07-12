@@ -3,7 +3,6 @@ import {MovieItem} from "../models"
 import {getStarterPageMovies, searchForMovie} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
-import {NavLink, useNavigate} from "react-router-dom";
 import Header from "../Header/Header";
 
 interface AppProps {
