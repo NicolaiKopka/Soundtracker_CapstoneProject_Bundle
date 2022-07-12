@@ -4,17 +4,17 @@ export default function Header(){
 
     return (
         <div>
-            <NavLink to={"/"}><a href={"#"}>Main</a></NavLink>
-            {window.location.pathname != "/login" &&
-                <NavLink to={"/login"}><a href={"#"}>Login</a></NavLink>
+            <NavLink to={"/"}><button>Main</button></NavLink>
+            {window.location.pathname !== "/login" &&
+                <NavLink to={"/login"}><button>Login</button></NavLink>
             }
-            {window.location.pathname != "/register" &&
-                <NavLink to={"/register"}><a href={"#"}>Register</a></NavLink>
+            {window.location.pathname !== "/register" &&
+                <NavLink to={"/register"}><button>Register</button></NavLink>
             }
             {localStorage.getItem("jwt") && <span>
-                <NavLink to={"/logout"}><a href={"#"}>Logout</a></NavLink>
-                <NavLink to={"/user"}><a href={"#"}>User</a></NavLink>
-                <NavLink to={"/favorites"}><a href={"#"}>My Favorites</a></NavLink>
+                <NavLink to={"/logout"}><button>Logout</button></NavLink>
+                <NavLink to={"/user"}><button>User</button></NavLink>
+                <NavLink to={"/favorites"}><button>My Favorites</button></NavLink>
             </span>
             }
         </div>
