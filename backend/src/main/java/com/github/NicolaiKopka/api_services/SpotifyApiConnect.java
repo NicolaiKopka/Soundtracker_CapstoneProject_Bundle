@@ -44,7 +44,6 @@ public class SpotifyApiConnect {
         OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(clientReqAccessToken);
 
         return oAuthResponse.getAccessToken();
-
     }
 
     // TODO find a way to check if correct movie is returned, including netflix

@@ -3,6 +3,8 @@ import {MovieItem} from "../models"
 import {getStarterPageMovies, searchForMovie} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
+import {NavLink, useNavigate} from "react-router-dom";
+import Header from "../Header/Header";
 
 
 
@@ -11,6 +13,7 @@ export default function MainPageGallery() {
     const [movies, setMovies] = useState<Array<MovieItem>>()
     const [searchMovies, setSearchMovies] = useState<Array<MovieItem>>([])
     const [searchQuery, setSearchQuery] = useState("")
+    const nav = useNavigate()
 
     useEffect(() => {
         getStarterPageMovies().then((data: any) => setMovies(data))
@@ -30,7 +33,8 @@ export default function MainPageGallery() {
     console.log(components)
 
     return (
-        <div >
+        <div>
+            <Header />
             <h2>Movie Search</h2>
             <div>
                 <form onSubmit={search}>
