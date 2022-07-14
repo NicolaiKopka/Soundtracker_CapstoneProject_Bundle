@@ -33,3 +33,19 @@ export function registerUser(username: string, password: string, checkPassword: 
         checkPassword
     }).then((response: AxiosResponse<RegisterUserDTO>) => response.data)
 }
+
+export function addMovieToFavorites(id: number) {
+    return axios.put("api/soundtracker/user-favorites/" + id, {}, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+
+export function getFavoriteUserMovies() {
+    return axios.get("api/soundtracker/user-favorites", {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<MovieItem[]>) => response.data)
+}

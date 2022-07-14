@@ -3,6 +3,8 @@ import MainPageGallery from "./MainPageGallery/MainPageGallery";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import LoginPage from "./Register_Login/LoginPage";
 import RegisterPage from "./Register_Login/RegisterPage";
+import LogoutPage from "./Register_Login/LogoutPage";
+import UserFavoritesPage from "./UserFavoritesPage";
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
                     <Route path={"/"} element={<MainPageGallery setErrorMessage={setErrorMessage}/>} />
                     <Route path={"/login"} element={<LoginPage setErrorMessage={setErrorMessage}/>} />
                     <Route path={"/register"} element={<RegisterPage setErrorMessage={setErrorMessage} />} />
+                    <Route path={"/logout"} element={<LogoutPage/>}/>
+                    <Route path={"/favorites"} element={<UserFavoritesPage/>}/>
                 </Routes>
             </BrowserRouter>
         </div>

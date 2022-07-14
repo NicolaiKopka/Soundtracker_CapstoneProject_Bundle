@@ -41,4 +41,9 @@ public class MovieDBApiConnect {
         MovieList response = restTemplate.getForObject(discoverByPopularityEndpoint, MovieList.class);
         return response.getResults().stream().toList();
     }
+
+    public Movie getMovieById(Integer id) {
+        String getMovieByIdEndpoint = urlPrefix + "movie/" + id + "?api_key=" + API_KEY;
+        return restTemplate.getForObject(getMovieByIdEndpoint, Movie.class);
+    }
 }

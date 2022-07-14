@@ -13,7 +13,6 @@ export default function Header(){
             }
             {localStorage.getItem("jwt") && <span>
                 <NavLink to={"/logout"}><button>Logout</button></NavLink>
-                <NavLink to={"/user"}><button>User</button></NavLink>
                 <NavLink to={"/favorites"}><button>My Favorites</button></NavLink>
             </span>
             }
