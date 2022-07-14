@@ -37,9 +37,10 @@ public class UserFavoritesService {
         try{
             UserFavoritesSaveObject userFavorites = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
             // TODO any way to make return List mutable?
-            List<Integer> idList = new ArrayList<>(userFavorites.getMovieIds().stream().toList());
-            idList.add(movieId);
-            userFavorites.setMovieIds(idList);
+            userFavorites.getMovieIds().add(movieId);
+//            List<Integer> idList = new ArrayList<>(userFavorites.getMovieIds().stream().toList());
+//            idList.add(movieId);
+//            userFavorites.setMovieIds(idList);
             return userFavoritesRepo.save(userFavorites);
         } catch (NoSuchElementException e) {
             UserFavoritesSaveObject userFavorites = new UserFavoritesSaveObject();
