@@ -9,7 +9,7 @@ export default function LogoutPage() {
     useEffect(() => {
         localStorage.clear()
         nav("/")
-    }, [])
+    }, [nav])
 
     return(
         <div>
