@@ -3,6 +3,7 @@ package com.github.NicolaiKopka.web_page_services.main_page;
 
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
+import com.github.NicolaiKopka.dto.UserInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
@@ -47,4 +49,6 @@ public class MainPageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+
 }

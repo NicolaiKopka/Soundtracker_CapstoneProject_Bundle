@@ -29,7 +29,7 @@ public class UserFavoritesController {
     }
 
     @PutMapping("/{movieId}")
-    public ResponseEntity<UserFavoritesDTO> addMovieToFavorites(@PathVariable Integer movieId, Principal principal) {
+    public ResponseEntity<UserFavoritesDTO> addMovieToFavorites(@PathVariable int movieId, Principal principal) {
         try {
             UserFavoritesSaveObject userFavorites = userFavoritesService.addMovieToFavorites(movieId, principal.getName());
             UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().movieIds(userFavorites.getMovieIds()).build();
@@ -39,11 +39,17 @@ public class UserFavoritesController {
         }
 
     }
-//
-//    @DeleteMapping("/{id}")
-//    public void deleteMovieFromDB(@PathVariable String id) {
-//        userPageService.deleteMovieFromDB;
-//    }
+
+    @DeleteMapping("/{movieId}")
+    public ResponseEntity<UserFavoritesDTO> deleteMovieFromFavorites(@PathVariable int movieId, Principal principal) {
+        try {
+            UserFavoritesSaveObject favoritesSaveObject = userFavoritesService.deleteMovieFromFavorites(movieId, principal.getName());
+            return ResponseEntity.ok(UserFavoritesDTO.builder().movieIds(favoritesSaveObject.getMovieIds()).build());
+        } catch (NoSuchElementException | NullPointerException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+    }
 //
 //    @PutMapping("/{id}")
 //    public void changeNotificationStatusForMovie(@PathVariable String id) {

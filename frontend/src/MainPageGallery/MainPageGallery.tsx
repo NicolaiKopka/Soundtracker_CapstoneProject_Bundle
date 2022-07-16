@@ -1,12 +1,14 @@
 import {FormEvent, useEffect, useState} from "react";
 import {MovieItem} from "../models"
-import {getStarterPageMovies, searchForMovie} from "../api_methods";
+import {getFavoriteUserMovies, getStarterPageMovies, searchForMovie} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
 import Header from "../Header/Header";
 
 interface AppProps {
     setErrorMessage: Function
+    userMovies: MovieItem[]
+    getUserMoviesFunction: Function
 }
 
 export default function MainPageGallery(props: AppProps) {
@@ -15,7 +17,9 @@ export default function MainPageGallery(props: AppProps) {
     const [searchMovies, setSearchMovies] = useState<Array<MovieItem>>([])
     const [searchQuery, setSearchQuery] = useState("")
 
+
     useEffect(() => {
+        props.getUserMoviesFunction()
         getStarterPageMovies().then((data: any) => setMovies(data))
         }, [])
 
@@ -25,12 +29,13 @@ export default function MainPageGallery(props: AppProps) {
             .catch(() => props.setErrorMessage("No Movies Found"))
     }
 
+    const userMoviesIds = props.userMovies.map(movie => movie.id)
+
     const tenMovies = movies?.slice(0, 10)
 
-    const components = tenMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie}/>)
-    const searchComponents = searchMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie}/>)
+    const components = tenMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie} favoriteMovieIds={userMoviesIds} getUserMovies={props.getUserMoviesFunction}/>)
 
-    console.log(components)
+    const searchComponents = searchMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie} favoriteMovieIds={userMoviesIds} getUserMovies={props.getUserMoviesFunction}/>)
 
     return (
         <div>

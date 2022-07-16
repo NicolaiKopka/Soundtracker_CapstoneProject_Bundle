@@ -49,3 +49,11 @@ export function getFavoriteUserMovies() {
         }
     }).then((response: AxiosResponse<MovieItem[]>) => response.data)
 }
+
+export function deleteMoviesFromFavorites(id: number) {
+    return axios.delete("api/soundtracker/user-favorites/" + id, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    })
+}
