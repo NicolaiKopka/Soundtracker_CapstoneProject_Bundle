@@ -1,6 +1,6 @@
 import {FormEvent, useEffect, useState} from "react";
 import {MovieItem} from "../models"
-import {getFavoriteUserMovies, getStarterPageMovies, searchForMovie} from "../api_methods";
+import {getStarterPageMovies, searchForMovie} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
 import Header from "../Header/Header";
@@ -21,6 +21,7 @@ export default function MainPageGallery(props: AppProps) {
     useEffect(() => {
         props.getUserMoviesFunction()
         getStarterPageMovies().then((data: any) => setMovies(data))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
 
     function search(ev: FormEvent) {
