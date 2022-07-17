@@ -2,6 +2,9 @@ import {MovieItem} from "../models";
 import "./MainPageMovieCard.css"
 import {addMovieToFavorites, deleteMoviesFromFavorites, getStreamingDetails} from "../api_methods";
 import {useEffect, useState} from "react";
+import 'react-slideshow-image/dist/styles.css';
+import {Slide} from 'react-slideshow-image';
+
 
 interface MainPageGalleryProps {
     movie: MovieItem
@@ -17,7 +20,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
 
 
     useEffect(() => {
-        if(props.favoriteMovieIds.includes(props.movie.id)) {
+        if (props.favoriteMovieIds.includes(props.movie.id)) {
             setFavoriteStatus(true)
         }
     }, [props.favoriteMovieIds, props.movie.id])
@@ -47,15 +50,23 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     }
 
     return (
-        <div>
+        <div className={"card-wrapper"}>
             <div className={"movie-card"}>
                 {/* check undefined on Error. Should be fallback image*/}
-                <button onClick={getMovieDetails}><img src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"} onError={undefined}/></button>
-                <br/>
-                {props.movie.title}<br/>
-                {spotifyStatus? <div><a href={spotifyLink}>Link to Spotify</a></div> : <div>Spotify not available</div>}
-                {favoriteStatus ? <button onClick={deleteFromFavorites}>Delete From Favorite</button> : <button onClick={addToFavorites}>To Favorites</button>}
+                <button className={"card-image"} onClick={getMovieDetails}><img
+                    src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"}
+                    onError={undefined}/></button>
+                <div className={"card-title"}>
+                    {props.movie.title}
+                </div>
+                {spotifyStatus ? <div className={"card-status"}><a href={spotifyLink}>Link to Spotify</a></div> :
+                    <div className={"card-status"}>Spotify not available</div>}
+                {favoriteStatus ?
+                    <button className={"favorites-button"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
+                    <button className={"favorites-button"} onClick={addToFavorites}>To Favorites</button>}
             </div>
         </div>
+
+
     )
 }

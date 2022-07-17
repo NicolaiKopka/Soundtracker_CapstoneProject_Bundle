@@ -1,3 +1,55 @@
+button {
+    border: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+.card-wrapper {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+}
+
 .movie-card img {
-    width: 100px;
+    width: 180px;
+}
+
+.movie-card {
+    margin: 1.3rem;
+    padding: 1.4rem 0rem;
+    width: 17rem;
+    font-weight: 200;
+    /*background-color: #7FB5FF;*/
+    background-color: #F6F6F6;
+    border-radius: 8px;
+    /*background: #8e9eab;  !* fallback for old browsers *!*/
+    /*background: -webkit-linear-gradient(to top, #eef2f3, #8e9eab);  !* Chrome 10-25, Safari 5.1-6 *!*/
+    /*background: linear-gradient(to top, #eef2f3, #8e9eab); !* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ *!*/
+
+
+
+}
+
+.favorites-button {
+    background-color: #C4DDFF;
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-weight: 700;
+    margin-top: 0.7rem;
+    box-shadow: 3px 2px 4px lightgrey;
+    width: 10rem;
+}
+
+.card-status {
+    margin: 0.4rem;
+}
+
+.card-title {
+    margin: 0.4rem;
+    font-weight: 300;
+}
+
+.card-image {
+    margin: 0.4rem;
+    border-radius: 8px;
 }
