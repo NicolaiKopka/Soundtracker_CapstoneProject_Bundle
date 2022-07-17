@@ -16,7 +16,7 @@ button {
 
 .movie-card {
     margin: 1.3rem;
-    padding: 1.4rem 0rem;
+    padding: 1.4rem 0;
     width: 17rem;
     font-weight: 200;
     /*background-color: #7FB5FF;*/

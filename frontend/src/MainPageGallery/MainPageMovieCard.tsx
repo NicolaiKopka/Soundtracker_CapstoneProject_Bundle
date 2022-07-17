@@ -3,7 +3,6 @@ import "./MainPageMovieCard.css"
 import {addMovieToFavorites, deleteMoviesFromFavorites, getStreamingDetails} from "../api_methods";
 import {useEffect, useState} from "react";
 import 'react-slideshow-image/dist/styles.css';
-import {Slide} from 'react-slideshow-image';
 
 
 interface MainPageGalleryProps {
