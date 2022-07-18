@@ -1,6 +1,6 @@
 import Header from "../Header/Header";
 import {FormEvent, useState} from "react";
-import {loginUser} from "../api_methods";
+import {authorizeWithSpotify, loginUser} from "../api_methods";
 import {useNavigate} from "react-router-dom";
 import "./LoginPage.css"
 
@@ -24,6 +24,10 @@ export default function LoginPage(props: AppProps) {
             .catch(() => props.setErrorMessage("Oops, wrong credentials"))
     }
 
+    // function spotifyLogin() {
+    //     authorizeWithSpotify().catch()
+    // }
+
     return (
         <div className={"login-form-wrapper"}>
             <Header />
@@ -33,6 +37,8 @@ export default function LoginPage(props: AppProps) {
                     <input className={"form-items"} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
                     <button className={"login-button"} type={"submit"}>Login</button>
                 </form>
+                {/*<button onClick={spotifyLogin}>Login with Spotify</button>*/}
+                <a href={`https://accounts.spotify.com/authorize?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723&scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=http://localhost:3000/spotify-redirect`}>Login With Spotify</a>
             </div>
         </div>
     )

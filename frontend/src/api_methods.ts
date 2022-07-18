@@ -57,3 +57,10 @@ export function deleteMoviesFromFavorites(id: number) {
         }
     })
 }
+
+export function authorizeWithSpotify() {
+    return axios.get(`https://accounts.spotify.com/authorize
+                        ?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723
+                        &scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private
+                        &redirect_uri=${process.env.SPOTIFY_CALLBACK_URI}`)
+}

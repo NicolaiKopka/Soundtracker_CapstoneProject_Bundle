@@ -8,6 +8,7 @@ import UserFavoritesPage from "./UserFavoritesPage";
 import {MovieItem} from "./models";
 import {getFavoriteUserMovies} from "./api_methods";
 import "./App.css"
+import SpotifyLoginRedirect from "./Register_Login/streamingLogin/SpotifyLoginRedirect";
 
 function App() {
 
@@ -19,9 +20,11 @@ function App() {
     }, [errorMessage])
 
     const getFavoriteMovies = () => {
-        if(localStorage.getItem("jwt") !== null) {
-            getFavoriteUserMovies().then(data => setUserMovies(data))
-        }
+        return getFavoriteUserMovies().then(data => {
+            setUserMovies(data)
+            return data
+        })
+            .catch(() => setErrorMessage("Seems like you are not logged in")) //nav to login
     }
 
 
@@ -35,7 +38,8 @@ function App() {
                     <Route path={"/login"} element={<LoginPage setErrorMessage={setErrorMessage}/>} />
                     <Route path={"/register"} element={<RegisterPage setErrorMessage={setErrorMessage} />} />
                     <Route path={"/logout"} element={<LogoutPage/>}/>
-                    <Route path={"/favorites"} element={<UserFavoritesPage userMovies={userMovies} getUserMovies={getFavoriteMovies}/>}/>
+                    <Route path={"/favorites"} element={<UserFavoritesPage/>}/>
+                    <Route path={"/spotify-redirect"} element={<SpotifyLoginRedirect/>} />
                 </Routes>
             </BrowserRouter>
         </div>
