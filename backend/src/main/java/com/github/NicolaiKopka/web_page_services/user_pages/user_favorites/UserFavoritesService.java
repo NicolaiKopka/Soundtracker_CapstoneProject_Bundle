@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,28 +35,30 @@ public class UserFavoritesService {
 
         try{
             UserFavoritesSaveObject userFavorites = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
-            List<Integer> movieIds = new ArrayList<>(List.copyOf(userFavorites.getMovieIds()));
-            if(movieIds.contains(movieId)) {
-                throw new IllegalArgumentException("Movie already in list");
-            }
-            movieIds.add(movieId);
-            userFavorites.setMovieIds(movieIds);
+            userFavorites.addMovieId(movieId);
             return userFavoritesRepo.save(userFavorites);
         } catch (NoSuchElementException e) {
             UserFavoritesSaveObject userFavorites = new UserFavoritesSaveObject();
             userFavorites.setUserId(user.getId());
-            userFavorites.setMovieIds(List.of(movieId));
+            userFavorites.addMovieId(movieId);
             return userFavoritesRepo.save(userFavorites);
         }
     }
 
-    public UserFavoritesSaveObject deleteMovieFromFavorites(int movieId, String username) {
+//    public UserFavoritesSaveObject deleteMovieFromFavorites(int movieId, String username) {
+//
+//        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+//        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+//        List<Integer> idList = new ArrayList<>(List.copyOf(favoritesObject.getMovieIds()));
+//        idList.remove(Integer.valueOf(movieId));
+//        favoritesObject.setMovieIds(idList);
+//        return userFavoritesRepo.save(favoritesObject);
+//    }
 
-        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
-        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
-        List<Integer> idList = new ArrayList<>(List.copyOf(favoritesObject.getMovieIds()));
-        idList.remove(Integer.valueOf(movieId));
-        favoritesObject.setMovieIds(idList);
-        return userFavoritesRepo.save(favoritesObject);
+    public UserFavoritesSaveObject deleteMovieFromFavorites(int movieId, String username) {
+        return myUserRepo.findByUsername(username)
+                .flatMap(user -> userFavoritesRepo.findByUserId(user.getId()))
+                .map(favoritesObject -> favoritesObject.deleteMovieId(movieId))
+                .map(userFavoritesRepo::save).orElseThrow();
     }
 }

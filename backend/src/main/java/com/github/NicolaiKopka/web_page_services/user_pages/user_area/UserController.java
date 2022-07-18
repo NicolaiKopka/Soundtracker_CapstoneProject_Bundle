@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping()
-    public ResponseEntity<UserInfoDTO> getUserInfo(Principal principal) {
-        return ResponseEntity.ok(userService.getUserInfo(principal.getName()));
+    public UserInfoDTO getUserInfo(Principal principal) {
+        return userService.getUserInfo(principal.getName());
     }
 }
