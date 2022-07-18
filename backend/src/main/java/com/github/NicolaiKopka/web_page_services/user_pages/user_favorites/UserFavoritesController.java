@@ -43,7 +43,7 @@ public class UserFavoritesController {
     @DeleteMapping("/{movieId}")
     public ResponseEntity<UserFavoritesDTO> deleteMovieFromFavorites(@PathVariable int movieId, Principal principal) {
         try {
-            UserFavoritesSaveObject favoritesSaveObject = userFavoritesService.deleteMovieFromFavorites(movieId, principal.getName());
+            UserFavoritesSaveObject favoritesSaveObject = userFavoritesService.deleteMovieFromFavorites(movieId, principal.getName()).orElseThrow();
             return ResponseEntity.ok(UserFavoritesDTO.builder().movieIds(favoritesSaveObject.getMovieIds()).build());
         } catch (NoSuchElementException | NullPointerException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

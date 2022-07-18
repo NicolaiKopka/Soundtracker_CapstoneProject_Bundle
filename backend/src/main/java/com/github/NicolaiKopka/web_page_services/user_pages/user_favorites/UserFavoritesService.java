@@ -55,10 +55,10 @@ public class UserFavoritesService {
 //        return userFavoritesRepo.save(favoritesObject);
 //    }
 
-    public UserFavoritesSaveObject deleteMovieFromFavorites(int movieId, String username) {
+    public Optional<UserFavoritesSaveObject> deleteMovieFromFavorites(int movieId, String username) {
         return myUserRepo.findByUsername(username)
                 .flatMap(user -> userFavoritesRepo.findByUserId(user.getId()))
                 .map(favoritesObject -> favoritesObject.deleteMovieId(movieId))
-                .map(userFavoritesRepo::save).orElseThrow();
+                .map(userFavoritesRepo::save);
     }
 }
