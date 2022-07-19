@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {LoginResponseDTO, MovieItem, RegisterUserDTO, StreamingStatusDTO} from "./models";
+import {LoginResponseDTO, MovieItem, RegisterUserDTO, SpotifyLoginResponseDTO, StreamingStatusDTO} from "./models";
 
 
 
@@ -67,4 +67,5 @@ export function authorizeWithSpotify() {
 
 export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
     return axios.get("/api/spotify/callback" + spotifyCode)
+        .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
 }

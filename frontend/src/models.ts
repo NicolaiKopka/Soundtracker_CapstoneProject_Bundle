@@ -31,6 +31,11 @@ export interface LoginResponseDTO {
     token: string
 }
 
+export interface SpotifyLoginResponseDTO {
+    jwtToken: string
+    spotifyToken: string
+}
+
 // const o = {}
 // let keys = Object.keys(o)
 // keys.forEach(key => o[key])
