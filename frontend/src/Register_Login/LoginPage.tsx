@@ -1,6 +1,6 @@
 import Header from "../Header/Header";
 import {FormEvent, useState} from "react";
-import {authorizeWithSpotify, loginUser} from "../api_methods";
+import {loginUser} from "../api_methods";
 import {useNavigate} from "react-router-dom";
 import "./LoginPage.css"
 
