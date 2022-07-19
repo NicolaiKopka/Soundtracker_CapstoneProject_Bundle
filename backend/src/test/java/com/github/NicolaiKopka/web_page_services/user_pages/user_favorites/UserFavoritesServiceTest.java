@@ -88,7 +88,6 @@ class UserFavoritesServiceTest {
         MyUser user = MyUser.builder().username("user").id("1234").build();
 
         UserFavoritesSaveObject existingFavorites = new UserFavoritesSaveObject();
-        existingFavorites.setMovieIds(List.of(1));
         existingFavorites.setUserId("1234");
 
         MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
@@ -99,10 +98,9 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
-        UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder()
-                .userId("1234")
-                .movieIds(List.of(1, 2))
-                .build();
+        UserFavoritesSaveObject expectedFavorites = new UserFavoritesSaveObject();
+        expectedFavorites.setUserId("1234");
+        expectedFavorites.setMovieIds(List.of(2));
 
         UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect);
         userFavoritesService.addMovieToFavorites(2, "user");
@@ -155,7 +153,10 @@ class UserFavoritesServiceTest {
     @Test
     void shouldDeleteMovieIdFromFavoritesList() {
         MyUser user = MyUser.builder().username("testUser").id("1234").build();
-        UserFavoritesSaveObject favoritesObject = UserFavoritesSaveObject.builder().movieIds(List.of(12, 13, 14)).build();
+        UserFavoritesSaveObject favoritesObject = new UserFavoritesSaveObject();
+        favoritesObject.addMovieId(12);
+        favoritesObject.addMovieId(13);
+        favoritesObject.addMovieId(14);
         UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder().movieIds(List.of(12, 14)).build();
 
         MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
