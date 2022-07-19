@@ -2,6 +2,7 @@ package com.github.NicolaiKopka.api_services;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumQueryObject;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyFirstQueryObject;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -67,7 +68,10 @@ public class SpotifyApiConnect {
         return albumQuery.getAlbumQueryList();
 
     }
-
+    private SpotifyUserPlaylists getAllUserPlaylists(String spotifyToken) {
+        //String queryUrl = "https://api.spotify.com/v1/users" +
+        return null;
+    }
     private HttpHeaders createAuthBearerHeader(String token) {
         String authValue = "Bearer " + token;
         HttpHeaders header = new HttpHeaders();
