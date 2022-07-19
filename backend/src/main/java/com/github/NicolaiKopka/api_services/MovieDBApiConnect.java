@@ -21,9 +21,7 @@ public class MovieDBApiConnect {
         this.restTemplate = restTemplate;
         this.API_KEY = API_KEY;
     }
-
     private final String urlPrefix = "https://api.themoviedb.org/3/";
-
     public List<Movie> getPopularMovies() {
 
         String discoverByPopularityEndpoint = urlPrefix + "discover/movie?api_key=" +
@@ -32,6 +30,7 @@ public class MovieDBApiConnect {
         MovieList response = restTemplate.getForObject(discoverByPopularityEndpoint, MovieList.class);
         List<Movie> movies = response.getResults().stream().toList();
         return movies;
+
     }
 
     public Collection<Movie> getMoviesByQuery(String query) {
