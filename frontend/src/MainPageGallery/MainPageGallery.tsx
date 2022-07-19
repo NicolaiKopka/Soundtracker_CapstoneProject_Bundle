@@ -4,6 +4,8 @@ import {getStarterPageMovies, searchForMovie} from "../api_methods";
 import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
 import Header from "../Header/Header";
+import {Slide} from 'react-slideshow-image';
+import 'react-slideshow-image/dist/styles.css';
 
 interface AppProps {
     setErrorMessage: Function
@@ -22,7 +24,7 @@ export default function MainPageGallery(props: AppProps) {
         props.getUserMoviesFunction()
         getStarterPageMovies().then((data: any) => setMovies(data))
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
+    }, [])
 
     function search(ev: FormEvent) {
         ev.preventDefault()
@@ -34,25 +36,30 @@ export default function MainPageGallery(props: AppProps) {
 
     const tenMovies = movies?.slice(0, 10)
 
-    const components = tenMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie} favoriteMovieIds={userMoviesIds} getUserMovies={props.getUserMoviesFunction}/>)
+    const components = tenMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie}
+                                                                  favoriteMovieIds={userMoviesIds}
+                                                                  getUserMovies={props.getUserMoviesFunction}/>)
 
-    const searchComponents = searchMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie} favoriteMovieIds={userMoviesIds} getUserMovies={props.getUserMoviesFunction}/>)
+    const searchComponents = searchMovies?.map(movie => <MainPageMovieCard key={movie.id} movie={movie}
+                                                                           favoriteMovieIds={userMoviesIds}
+                                                                           getUserMovies={props.getUserMoviesFunction}/>)
 
     return (
-        <div>
-            <Header />
-            <h2>Movie Search</h2>
-            <div>
-                <form onSubmit={search}>
-                    <input type={"text"} placeholder={"search for movie"} value={searchQuery} onChange={ev => setSearchQuery(ev.target.value)}/>
-                    <button type={"submit"}>send</button>
+        <div className={"gallery-main"}>
+            <Header/>
+            <div className={"input-wrapper"}>
+                <h2>Movie Search</h2>
+                <form className={"main-form"} onSubmit={search}>
+                    <input type={"text"} placeholder={"search for movie"} value={searchQuery}
+                           onChange={ev => setSearchQuery(ev.target.value)}/>
+                    <button className={"send-button"} type={"submit"}>Search</button>
                 </form>
             </div>
-            {searchMovies && <div className={"gallery"}>{searchComponents}</div>}
+            {searchMovies && <Slide>{searchComponents}</Slide>}
             <h2>Top 10 Movies</h2>
-            <div className={"gallery"}>
+            <Slide>
                 {components}
-            </div>
+            </Slide>
         </div>
     )
 

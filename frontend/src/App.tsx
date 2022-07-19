@@ -7,6 +7,7 @@ import LogoutPage from "./Register_Login/LogoutPage";
 import UserFavoritesPage from "./UserFavoritesPage";
 import {MovieItem} from "./models";
 import {getFavoriteUserMovies} from "./api_methods";
+import "./App.css"
 
 function App() {
 

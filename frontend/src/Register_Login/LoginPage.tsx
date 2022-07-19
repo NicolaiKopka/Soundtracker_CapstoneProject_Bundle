@@ -2,6 +2,7 @@ import Header from "../Header/Header";
 import {FormEvent, useState} from "react";
 import {loginUser} from "../api_methods";
 import {useNavigate} from "react-router-dom";
+import "./LoginPage.css"
 
 interface AppProps {
     setErrorMessage: Function
@@ -24,13 +25,15 @@ export default function LoginPage(props: AppProps) {
     }
 
     return (
-        <div>
+        <div className={"login-form-wrapper"}>
             <Header />
-            <form onSubmit={login}>
-                <input value={username} placeholder={"username"} onChange={ev => setUsername(ev.target.value)}/>
-                <input value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
-                <button type={"submit"}>Login</button>
-            </form>
+            <div className={"login-form"}>
+                <form onSubmit={login}>
+                    <input className={"form-items"} value={username} placeholder={"username"} onChange={ev => setUsername(ev.target.value)}/>
+                    <input className={"form-items"} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
+                    <button className={"login-button"} type={"submit"}>Login</button>
+                </form>
+            </div>
         </div>
     )
 }

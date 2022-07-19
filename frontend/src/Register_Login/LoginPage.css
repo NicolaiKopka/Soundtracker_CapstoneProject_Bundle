@@ -1,40 +1,30 @@
-.gallery-main {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-
-}
-
-
 button {
     border: none;
     background-color: white;
     cursor: pointer;
 }
 
-input {
-    align-self: center;
-    width: 20rem;
-    font-size: 1.2rem;
-    border-radius: 8px;
-    border: none;
-    padding: 0.5rem;
-}
-
-.send-button {
+.login-button {
     background-color: #F6F6F6;
     border-radius: 8px;
     padding: 0.5rem;
     font-weight: 700;
-    margin-top: 0.7rem;
+    margin-top: 1rem;
     box-shadow: 3px 2px 4px lightgrey;
     width: 10rem;
     align-self: center;
     font-size: 1rem;
 }
 
-.main-form {
+
+.login-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    height: 400px;
+}
+
+.form-items {
+    margin-top: 1rem;
 }

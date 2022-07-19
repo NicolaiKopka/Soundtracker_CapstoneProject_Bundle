@@ -3,6 +3,7 @@ import {MovieItem} from "./models";
 import MainPageMovieCard from "./MainPageGallery/MainPageMovieCard";
 import Header from "./Header/Header";
 
+
 interface AppProps {
     userMovies: MovieItem[]
     getUserMovies: Function
