@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/soundtracker", "/api/soundtracker/streaming/**", "/api/soundtracker/search/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/soundtracker", "/api/soundtracker/streaming/**", "/api/soundtracker/search/**", "/api/spotify/callback").permitAll()
                 .antMatchers(HttpMethod.GET, "/*", "/index*", "/static/**", "/*.js", "/*.json", "/*.ico","/*.png").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/soundtracker/accounts/register", "/api/soundtracker/accounts/login").permitAll()
                 .antMatchers("/api/admin/**").hasRole("admin")

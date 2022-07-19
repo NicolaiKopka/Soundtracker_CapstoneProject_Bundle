@@ -64,3 +64,7 @@ export function authorizeWithSpotify() {
                         &scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private
                         &redirect_uri=${process.env.SPOTIFY_CALLBACK_URI}`)
 }
+
+export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
+    return axios.get("/api/spotify/callback" + spotifyCode)
+}
