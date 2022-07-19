@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {LoginResponseDTO, MovieItem, RegisterUserDTO, StreamingStatusDTO} from "./models";
+import {LoginResponseDTO, MovieItem, RegisterUserDTO, SpotifyLoginResponseDTO, StreamingStatusDTO} from "./models";
 
 
 
@@ -56,4 +56,16 @@ export function deleteMoviesFromFavorites(id: number) {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
     })
+}
+
+export function authorizeWithSpotify() {
+    return axios.get(`https://accounts.spotify.com/authorize
+                        ?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723
+                        &scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private
+                        &redirect_uri=${process.env.SPOTIFY_CALLBACK_URI}`)
+}
+
+export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
+    return axios.get("/api/spotify/callback" + spotifyCode)
+        .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
 }

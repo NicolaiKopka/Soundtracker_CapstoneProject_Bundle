@@ -43,7 +43,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     function deleteFromFavorites() {
         deleteMoviesFromFavorites(props.movie.id)
             .then(() => setFavoriteStatus(false))
-            .then(() => props.getUserMovies)
+            .then(() => props.getUserMovies())
             .catch()
 
     }

@@ -5,7 +5,6 @@ import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
 import Header from "../Header/Header";
 import {Slide} from 'react-slideshow-image';
-import 'react-slideshow-image/dist/styles.css';
 
 interface AppProps {
     setErrorMessage: Function
@@ -55,11 +54,9 @@ export default function MainPageGallery(props: AppProps) {
                     <button className={"send-button"} type={"submit"}>Search</button>
                 </form>
             </div>
-            {searchMovies && <Slide>{searchComponents}</Slide>}
+            {searchMovies.length > 0 && <Slide>{searchComponents}</Slide>}
             <h2>Top 10 Movies</h2>
-            <Slide>
-                {components}
-            </Slide>
+            {components && components.length > 0 && <Slide>{components}</Slide>}
         </div>
     )
 

@@ -2,28 +2,27 @@ import {useEffect, useState} from "react";
 import {MovieItem} from "./models";
 import MainPageMovieCard from "./MainPageGallery/MainPageMovieCard";
 import Header from "./Header/Header";
+import {getFavoriteUserMovies} from "./api_methods";
 
 
-interface AppProps {
-    userMovies: MovieItem[]
-    getUserMovies: Function
-}
-
-export default function UserFavoritesPage(props: AppProps) {
+export default function UserFavoritesPage() {
 
     const [favoritesError, setFavoritesError] = useState("")
+    const [userMovies, setUserMovies] = useState<Array<MovieItem>>([])
 
     useEffect(() => {
-        props.getUserMovies()
-        if(props.userMovies.length === 0) {
-            setFavoritesError("Seems like you haven't saved any movies yet")
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        getFavoriteMovies()
+            .catch(() => setFavoritesError("Seems like you are not logged in")) //nav to login
     }, [])
 
-    const userMoviesIds = props.userMovies.map(movie => movie.id)
+    const getFavoriteMovies = () => {
+        return getFavoriteUserMovies()
+            .then(data => setUserMovies(data))
+    }
 
-    const components = props.userMovies.map(movie => <MainPageMovieCard movie={movie} favoriteMovieIds={userMoviesIds} getUserMovies={props.getUserMovies}/>)
+    const userMoviesIds = userMovies.map(movie => movie.id)
+
+    const components = userMovies.map(movie => <MainPageMovieCard key={movie.id} movie={movie} favoriteMovieIds={userMoviesIds} getUserMovies={getFavoriteMovies}/>)
 
     return(
         <div>
