@@ -72,6 +72,5 @@ public class MainPageService {
             throw new RuntimeException("No movies found");
         }
         return movies;
-
     }
 }

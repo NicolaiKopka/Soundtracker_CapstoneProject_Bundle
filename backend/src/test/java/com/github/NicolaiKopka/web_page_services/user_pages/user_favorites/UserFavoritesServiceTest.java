@@ -87,10 +87,8 @@ class UserFavoritesServiceTest {
     void shouldAddMovieIdToFavoriteObject() {
         MyUser user = MyUser.builder().username("user").id("1234").build();
 
-        UserFavoritesSaveObject existingFavorites = UserFavoritesSaveObject.builder()
-                .userId("1234")
-                .movieIds(List.of(1))
-                .build();
+        UserFavoritesSaveObject existingFavorites = new UserFavoritesSaveObject();
+        existingFavorites.setUserId("1234");
 
         MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
         Mockito.when(myUserRepo.findByUsername("user")).thenReturn(Optional.of(user));
@@ -100,10 +98,9 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
-        UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder()
-                .userId("1234")
-                .movieIds(List.of(1, 2))
-                .build();
+        UserFavoritesSaveObject expectedFavorites = new UserFavoritesSaveObject();
+        expectedFavorites.setUserId("1234");
+        expectedFavorites.setMovieIds(List.of(2));
 
         UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect);
         userFavoritesService.addMovieToFavorites(2, "user");
@@ -152,6 +149,31 @@ class UserFavoritesServiceTest {
             fail();
         } catch (NoSuchElementException e) {}
     }
+
+    @Test
+    void shouldDeleteMovieIdFromFavoritesList() {
+        MyUser user = MyUser.builder().username("testUser").id("1234").build();
+        UserFavoritesSaveObject favoritesObject = new UserFavoritesSaveObject();
+        favoritesObject.addMovieId(12);
+        favoritesObject.addMovieId(13);
+        favoritesObject.addMovieId(14);
+        UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder().movieIds(List.of(12, 14)).build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("1234")).thenReturn(Optional.of(favoritesObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect);
+        userFavoritesService.deleteMovieFromFavorites(13, "testUser");
+
+        Mockito.verify(userFavoritesRepo).save(expectedFavorites);
+    }
+
+
 
 
 }

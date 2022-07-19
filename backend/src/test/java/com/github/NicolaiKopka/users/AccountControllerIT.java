@@ -6,7 +6,7 @@ import com.github.NicolaiKopka.dto.LoginResponseDTO;
 import com.github.NicolaiKopka.dto.RegisterUserDTO;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AccountControllerIT {
 
     @Autowired
@@ -30,7 +31,13 @@ class AccountControllerIT {
     @MockBean
     MovieDBApiConnect movieDBApiConnect;
 
+    @AfterEach
+    void clearDB() {
+        userRepo.deleteAll();
+    }
+
     @Test
+    @Order(0)
     void userRegistersAndLogsInWithWrongAndCorrectCredentials() {
         // register User
         RegisterData newUser = RegisterData.builder()
@@ -62,6 +69,7 @@ class AccountControllerIT {
     }
 
     @Test
+    @Order(1)
     void usersAddFavoriteMoviesAndWillOnlySeeRespectiveMoviesOnFavoritesPage() {
         // register User 1
         RegisterData newUser1 = RegisterData.builder()
