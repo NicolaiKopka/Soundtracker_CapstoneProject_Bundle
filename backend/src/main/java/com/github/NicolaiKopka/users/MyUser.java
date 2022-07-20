@@ -23,6 +23,7 @@ public class MyUser {
     private String username;
     private String password;
     private String email;
+    private String spotifyId;
     private List<String> roles;
 
 }

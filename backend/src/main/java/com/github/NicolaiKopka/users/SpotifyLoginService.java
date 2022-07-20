@@ -16,6 +16,7 @@ public class SpotifyLoginService {
         return myUserRepo.findByUsername(userData.getUsername()).orElseGet(() -> myUserRepo.save(MyUser.builder()
                 .username(userData.getUsername())
                 .email(userData.getEmail())
+                .spotifyId(userData.getSpotifyUserId())
                 .roles(List.of("user"))
                 .build()));
     }

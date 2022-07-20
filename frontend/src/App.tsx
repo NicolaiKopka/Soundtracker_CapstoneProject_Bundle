@@ -9,6 +9,7 @@ import {MovieItem} from "./models";
 import {getFavoriteUserMovies} from "./api_methods";
 import "./App.css"
 import SpotifyLoginRedirect from "./Register_Login/streamingLogin/SpotifyLoginRedirect";
+import SpotifyPlaylistPage from "./SpotifyPlaylistComponents/SpotifyPlaylistPage";
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
                     <Route path={"/logout"} element={<LogoutPage/>}/>
                     <Route path={"/favorites"} element={<UserFavoritesPage/>}/>
                     <Route path={"/spotify-redirect"} element={<SpotifyLoginRedirect/>} />
+                    <Route path={"/spotify-playlists"} element={<SpotifyPlaylistPage/>} />
                 </Routes>
             </BrowserRouter>
         </div>
