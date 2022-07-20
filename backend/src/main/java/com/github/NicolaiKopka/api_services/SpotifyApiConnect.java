@@ -68,9 +68,14 @@ public class SpotifyApiConnect {
         return albumQuery.getAlbumQueryList();
 
     }
-    private SpotifyUserPlaylists getAllUserPlaylists(String spotifyToken) {
-        //String queryUrl = "https://api.spotify.com/v1/users" +
-        return null;
+    public SpotifyUserPlaylists getAllUserPlaylists(String spotifyToken, String userId) {
+        String queryUrl = "https://api.spotify.com/v1/users/" + userId + "/playlists";
+        ResponseEntity<SpotifyUserPlaylists> allUserPlaylists = restTemplate.exchange(
+                queryUrl,
+                HttpMethod.GET,
+                new HttpEntity<>(createAuthBearerHeader(spotifyToken)),
+                SpotifyUserPlaylists.class);
+        return allUserPlaylists.getBody();
     }
     private HttpHeaders createAuthBearerHeader(String token) {
         String authValue = "Bearer " + token;

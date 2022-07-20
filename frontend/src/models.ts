@@ -36,6 +36,16 @@ export interface SpotifyLoginResponseDTO {
     spotifyToken: string
 }
 
+export interface SpotifyUserPlaylists {
+    items: Array<SpotifyPlaylist>
+}
+
+export interface SpotifyPlaylist {
+    description: string
+    name: string
+    href: string
+}
+
 // const o = {}
 // let keys = Object.keys(o)
 // keys.forEach(key => o[key])

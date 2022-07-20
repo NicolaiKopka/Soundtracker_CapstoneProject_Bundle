@@ -21,6 +21,9 @@ export default function Header(){
                 }
             </span>
             }
+            {localStorage.getItem("jwt") && localStorage.getItem("spotify_jwt") && <span>
+                <NavLink to={"/spotify-playlists"}><button className={"header-button"}>Playlists</button></NavLink>
+            </span>}
         </div>
     )
 

@@ -1,5 +1,12 @@
 import axios, {AxiosResponse} from "axios";
-import {LoginResponseDTO, MovieItem, RegisterUserDTO, SpotifyLoginResponseDTO, StreamingStatusDTO} from "./models";
+import {
+    LoginResponseDTO,
+    MovieItem,
+    RegisterUserDTO,
+    SpotifyLoginResponseDTO,
+    SpotifyUserPlaylists,
+    StreamingStatusDTO
+} from "./models";
 
 
 
@@ -68,4 +75,12 @@ export function authorizeWithSpotify() {
 export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
     return axios.get("/api/spotify/callback" + spotifyCode)
         .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
+}
+
+export function getAllUserPlaylists() {
+    return axios.get("api/soundtracker/user-favorites/spotify-playlists/" + localStorage.getItem("spotify_jwt"), {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response:AxiosResponse<SpotifyUserPlaylists>) => response.data)
 }

@@ -8,4 +8,6 @@ public class SpotifyUserData {
     @JsonProperty("display_name")
     private String username;
     private String email;
+    @JsonProperty("id")
+    private String spotifyUserId;
 }
