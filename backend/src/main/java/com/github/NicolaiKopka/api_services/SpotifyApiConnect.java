@@ -2,6 +2,8 @@ package com.github.NicolaiKopka.api_services;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumQueryObject;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyFirstQueryObject;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
@@ -66,7 +68,6 @@ public class SpotifyApiConnect {
         SpotifyAlbumQueryObject albumQuery = Objects.requireNonNull(queryResponse.getBody()).getAlbums();
 
         return albumQuery.getAlbumQueryList();
-
     }
     public SpotifyUserPlaylists getAllUserPlaylists(String spotifyToken, String userId) {
         String queryUrl = "https://api.spotify.com/v1/users/" + userId + "/playlists";
@@ -76,6 +77,18 @@ public class SpotifyApiConnect {
                 new HttpEntity<>(createAuthBearerHeader(spotifyToken)),
                 SpotifyUserPlaylists.class);
         return allUserPlaylists.getBody();
+    }
+
+    public SpotifyPlaylist addSpotifyPlaylist(String spotifyToken, String userId, AddPlaylistTransferData data) {
+        String queryUrl = "https://api.spotify.com/v1/users/" + userId + "/playlists";
+
+        ResponseEntity<SpotifyPlaylist> addPlaylistResponse = restTemplate.exchange(
+                queryUrl,
+                HttpMethod.POST,
+                new HttpEntity<>(data, createAuthBearerHeader(spotifyToken)),
+                SpotifyPlaylist.class
+        );
+        return addPlaylistResponse.getBody();
     }
     private HttpHeaders createAuthBearerHeader(String token) {
         String authValue = "Bearer " + token;

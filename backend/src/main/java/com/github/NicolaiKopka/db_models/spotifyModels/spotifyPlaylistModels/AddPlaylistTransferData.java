@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class SpotifyPlaylist {
+public class AddPlaylistTransferData {
 
-    private String description;
     private String name;
-    private String href;
-    private boolean collaborative;
     @JsonProperty("public")
     private boolean isPublic;
+    private boolean collaborative;
+    private String description;
 
 }

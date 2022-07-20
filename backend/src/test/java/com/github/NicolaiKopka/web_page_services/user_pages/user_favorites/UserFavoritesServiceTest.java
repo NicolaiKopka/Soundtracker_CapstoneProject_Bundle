@@ -3,6 +3,7 @@ package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import com.github.NicolaiKopka.users.MyUser;
@@ -219,5 +220,35 @@ class UserFavoritesServiceTest {
         SpotifyUserPlaylists actual = userFavoritesService.getAllSpotifyPlaylistsFromUser("testUser", "1234");
 
         Assertions.assertThat(actual).isEqualTo(spotifyUserPlaylists);
+    }
+
+    @Test
+    void shouldAddNewSpotifyPlaylist() {
+        MyUser user = MyUser.builder().username("testUser").spotifyId("spotifyId").build();
+
+        AddPlaylistTransferData data = new AddPlaylistTransferData();
+        data.setName("playlist1");
+
+        SpotifyPlaylist spotifyPlaylist = new SpotifyPlaylist();
+        spotifyPlaylist.setName("playlist1");
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+        Mockito.when(spotifyApiConnect.addSpotifyPlaylist(
+                "1234",
+                "spotifyId",
+                data)).thenReturn(spotifyPlaylist);
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+
+        SpotifyPlaylist actual = userFavoritesService.addSpotifyPlaylist("1234", "testUser", data);
+
+        Assertions.assertThat(actual).isEqualTo(spotifyPlaylist);
     }
 }

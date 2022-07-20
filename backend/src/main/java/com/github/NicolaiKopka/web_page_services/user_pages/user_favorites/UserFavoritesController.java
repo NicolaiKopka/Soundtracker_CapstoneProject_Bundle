@@ -2,6 +2,8 @@ package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 
 
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,15 @@ public class UserFavoritesController {
         }
     }
 
+    @PostMapping("/spotify-playlists/add/{spotifyToken}")
+    public ResponseEntity<SpotifyPlaylist> addSpotifyPlaylist(Principal principal, @PathVariable String spotifyToken, @RequestBody AddPlaylistTransferData data) {
+        try {
+            return ResponseEntity.ok(userFavoritesService.addSpotifyPlaylist(spotifyToken, principal.getName(), data));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @PutMapping("/{movieId}")
     public ResponseEntity<UserFavoritesDTO> addMovieToFavorites(@PathVariable int movieId, Principal principal) {
         try {
@@ -58,12 +69,6 @@ public class UserFavoritesController {
         } catch (NoSuchElementException | NullPointerException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
     }
-//
-//    @PutMapping("/{id}")
-//    public void changeNotificationStatusForMovie(@PathVariable String id) {
-//        userPageService.changeNotificationStatus(id);
-//    }
 
 }
