@@ -82,6 +82,10 @@ public class SpotifyApiConnect {
     public SpotifyPlaylist addSpotifyPlaylist(String spotifyToken, String userId, AddPlaylistTransferData data) {
         String queryUrl = "https://api.spotify.com/v1/users/" + userId + "/playlists";
 
+        if(data.isCollaborative() && data.isPublic()) {
+            throw new IllegalArgumentException("A collaborative playlist list must be private");
+        }
+
         ResponseEntity<SpotifyPlaylist> addPlaylistResponse = restTemplate.exchange(
                 queryUrl,
                 HttpMethod.POST,

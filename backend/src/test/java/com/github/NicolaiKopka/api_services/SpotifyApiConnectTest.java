@@ -104,4 +104,34 @@ class SpotifyApiConnectTest {
         SpotifyPlaylist actual = spotifyApiConnect.addSpotifyPlaylist("1234", "spotifyId", data);
         Assertions.assertThat(actual).isEqualTo(spotifyPlaylist);
     }
+
+    @Test
+    void shouldThrowIfPlaylistIsCollaborativeWhileAlsoPublic() {
+        AddPlaylistTransferData data = new AddPlaylistTransferData();
+        data.setName("playlist1");
+        data.setPublic(true);
+        data.setCollaborative(true);
+
+        SpotifyPlaylist spotifyPlaylist = new SpotifyPlaylist();
+        spotifyPlaylist.setName("playlist1");
+
+        HttpHeaders header = new HttpHeaders();
+        header.set("Authorization", "Bearer 1234");
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        Mockito.when(restTemplate.exchange(
+                "https://api.spotify.com/v1/users/spotifyId/playlists",
+                HttpMethod.POST,
+                new HttpEntity<>(data, header),
+                SpotifyPlaylist.class
+        )).thenReturn(ResponseEntity.of(Optional.of(spotifyPlaylist)));
+
+        SpotifyApiConnect spotifyApiConnect = new SpotifyApiConnect(restTemplate, "testId", "testSecret");
+
+        try {
+            spotifyApiConnect.addSpotifyPlaylist("1234", "spotifyId", data);
+            fail();
+        } catch (IllegalArgumentException e) {
+            Assertions.assertThat(e.getMessage()).isEqualTo("A collaborative playlist list must be private");
+        }
+    }
 }

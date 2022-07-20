@@ -20,7 +20,7 @@ export default function SpotifyPlaylistPage() {
 
     useEffect(() => {
         if(newPlaylistIsCollaborativeStatus) {
-            setNewPlaylistIsPublicStatus(true)
+            setNewPlaylistIsPublicStatus(false)
             setPublicStatusDisabled(true)
         } else {
             setNewPlaylistIsPublicStatus(false)
