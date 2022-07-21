@@ -1,7 +1,11 @@
 package com.github.NicolaiKopka.web_page_services.main_page;
 
+import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerAlbum;
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchData;
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchObject;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
@@ -22,6 +26,8 @@ public class MainPageService {
     private final MovieDBApiConnect movieDBApiConnect;
     private final SpotifyApiConnect spotifyApiConnect;
 
+    private final DeezerApiConnect deezerApiConnect;
+
     public List<Movie> getPopularMovies() {
         return movieDBApiConnect.getPopularMovies();
     }
@@ -41,9 +47,26 @@ public class MainPageService {
                 () -> streamingStatusDTO.getStreamingServiceStatus().put("spotify", false)
         );
 
+        DeezerSearchData deezerData = deezerApiConnect.getFullSearchData(movieName);
+
+
+
+
         return streamingStatusDTO;
     }
 
+    private Optional<DeezerAlbum> checkForExactSoundtrackOnDeezer(List<DeezerSearchObject> albumList, String movieName) {
+        for (DeezerAlbum album : albumList) {
+
+        }
+        return albumList.stream()
+                .filter(album -> checkForExactTitle(album.getAlbum().getTitle(), movieName) && checkForKeywordsOnDeezer(album.getAlbum()))
+                .findFirst();
+    }
+    private boolean checkForKeywordsOnDeezer(DeezerAlbum album) {
+        return album.getTitle().toLowerCase().contains("official") || album.getTitle().toLowerCase().contains("motion picture")
+                || album.getTitle().toLowerCase().contains("soundtrack") || album.getTitle().toLowerCase().contains("netflix");
+    }
     private Optional<SpotifyAlbum> checkForExactSoundtrack(List<SpotifyAlbum> albumList, String movieName) {
         return albumList.stream()
                 .filter(album -> checkForExactTitle(album.getName(), movieName) && checkForKeywords(album))
