@@ -49,19 +49,25 @@ public class MainPageService {
 
         DeezerSearchData deezerData = deezerApiConnect.getFullSearchData(movieName);
 
-
-
+        checkForExactSoundtrackOnDeezer(deezerData.getData(), movieName).ifPresentOrElse(
+                album -> {
+                    String link = album.getLink();
+                    streamingStatusDTO.getStreamingServiceStatus().put("deezer", true);
+                    streamingStatusDTO.getAlbumLinks().put("deezer", link);
+                },
+                () -> streamingStatusDTO.getStreamingServiceStatus().put("deezer", false)
+        );
 
         return streamingStatusDTO;
     }
 
     private Optional<DeezerAlbum> checkForExactSoundtrackOnDeezer(List<DeezerSearchObject> albumList, String movieName) {
-        for (DeezerAlbum album : albumList) {
-
+        for (DeezerSearchObject album: albumList) {
+            if(checkForExactTitle(album.getAlbum().getTitle(), movieName) && checkForKeywordsOnDeezer(album.getAlbum())) {
+                return Optional.of(deezerApiConnect.getAlbumById(album.getAlbum().getId()));
+            }
         }
-        return albumList.stream()
-                .filter(album -> checkForExactTitle(album.getAlbum().getTitle(), movieName) && checkForKeywordsOnDeezer(album.getAlbum()))
-                .findFirst();
+        return Optional.empty();
     }
     private boolean checkForKeywordsOnDeezer(DeezerAlbum album) {
         return album.getTitle().toLowerCase().contains("official") || album.getTitle().toLowerCase().contains("motion picture")
