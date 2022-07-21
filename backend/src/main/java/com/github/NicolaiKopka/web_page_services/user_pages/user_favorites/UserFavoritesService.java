@@ -3,6 +3,8 @@ package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
+import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
@@ -53,8 +55,14 @@ public class UserFavoritesService {
     }
 
     public SpotifyUserPlaylists getAllSpotifyPlaylistsFromUser(String username, String spotifyToken) {
-        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
 
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
         return spotifyApiConnect.getAllUserPlaylists(spotifyToken, user.getSpotifyId());
+    }
+
+    public SpotifyPlaylist addSpotifyPlaylist(String spotifyToken, String username, AddPlaylistTransferData data) {
+
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+        return spotifyApiConnect.addSpotifyPlaylist(spotifyToken, user.getSpotifyId(), data);
     }
 }

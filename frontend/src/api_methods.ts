@@ -84,3 +84,16 @@ export function getAllUserPlaylists() {
         }
     }).then((response:AxiosResponse<SpotifyUserPlaylists>) => response.data)
 }
+
+export function addSpotifyPlaylist(name: string, description: string, isPublic: boolean, collaborative: boolean) {
+    return axios.post("api/soundtracker/user-favorites/spotify-playlists/add/" + localStorage.getItem("spotify_jwt"), {
+        name,
+        description,
+        public: isPublic,
+        collaborative
+    }, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    })
+}
