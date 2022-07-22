@@ -32,7 +32,7 @@ public class UserFavoritesService {
 
         return userFavorites.getMovieIds().stream().map(movieDBApiConnect::getMovieById).toList();
     }
-    public UserFavoritesSaveObject addMovieToFavorites(Integer movieId, String username) {
+    public void addMovieToFavorites(Integer movieId, String username) {
 
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
 
@@ -49,7 +49,7 @@ public class UserFavoritesService {
                 }
         );
 
-        return userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+        //return userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
     }
     public Optional<UserFavoritesSaveObject> deleteMovieFromFavorites(int movieId, String username) {
         return myUserRepo.findByUsername(username)
