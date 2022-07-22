@@ -12,13 +12,11 @@ import lombok.NoArgsConstructor;
 public class AlbumReferenceDTO {
 
     private String movieTitle;
+    private String albumUrl;
 
     // Spotify Reference
     private String spotifyReleaseDate;
-    private String spotifyAlbumUrl;
-
     // Deezer Reference
     private long deezerAlbumId;
-    private String deezerAlbumUrl;
 
 }
