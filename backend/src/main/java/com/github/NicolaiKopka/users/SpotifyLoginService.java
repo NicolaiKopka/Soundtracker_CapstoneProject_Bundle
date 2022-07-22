@@ -13,12 +13,11 @@ public class SpotifyLoginService {
     private final MyUserRepo myUserRepo;
 
     public MyUser findOrCreateUser(SpotifyUserData userData) {
-        return myUserRepo.findByUsername(userData.getUsername()).orElseGet(() -> myUserRepo.save(MyUser.builder()
-                .username(userData.getUsername())
+        return myUserRepo.findByUsername(userData.getUsername() + "(spotifyUser)").orElseGet(() -> myUserRepo.save(MyUser.builder()
+                .username(userData.getUsername() + "(spotifyUser)")
                 .email(userData.getEmail())
                 .spotifyId(userData.getSpotifyUserId())
                 .roles(List.of("user"))
                 .build()));
     }
-
 }

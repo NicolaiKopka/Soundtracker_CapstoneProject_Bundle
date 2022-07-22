@@ -12,7 +12,7 @@ export default function SpotifyLoginRedirect() {
             localStorage.setItem("jwt", data.jwtToken)
             localStorage.setItem("spotify_jwt", data.spotifyToken)
         }).then(() => nav("/"))
-    })
+    },[])
 
     return (
         <div>

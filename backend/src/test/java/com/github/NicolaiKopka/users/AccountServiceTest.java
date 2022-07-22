@@ -100,4 +100,24 @@ class AccountServiceTest {
         }
     }
 
+    @Test
+    void shouldThrowIfUsernameContainsIllegalCombinations() {
+        RegisterData newUser = RegisterData.builder().username("user(spotifyUser)")
+                .password("password")
+                .checkPassword("password")
+                .build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+
+        PasswordEncoder encoder = Mockito.mock(PasswordEncoder.class);
+
+        AccountService accountService = new AccountService(myUserRepo, encoder);
+        try{
+            accountService.registerUser(newUser);
+            fail();
+        } catch (IllegalStateException e) {
+            Assertions.assertThat(e.getMessage()).isEqualTo("Illegal username combination");
+        }
+    }
+
 }

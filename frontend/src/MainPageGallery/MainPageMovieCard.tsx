@@ -3,6 +3,7 @@ import "./MainPageMovieCard.css"
 import {addMovieToFavorites, deleteMoviesFromFavorites, getStreamingDetails} from "../api_methods";
 import {useEffect, useState} from "react";
 import 'react-slideshow-image/dist/styles.css';
+import altImage from "../images/page-not-found-ge8454dec1_1280.jpg"
 
 
 interface MainPageGalleryProps {
@@ -57,8 +58,11 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
             <div className={"movie-card"}>
                 {/* check undefined on Error. Should be fallback image*/}
                 <button className={"card-image"} onClick={getMovieDetails}><img
-                    src={"https://image.tmdb.org/t/p/original" + props.movie.poster_path} alt={"movies"}
-                    onError={undefined}/></button>
+                    src={props.movie.poster_path ? "https://image.tmdb.org/t/p/original" + props.movie.poster_path : altImage} alt={"movies"}
+                    onError={(ev) => {
+                        ev.currentTarget.onerror = null;
+                        ev.currentTarget.src = altImage
+                    }}/></button>
                 <div className={"card-title"}>
                     {props.movie.title}
                 </div>

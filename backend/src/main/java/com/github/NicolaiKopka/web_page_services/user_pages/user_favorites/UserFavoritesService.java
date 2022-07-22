@@ -36,16 +36,20 @@ public class UserFavoritesService {
 
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
 
-        try {
-            UserFavoritesSaveObject userFavorites = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
-            userFavorites.addMovieId(movieId);
-            return userFavoritesRepo.save(userFavorites);
-        } catch (NoSuchElementException e) {
-            UserFavoritesSaveObject userFavorites = new UserFavoritesSaveObject();
-            userFavorites.setUserId(user.getId());
-            userFavorites.addMovieId(movieId);
-            return userFavoritesRepo.save(userFavorites);
-        }
+        userFavoritesRepo.findByUserId(user.getId()).ifPresentOrElse(
+                userFavorites -> {
+                    userFavorites.addMovieId(movieId);
+                    userFavoritesRepo.save(userFavorites);
+                },
+                () -> {
+                    UserFavoritesSaveObject userFavorites = new UserFavoritesSaveObject();
+                    userFavorites.setUserId(user.getId());
+                    userFavorites.addMovieId(movieId);
+                    userFavoritesRepo.save(userFavorites);
+                }
+        );
+
+        return userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
     }
     public Optional<UserFavoritesSaveObject> deleteMovieFromFavorites(int movieId, String username) {
         return myUserRepo.findByUsername(username)
