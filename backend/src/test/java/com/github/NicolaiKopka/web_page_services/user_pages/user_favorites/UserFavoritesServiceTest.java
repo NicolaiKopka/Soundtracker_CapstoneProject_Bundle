@@ -8,15 +8,9 @@ import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.Spo
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
-import org.apache.tomcat.util.security.Escape;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.security.core.userdetails.User;
-
-import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
-import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;

@@ -1,4 +1,5 @@
 package com.github.NicolaiKopka.api_services;
+import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumQueryObject;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyFirstQueryObject;
@@ -50,7 +51,7 @@ public class SpotifyApiConnect {
     }
 
     // TODO find a way to check if correct movie is returned, including netflix
-    public List<SpotifyAlbum> getSpotifyListOfMovieAlbums(String movieName) throws OAuthProblemException, OAuthSystemException {
+    public List<AlbumReferenceDTO> getSpotifyListOfMovieAlbums(String movieName) throws OAuthProblemException, OAuthSystemException {
         String accessToken = getAccessToken();
 
         String queryUrl = "https://api.spotify.com/v1/search?q="
@@ -67,7 +68,16 @@ public class SpotifyApiConnect {
         //Throws NullPointerException if empty
         SpotifyAlbumQueryObject albumQuery = Objects.requireNonNull(queryResponse.getBody()).getAlbums();
 
-        return albumQuery.getAlbumQueryList();
+        return albumQuery.getAlbumQueryList().stream().map(spotifyAlbum -> {
+            AlbumReferenceDTO albumReference = new AlbumReferenceDTO();
+            albumReference.setMovieTitle(spotifyAlbum.getName());
+            albumReference.setSpotifyAlbumUrl(spotifyAlbum.getExternalURLs().getAlbumUrl());
+            albumReference.setSpotifyReleaseDate(spotifyAlbum.getReleaseDate());
+            return albumReference;
+        }).toList();
+
+
+//        return albumQuery.getAlbumQueryList();
     }
     public SpotifyUserPlaylists getAllUserPlaylists(String spotifyToken, String userId) {
         String queryUrl = "https://api.spotify.com/v1/users/" + userId + "/playlists";
