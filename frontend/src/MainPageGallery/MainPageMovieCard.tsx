@@ -15,6 +15,8 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
 
     const [spotifyStatus, setSpotifyStatus] = useState(false)
     const [spotifyLink, setSpotifyLink] = useState("")
+    const [deezerStatus, setDeezerStatus] = useState(false)
+    const [deezerLink, setDeezerLink] = useState("")
     const [favoriteStatus, setFavoriteStatus] = useState(false)
 
 
@@ -29,6 +31,8 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
             .then(data => {
                 setSpotifyStatus(data.streamingServiceStatus["spotify"])
                 setSpotifyLink(data.albumLinks["spotify"])
+                setDeezerStatus(data.streamingServiceStatus["deezer"])
+                setDeezerLink(data.albumLinks["deezer"])
             })
     }
 
@@ -60,6 +64,8 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
                 </div>
                 {spotifyStatus ? <div className={"card-status"}><a href={spotifyLink}>Link to Spotify</a></div> :
                     <div className={"card-status"}>Spotify not available</div>}
+                {deezerStatus ? <div className={"card-status"}><a href={deezerLink}>Link to Deezer</a></div> :
+                    <div className={"card-status"}>Deezer not available</div>}
                 {favoriteStatus ?
                     <button className={"favorites-button"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
                     <button className={"favorites-button"} onClick={addToFavorites}>To Favorites</button>}
