@@ -33,7 +33,7 @@ public class MainPageController {
 
     // TODO add bucket4j to limit request count
     @GetMapping("/streaming/{movieName}")
-    public StreamingStatusDTO getMovieSoundtrackOnSpotify(@PathVariable String movieName) throws OAuthProblemException, OAuthSystemException {
+    public StreamingStatusDTO getMovieSoundtrackStreamingStatus(@PathVariable String movieName) throws OAuthProblemException, OAuthSystemException {
         return mainPageService.getSoundtrackOnSpotify(movieName);
     }
 

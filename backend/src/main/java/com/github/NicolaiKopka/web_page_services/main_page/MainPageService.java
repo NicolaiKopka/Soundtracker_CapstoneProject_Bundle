@@ -3,6 +3,7 @@ package com.github.NicolaiKopka.web_page_services.main_page;
 import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
+import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerAlbum;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchData;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchObject;
@@ -36,22 +37,22 @@ public class MainPageService {
         StreamingStatusDTO streamingStatusDTO = new StreamingStatusDTO();
         streamingStatusDTO.setMovieName(movieName);
 
-        List<SpotifyAlbum> albums = spotifyApiConnect.getSpotifyListOfMovieAlbums(movieName);
+        List<AlbumReferenceDTO> albums = spotifyApiConnect.getSpotifyListOfMovieAlbums(movieName);
 
         checkForExactSoundtrack(albums, movieName).ifPresentOrElse(
                 album -> {
-                    String link = album.getExternalURLs().getAlbumUrl();
+                    String link = album.getSpotifyAlbumUrl();
                     streamingStatusDTO.getStreamingServiceStatus().put("spotify", true);
                     streamingStatusDTO.getAlbumLinks().put("spotify", link);
                 },
                 () -> streamingStatusDTO.getStreamingServiceStatus().put("spotify", false)
         );
 
-        DeezerSearchData deezerData = deezerApiConnect.getFullSearchData(movieName);
+        List<AlbumReferenceDTO> deezerAlbums = deezerApiConnect.getFullSearchData(movieName);
 
-        checkForExactSoundtrackOnDeezer(deezerData.getData(), movieName).ifPresentOrElse(
+        checkForExactSoundtrackOnDeezer(deezerAlbums, movieName).ifPresentOrElse(
                 album -> {
-                    String link = album.getLink();
+                    String link = album.getDeezerAlbumUrl();
                     streamingStatusDTO.getStreamingServiceStatus().put("deezer", true);
                     streamingStatusDTO.getAlbumLinks().put("deezer", link);
                 },
@@ -61,26 +62,22 @@ public class MainPageService {
         return streamingStatusDTO;
     }
 
-    private Optional<DeezerAlbum> checkForExactSoundtrackOnDeezer(List<DeezerSearchObject> albumList, String movieName) {
-        for (DeezerSearchObject album: albumList) {
-            if(checkForExactTitle(album.getAlbum().getTitle(), movieName) && checkForKeywordsOnDeezer(album.getAlbum())) {
-                return Optional.of(deezerApiConnect.getAlbumById(album.getAlbum().getId()));
+    private Optional<AlbumReferenceDTO> checkForExactSoundtrackOnDeezer(List<AlbumReferenceDTO> albumList, String movieName) {
+        for (AlbumReferenceDTO album: albumList) {
+            if(checkForExactTitle(album.getMovieTitle(), movieName) && checkForKeywords(album)) {
+                return Optional.of(deezerApiConnect.getAlbumById(album.getDeezerAlbumId(), album));
             }
         }
         return Optional.empty();
     }
-    private boolean checkForKeywordsOnDeezer(DeezerAlbum album) {
-        return album.getTitle().toLowerCase().contains("official") || album.getTitle().toLowerCase().contains("motion picture")
-                || album.getTitle().toLowerCase().contains("soundtrack") || album.getTitle().toLowerCase().contains("netflix");
-    }
-    private Optional<SpotifyAlbum> checkForExactSoundtrack(List<SpotifyAlbum> albumList, String movieName) {
+    private Optional<AlbumReferenceDTO> checkForExactSoundtrack(List<AlbumReferenceDTO> albumList, String movieName) {
         return albumList.stream()
-                .filter(album -> checkForExactTitle(album.getName(), movieName) && checkForKeywords(album))
+                .filter(album -> checkForExactTitle(album.getMovieTitle(), movieName) && checkForKeywords(album))
                 .findFirst();
     }
-    private boolean checkForKeywords(SpotifyAlbum album) {
-        return album.getName().toLowerCase().contains("official") || album.getName().toLowerCase().contains("motion picture")
-                || album.getName().toLowerCase().contains("soundtrack") || album.getName().toLowerCase().contains("netflix");
+    private boolean checkForKeywords(AlbumReferenceDTO album) {
+        return album.getMovieTitle().toLowerCase().contains("official") || album.getMovieTitle().toLowerCase().contains("motion picture")
+                || album.getMovieTitle().toLowerCase().contains("soundtrack") || album.getMovieTitle().toLowerCase().contains("netflix");
     }
     private boolean checkForExactTitle(String albumTitle, String movieName){
         String albumTitleLower = albumTitle.split("\\(")[0].toLowerCase();

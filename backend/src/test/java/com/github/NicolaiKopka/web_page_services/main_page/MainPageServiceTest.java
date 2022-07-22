@@ -3,6 +3,7 @@ package com.github.NicolaiKopka.web_page_services.main_page;
 import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
+import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerAlbum;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchData;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchObject;
@@ -50,23 +51,21 @@ class MainPageServiceTest {
 
     @Test
     void shouldReturnStreamingStatusObjectWithKeySpotifySetToTrueAndLinkToAlbum() throws OAuthProblemException, OAuthSystemException {
-        SpotifyAlbum album1 = SpotifyAlbum.builder().name("movieAlbum (Official Motion Picture Soundtrack")
-                .externalURLs(new SpotifyAlbumExternalURLs("falseLink")).build();
-        SpotifyAlbum album2 = SpotifyAlbum.builder().name("testMovie (Official Motion Picture Soundtrack")
-                .externalURLs(new SpotifyAlbumExternalURLs("link.com")).build();
-        DeezerAlbum album3 = DeezerAlbum.builder().title("movieAlbum (Official Motion Picture Soundtrack")
-                .id(1234).link("falseLink.com").build();
-        DeezerAlbum album4 = DeezerAlbum.builder().title("testMovie (Official Motion Picture Soundtrack")
-                .id(5678).link("link.com").build();
+        AlbumReferenceDTO album1 = AlbumReferenceDTO.builder().movieTitle("movieAlbum (Official Motion Picture Soundtrack")
+                .spotifyAlbumUrl("falseLink").build();
+        AlbumReferenceDTO album2 = AlbumReferenceDTO.builder().movieTitle("testMovie (Official Motion Picture Soundtrack")
+                .spotifyAlbumUrl("link.com").build();
 
-        DeezerSearchData deezerSearchData = new DeezerSearchData();
-        deezerSearchData.setData(List.of(new DeezerSearchObject(album3), new DeezerSearchObject(album4)));
+        AlbumReferenceDTO album3 = AlbumReferenceDTO.builder().movieTitle("movieAlbum (Official Motion Picture Soundtrack")
+                .deezerAlbumId(1234).deezerAlbumUrl("falseLink.com").build();
+        AlbumReferenceDTO album4 = AlbumReferenceDTO.builder().movieTitle("testMovie (Official Motion Picture Soundtrack")
+                .deezerAlbumId(5678).deezerAlbumUrl("link.com").build();
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
         DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
-        Mockito.when(deezerApiConnect.getFullSearchData("testMovie")).thenReturn(deezerSearchData);
-        Mockito.when(deezerApiConnect.getAlbumById(5678)).thenReturn(album4);
+        Mockito.when(deezerApiConnect.getFullSearchData("testMovie")).thenReturn(List.of(album3, album4));
+        Mockito.when(deezerApiConnect.getAlbumById(5678, album4)).thenReturn(album4);
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
         Mockito.when(spotifyApiConnect.getSpotifyListOfMovieAlbums("testMovie")).thenReturn(List.of(album1, album2));
@@ -89,10 +88,8 @@ class MainPageServiceTest {
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
         DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
-        DeezerSearchData deezerSearchData = new DeezerSearchData();
-        deezerSearchData.setData(List.of());
 
-        Mockito.when(deezerApiConnect.getFullSearchData("noMovie")).thenReturn(deezerSearchData);
+        Mockito.when(deezerApiConnect.getFullSearchData("noMovie")).thenReturn(List.of());
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
         Mockito.when(spotifyApiConnect.getSpotifyListOfMovieAlbums("noMovie")).thenReturn(List.of());
@@ -132,8 +129,6 @@ class MainPageServiceTest {
     void shouldFailSearchQueryIfNoMoviesFound() {
         Movie movie1 = Movie.builder().title("movie1").build();
         Movie movie2 = Movie.builder().title("movie2").build();
-
-        List<Movie> expected = List.of(movie1, movie2);
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
         Mockito.when(movieDBApiConnect.getMoviesByQuery("movie")).thenReturn(List.of(movie1, movie2));
