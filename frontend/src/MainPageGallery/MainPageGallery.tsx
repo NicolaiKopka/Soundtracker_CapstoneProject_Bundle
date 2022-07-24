@@ -5,6 +5,7 @@ import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
 import Header from "../Header/Header";
 import {Slide} from 'react-slideshow-image';
+import SpotifyPlayer from 'react-spotify-web-playback';
 
 interface AppProps {
     setErrorMessage: Function
@@ -17,7 +18,6 @@ export default function MainPageGallery(props: AppProps) {
     const [searchMovies, setSearchMovies] = useState<Array<MovieItem>>([])
     const [searchQuery, setSearchQuery] = useState("")
     const [favoritesError, setFavoritesError] = useState("")
-
 
     useEffect(() => {
         getFavoriteMovies()
@@ -36,6 +36,8 @@ export default function MainPageGallery(props: AppProps) {
             .then(data => setUserMovies(data))
     }
 
+    const spotifyToken = localStorage.getItem("spotify_jwt")
+
     const userMoviesIds = userMovies.map(movie => movie.id)
 
     const tenMovies = movies?.slice(0, 10)
@@ -50,6 +52,10 @@ export default function MainPageGallery(props: AppProps) {
 
     return (
         <div className={"gallery-main"}>
+            {spotifyToken &&
+            <SpotifyPlayer
+                token={spotifyToken!.toString()}
+                uris={['spotify:artist:6HQYnRM4OzToCYPpVBInuU']} /> }
             <Header/>
             {favoritesError && <div>{favoritesError}</div>}
             <div className={"input-wrapper"}>

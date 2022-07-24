@@ -6,6 +6,7 @@ import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
+import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class UserFavoritesService {
 
         return userFavorites.getMovieIds().stream().map(movieDBApiConnect::getMovieById).toList();
     }
-    public void addMovieToFavorites(Integer movieId, String username) {
+    public UserFavoritesSaveObject addMovieToFavorites(Integer movieId, String username) {
 
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
 
@@ -49,7 +50,7 @@ public class UserFavoritesService {
                 }
         );
 
-        //return userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+        return userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
     }
     public Optional<UserFavoritesSaveObject> deleteMovieFromFavorites(int movieId, String username) {
         return myUserRepo.findByUsername(username)

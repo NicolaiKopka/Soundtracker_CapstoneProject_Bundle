@@ -14,8 +14,7 @@ export default function SpotifyPlaylistPage() {
     const [allPlaylistsObject, setAllPlaylistsObject] = useState<SpotifyUserPlaylists>()
 
     useEffect(() => {
-        getAllUserPlaylists()
-            .then(data => setAllPlaylistsObject(data))
+        updateUserPlaylists()
     }, [])
 
     useEffect(() => {
@@ -30,7 +29,13 @@ export default function SpotifyPlaylistPage() {
 
     function addPlaylist() {
         addSpotifyPlaylist(newPlaylistName, newPlaylistDescription, newPlaylistIsPublicStatus, newPlaylistIsCollaborativeStatus)
+            .then(updateUserPlaylists)
             .catch()
+    }
+
+    function updateUserPlaylists() {
+        getAllUserPlaylists()
+            .then(data => setAllPlaylistsObject(data))
     }
 
     const playlists = allPlaylistsObject?.items.map(playlist => <SpotifyPlaylistComponent key={playlist.name} playlist={playlist}/>)

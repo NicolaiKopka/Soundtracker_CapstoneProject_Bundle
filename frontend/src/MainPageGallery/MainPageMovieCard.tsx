@@ -1,7 +1,7 @@
 import {MovieItem} from "../models";
 import "./MainPageMovieCard.css"
 import {addMovieToFavorites, deleteMoviesFromFavorites, getStreamingDetails} from "../api_methods";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import 'react-slideshow-image/dist/styles.css';
 import altImage from "../images/page-not-found-ge8454dec1_1280.jpg"
 
@@ -19,15 +19,19 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     const [deezerStatus, setDeezerStatus] = useState(false)
     const [deezerLink, setDeezerLink] = useState("")
     const [favoriteStatus, setFavoriteStatus] = useState(false)
-
+    const [cardElement, setCardElement] = useState({} as HTMLDivElement)
+    const ref = useRef({} as HTMLDivElement);
 
     useEffect(() => {
+        setCardElement(ref.current)
+        console.log(cardElement)
         if (props.favoriteMovieIds.includes(props.movie.id)) {
             setFavoriteStatus(true)
         }
     }, [props.favoriteMovieIds, props.movie.id])
 
     function getMovieDetails() {
+        cardElement.classList.toggle("is-flipped")
         getStreamingDetails(props.movie.title)
             .then(data => {
                 setSpotifyStatus(data.streamingServiceStatus["spotify"])
@@ -50,29 +54,40 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
             .then(() => setFavoriteStatus(false))
             .then(() => props.getUserMovies())
             .catch()
+    }
 
+    function flipCard() {
+        cardElement.classList.toggle("is-flipped")
     }
 
     return (
         <div className={"card-wrapper"}>
             <div className={"movie-card"}>
-                {/* check undefined on Error. Should be fallback image*/}
-                <button className={"card-image"} onClick={getMovieDetails}><img
-                    src={props.movie.poster_path ? "https://image.tmdb.org/t/p/original" + props.movie.poster_path : altImage} alt={"movies"}
-                    onError={(ev) => {
-                        ev.currentTarget.onerror = null;
-                        ev.currentTarget.src = altImage
-                    }}/></button>
-                <div className={"card-title"}>
-                    {props.movie.title}
+                <div ref={ref} className={"card-inner"} >
+                    <div className={"card-face card-front"}>
+                        <button className={"card-image"} onClick={getMovieDetails}><img
+                            src={props.movie.poster_path ? "https://image.tmdb.org/t/p/original" + props.movie.poster_path : altImage} alt={"movies"}
+                            onError={(ev) => {
+                                ev.currentTarget.onerror = null;
+                                ev.currentTarget.src = altImage
+                            }}/></button>
+                        <div className={"card-title"}>
+                            {props.movie.title}
+                        </div>
+                        {favoriteStatus ?
+                            <button className={"favorites-button"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
+                            <button className={"favorites-button"} onClick={addToFavorites}>To Favorites</button>}
+                    </div>
+                    <div onClick={flipCard} className={"card-face card-back"}>
+                        {spotifyStatus ? <div className={"card-status"}><a href={spotifyLink}>Link to Spotify</a></div> :
+                            <div className={"card-status"}>Spotify not available</div>}
+                        {deezerStatus ? <div className={"card-status"}><a href={deezerLink}>Link to Deezer</a></div> :
+                            <div className={"card-status"}>Deezer not available</div>}
+                        {favoriteStatus ?
+                            <button className={"favorites-button"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
+                            <button className={"favorites-button"} onClick={addToFavorites}>To Favorites</button>}
+                    </div>
                 </div>
-                {spotifyStatus ? <div className={"card-status"}><a href={spotifyLink}>Link to Spotify</a></div> :
-                    <div className={"card-status"}>Spotify not available</div>}
-                {deezerStatus ? <div className={"card-status"}><a href={deezerLink}>Link to Deezer</a></div> :
-                    <div className={"card-status"}>Deezer not available</div>}
-                {favoriteStatus ?
-                    <button className={"favorites-button"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
-                    <button className={"favorites-button"} onClick={addToFavorites}>To Favorites</button>}
             </div>
         </div>
 

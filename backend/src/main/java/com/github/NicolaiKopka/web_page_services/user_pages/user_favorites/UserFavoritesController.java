@@ -50,13 +50,13 @@ public class UserFavoritesController {
     }
 
     @PutMapping("/{movieId}")
-    public ResponseEntity<Void> addMovieToFavorites(@PathVariable int movieId, Principal principal) {
+    public ResponseEntity<UserFavoritesDTO> addMovieToFavorites(@PathVariable int movieId, Principal principal) {
         try {
-            userFavoritesService.addMovieToFavorites(movieId, principal.getName());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-//            UserFavoritesSaveObject userFavorites = userFavoritesService.addMovieToFavorites(movieId, principal.getName());
-//            UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().movieIds(userFavorites.getMovieIds()).build();
-//            return ResponseEntity.ok(userFavoritesDTO);
+//            userFavoritesService.addMovieToFavorites(movieId, principal.getName());
+//            return ResponseEntity.status(HttpStatus.CREATED).build();
+            UserFavoritesSaveObject userFavorites = userFavoritesService.addMovieToFavorites(movieId, principal.getName());
+            UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().movieIds(userFavorites.getMovieIds()).build();
+            return ResponseEntity.ok(userFavoritesDTO);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
