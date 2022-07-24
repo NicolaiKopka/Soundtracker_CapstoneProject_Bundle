@@ -71,7 +71,7 @@ public class SpotifyApiConnect {
         return albumQuery.getAlbumQueryList().stream().map(spotifyAlbum -> {
             AlbumReferenceDTO albumReference = new AlbumReferenceDTO();
             albumReference.setMovieTitle(spotifyAlbum.getName());
-            albumReference.setSpotifyAlbumUrl(spotifyAlbum.getExternalURLs().getAlbumUrl());
+            albumReference.setAlbumUrl(spotifyAlbum.getExternalURLs().getAlbumUrl());
             albumReference.setSpotifyReleaseDate(spotifyAlbum.getReleaseDate());
             return albumReference;
         }).toList();

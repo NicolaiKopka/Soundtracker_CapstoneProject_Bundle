@@ -51,6 +51,6 @@ class DeezerApiConnectTest {
 
         AlbumReferenceDTO returnAlbum = deezerApiConnect.getAlbumById(1234, referenceAlbum);
 
-        Assertions.assertThat(returnAlbum.getDeezerAlbumUrl()).isEqualTo("link.com");
+        Assertions.assertThat(returnAlbum.getAlbumUrl()).isEqualTo("link.com");
     }
 }

@@ -4,22 +4,13 @@ import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
-import com.github.NicolaiKopka.db_models.deezerModels.DeezerAlbum;
-import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchData;
-import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchObject;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumExternalURLs;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -52,14 +43,14 @@ class MainPageServiceTest {
     @Test
     void shouldReturnStreamingStatusObjectWithKeySpotifySetToTrueAndLinkToAlbum() throws OAuthProblemException, OAuthSystemException {
         AlbumReferenceDTO album1 = AlbumReferenceDTO.builder().movieTitle("movieAlbum (Official Motion Picture Soundtrack")
-                .spotifyAlbumUrl("falseLink").build();
+                .albumUrl("falseLink").build();
         AlbumReferenceDTO album2 = AlbumReferenceDTO.builder().movieTitle("testMovie (Official Motion Picture Soundtrack")
-                .spotifyAlbumUrl("link.com").build();
+                .albumUrl("link.com").build();
 
         AlbumReferenceDTO album3 = AlbumReferenceDTO.builder().movieTitle("movieAlbum (Official Motion Picture Soundtrack")
-                .deezerAlbumId(1234).deezerAlbumUrl("falseLink.com").build();
+                .deezerAlbumId(1234).albumUrl("falseLink.com").build();
         AlbumReferenceDTO album4 = AlbumReferenceDTO.builder().movieTitle("testMovie (Official Motion Picture Soundtrack")
-                .deezerAlbumId(5678).deezerAlbumUrl("link.com").build();
+                .deezerAlbumId(5678).albumUrl("link.com").build();
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 

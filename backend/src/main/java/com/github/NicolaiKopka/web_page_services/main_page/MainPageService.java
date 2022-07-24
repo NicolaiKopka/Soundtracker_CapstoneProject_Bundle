@@ -41,7 +41,7 @@ public class MainPageService {
 
         checkForExactSoundtrack(albums, movieName).ifPresentOrElse(
                 album -> {
-                    String link = album.getSpotifyAlbumUrl();
+                    String link = album.getAlbumUrl();
                     streamingStatusDTO.getStreamingServiceStatus().put("spotify", true);
                     streamingStatusDTO.getAlbumLinks().put("spotify", link);
                 },
@@ -52,7 +52,7 @@ public class MainPageService {
 
         checkForExactSoundtrackOnDeezer(deezerAlbums, movieName).ifPresentOrElse(
                 album -> {
-                    String link = album.getDeezerAlbumUrl();
+                    String link = album.getAlbumUrl();
                     streamingStatusDTO.getStreamingServiceStatus().put("deezer", true);
                     streamingStatusDTO.getAlbumLinks().put("deezer", link);
                 },

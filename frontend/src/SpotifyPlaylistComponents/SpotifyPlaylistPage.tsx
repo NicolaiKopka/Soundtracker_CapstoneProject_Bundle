@@ -38,12 +38,16 @@ export default function SpotifyPlaylistPage() {
     return (
         <div>
             <form onSubmit={addPlaylist}>
-                <input placeholder={"name"} value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>
+                <input required={true} placeholder={"name"} value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>
                 <input placeholder={"description"} value={newPlaylistDescription} onChange={ev => setNewPlaylistDescription(ev.target.value)}/>
-                <label>Public: </label>
-                <input id={"publicStatus"} type={"checkbox"} checked={newPlaylistIsPublicStatus} disabled={publicStatusDisabled} onChange={ev => setNewPlaylistIsPublicStatus(ev.target.checked)}/>
-                <label>Collaborative: </label>
-                <input type={"checkbox"} checked={newPlaylistIsCollaborativeStatus} onChange={ev => setNewPlaylistIsCollaborativeStatus(ev.target.checked)}/>
+                {newPlaylistName !== "" &&
+                    <div>
+                        <label>Public: </label>
+                        <input id={"publicStatus"} type={"checkbox"} checked={newPlaylistIsPublicStatus} disabled={publicStatusDisabled} onChange={ev => setNewPlaylistIsPublicStatus(ev.target.checked)}/>
+                        <label>Collaborative: </label>
+                        <input type={"checkbox"} checked={newPlaylistIsCollaborativeStatus} onChange={ev => setNewPlaylistIsCollaborativeStatus(ev.target.checked)}/>
+                    </div>
+                }
                 <button type={"submit"}>Add New Playlist</button>
             </form>
             <div>

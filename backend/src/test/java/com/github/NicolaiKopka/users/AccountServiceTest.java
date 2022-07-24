@@ -2,7 +2,6 @@ package com.github.NicolaiKopka.users;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -97,6 +96,26 @@ class AccountServiceTest {
             fail();
         } catch (IllegalStateException e) {
             Assertions.assertThat(e.getMessage()).isEqualTo("Passwords are not matching");
+        }
+    }
+
+    @Test
+    void shouldThrowIfUsernameContainsIllegalCombinations() {
+        RegisterData newUser = RegisterData.builder().username("user(spotifyUser)")
+                .password("password")
+                .checkPassword("password")
+                .build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+
+        PasswordEncoder encoder = Mockito.mock(PasswordEncoder.class);
+
+        AccountService accountService = new AccountService(myUserRepo, encoder);
+        try{
+            accountService.registerUser(newUser);
+            fail();
+        } catch (IllegalStateException e) {
+            Assertions.assertThat(e.getMessage()).isEqualTo("Illegal username combination");
         }
     }
 

@@ -41,7 +41,7 @@ public class DeezerApiConnect {
             return null;
         }
 
-        currentAlbum.setDeezerAlbumUrl(deezerAlbum.getLink());
+        currentAlbum.setAlbumUrl(deezerAlbum.getLink());
         return currentAlbum;
     }
 

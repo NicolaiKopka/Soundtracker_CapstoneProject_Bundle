@@ -16,6 +16,9 @@ public class AccountService {
     private final PasswordEncoder encoder;
     public MyUser registerUser(RegisterData registerData) {
 
+        if(registerData.getUsername().contains("(spotifyUser)")){
+            throw new IllegalStateException("Illegal username combination");
+        }
         if(registerData.getUsername().isBlank() || registerData.getPassword().isBlank() || registerData.getCheckPassword().isBlank()  ||
                 registerData.getUsername() == null || registerData.getPassword() == null || registerData.getCheckPassword() == null) {
             throw new IllegalArgumentException("No empty fields allowed");

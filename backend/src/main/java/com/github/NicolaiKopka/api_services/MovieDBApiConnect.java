@@ -28,8 +28,7 @@ public class MovieDBApiConnect {
                 API_KEY + "&language=en-US&sort_by=popularity.desc";
 
         MovieList response = restTemplate.getForObject(discoverByPopularityEndpoint, MovieList.class);
-        List<Movie> movies = response.getResults().stream().toList();
-        return movies;
+        return response.getResults().stream().toList();
 
     }
 
