@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,6 +18,8 @@ public class AlbumReferenceDTO {
 
     // Spotify Reference
     private String spotifyReleaseDate;
+    private String spotifyAlbumId;
+    private List<String> spotifyAlbumTrackUrls;
     // Deezer Reference
     private long deezerAlbumId;
 

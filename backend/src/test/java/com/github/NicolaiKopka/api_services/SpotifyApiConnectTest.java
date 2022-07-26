@@ -1,8 +1,6 @@
 package com.github.NicolaiKopka.api_services;
 
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumQueryObject;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyFirstQueryObject;
+import com.github.NicolaiKopka.db_models.spotifyModels.*;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
@@ -16,6 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -133,5 +132,31 @@ class SpotifyApiConnectTest {
         } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage()).isEqualTo("A collaborative playlist list must be private");
         }
+    }
+
+    @Test
+    void shouldGetSpotifyAlbumById() {
+        SpotifyTrack track1 = new SpotifyTrack();
+        track1.setName("track1");
+        SpotifyTrack track2 = new SpotifyTrack();
+        track2.setName("track2");
+
+        SpotifyAlbum spotifyAlbum = new SpotifyAlbum();
+        spotifyAlbum.setTracks(new SpotifyMultiTracks(List.of(track1, track2)));
+
+        HttpHeaders header = new HttpHeaders();
+        header.set("Authorization", "Bearer 1234");
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        Mockito.when(restTemplate.exchange(
+                "https://api.spotify.com/v1/albums/5678",
+                HttpMethod.GET,
+                new HttpEntity<>(header),
+                SpotifyAlbum.class
+        )).thenReturn(ResponseEntity.of(Optional.of(spotifyAlbum)));
+
+        SpotifyApiConnect spotifyApiConnect = new SpotifyApiConnect(restTemplate, "test", "test");
+        List<SpotifyTrack> actual = spotifyApiConnect.getSpotifyAlbumTracksById("1234", "5678");
+
+        Assertions.assertThat(actual).contains(track1, track2);
     }
 }

@@ -17,5 +17,6 @@ public class StreamingStatusDTO {
     private String movieName;
     private Map<String, Boolean> streamingServiceStatus = new HashMap<>();
     private Map<String, String> albumLinks = new HashMap<>();
+    private Map<String, String> albumIds = new HashMap<>();
 
 }
