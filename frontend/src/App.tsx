@@ -9,6 +9,7 @@ import "./App.css"
 import SpotifyLoginRedirect from "./Register_Login/streamingLogin/SpotifyLoginRedirect";
 import SpotifyPlaylistPage from "./SpotifyPlaylistComponents/SpotifyPlaylistPage";
 import TrackList from "./Tracklist_Player/TrackList";
+import MyPlaylistsPage from "./PlaylistComponents/MyPlaylistsPage";
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
                     <Route path={"/logout"} element={<LogoutPage/>}/>
                     <Route path={"/favorites"} element={<UserFavoritesPage/>}/>
                     <Route path={"/spotify-redirect"} element={<SpotifyLoginRedirect/>} />
+                    <Route path={"/my-playlists"} element={<MyPlaylistsPage/>} />
                     <Route path={"/spotify-playlists"} element={<SpotifyPlaylistPage/>} />
                     <Route path={"/tracks/:id"} element={<TrackList/>} />
                 </Routes>

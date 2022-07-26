@@ -52,10 +52,6 @@ export default function MainPageGallery(props: AppProps) {
 
     return (
         <div className={"gallery-main"}>
-            {spotifyToken &&
-            <SpotifyPlayer
-                token={spotifyToken!.toString()}
-                uris={['spotify:artist:6HQYnRM4OzToCYPpVBInuU']} /> }
             <Header/>
             {favoritesError && <div>{favoritesError}</div>}
             <div className={"input-wrapper"}>
