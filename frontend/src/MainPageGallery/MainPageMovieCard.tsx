@@ -4,6 +4,7 @@ import {addMovieToFavorites, deleteMoviesFromFavorites, getStreamingDetails} fro
 import {useEffect, useRef, useState} from "react";
 import 'react-slideshow-image/dist/styles.css';
 import altImage from "../images/page-not-found-ge8454dec1_1280.jpg"
+import {NavLink} from "react-router-dom";
 
 
 interface MainPageGalleryProps {
@@ -15,9 +16,11 @@ interface MainPageGalleryProps {
 export default function MainPageMovieCard(props: MainPageGalleryProps) {
 
     const [spotifyStatus, setSpotifyStatus] = useState(false)
+    const [spotifyAlbumId, setSpotifyAlbumId] = useState("")
     const [spotifyLink, setSpotifyLink] = useState("")
     const [deezerStatus, setDeezerStatus] = useState(false)
     const [deezerLink, setDeezerLink] = useState("")
+    const [deezerAlbumId, setDeezerAlbumId] = useState("")
     const [favoriteStatus, setFavoriteStatus] = useState(false)
     const [cardElement, setCardElement] = useState({} as HTMLDivElement)
     const ref = useRef({} as HTMLDivElement);
@@ -36,8 +39,10 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
             .then(data => {
                 setSpotifyStatus(data.streamingServiceStatus["spotify"])
                 setSpotifyLink(data.albumLinks["spotify"])
+                setSpotifyAlbumId(data.albumIds["spotify"])
                 setDeezerStatus(data.streamingServiceStatus["deezer"])
                 setDeezerLink(data.albumLinks["deezer"])
+                setDeezerAlbumId(data.albumIds["deezer"])
             })
     }
 
@@ -79,7 +84,8 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
                             <button className={"favorites-button"} onClick={addToFavorites}>To Favorites</button>}
                     </div>
                     <div onClick={flipCard} className={"card-face card-back"}>
-                        {spotifyStatus ? <div className={"card-status"}><a href={spotifyLink}>Link to Spotify</a></div> :
+                        {spotifyStatus ? <div><div className={"card-status"}><a href={spotifyLink}>Link to Spotify</a></div>
+                                <div><NavLink to={`/tracks/${spotifyAlbumId}`}>To Track List</NavLink></div></div>:
                             <div className={"card-status"}>Spotify not available</div>}
                         {deezerStatus ? <div className={"card-status"}><a href={deezerLink}>Link to Deezer</a></div> :
                             <div className={"card-status"}>Deezer not available</div>}

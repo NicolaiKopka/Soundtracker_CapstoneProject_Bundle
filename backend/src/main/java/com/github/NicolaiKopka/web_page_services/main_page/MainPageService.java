@@ -4,11 +4,10 @@ import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
-import com.github.NicolaiKopka.db_models.deezerModels.DeezerAlbum;
-import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchData;
-import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchObject;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumDTO;
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
@@ -26,9 +25,7 @@ public class MainPageService {
 
     private final MovieDBApiConnect movieDBApiConnect;
     private final SpotifyApiConnect spotifyApiConnect;
-
     private final DeezerApiConnect deezerApiConnect;
-
     public List<Movie> getPopularMovies() {
         return movieDBApiConnect.getPopularMovies();
     }
@@ -44,6 +41,7 @@ public class MainPageService {
                     String link = album.getAlbumUrl();
                     streamingStatusDTO.getStreamingServiceStatus().put("spotify", true);
                     streamingStatusDTO.getAlbumLinks().put("spotify", link);
+                    streamingStatusDTO.getAlbumIds().put("spotify", album.getSpotifyAlbumId());
                 },
                 () -> streamingStatusDTO.getStreamingServiceStatus().put("spotify", false)
         );
@@ -55,11 +53,16 @@ public class MainPageService {
                     String link = album.getAlbumUrl();
                     streamingStatusDTO.getStreamingServiceStatus().put("deezer", true);
                     streamingStatusDTO.getAlbumLinks().put("deezer", link);
+                    streamingStatusDTO.getAlbumIds().put("deezer", String.valueOf(album.getDeezerAlbumId()));
                 },
                 () -> streamingStatusDTO.getStreamingServiceStatus().put("deezer", false)
         );
 
         return streamingStatusDTO;
+    }
+
+    public List<SpotifyTrack> getSpotifyAlbumTracksById(String token, String id) {
+       return spotifyApiConnect.getSpotifyAlbumTracksById(token, id);
     }
 
     private Optional<AlbumReferenceDTO> checkForExactSoundtrackOnDeezer(List<AlbumReferenceDTO> albumList, String movieName) {

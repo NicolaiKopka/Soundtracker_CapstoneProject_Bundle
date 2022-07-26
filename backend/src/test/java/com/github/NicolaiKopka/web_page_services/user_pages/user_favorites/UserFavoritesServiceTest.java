@@ -136,7 +136,6 @@ class UserFavoritesServiceTest {
 
         UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
         userFavoritesService.addMovieToFavorites(1, "user");
-
         Mockito.verify(userFavoritesRepo).save(expectedFavorites);
     }
 

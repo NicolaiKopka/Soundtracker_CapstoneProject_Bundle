@@ -5,6 +5,7 @@ import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -39,7 +40,6 @@ class MainPageServiceTest {
 
         Assertions.assertThat(actual).containsAll(expected);
     }
-
     @Test
     void shouldReturnStreamingStatusObjectWithKeySpotifySetToTrueAndLinkToAlbum() throws OAuthProblemException, OAuthSystemException {
         AlbumReferenceDTO album1 = AlbumReferenceDTO.builder().movieTitle("movieAlbum (Official Motion Picture Soundtrack")
@@ -73,7 +73,6 @@ class MainPageServiceTest {
         Assertions.assertThat(actual.getStreamingServiceStatus().get("deezer")).isEqualTo(true);
         Assertions.assertThat(actual.getAlbumLinks().get("deezer")).isEqualTo("link.com");
     }
-
     @Test
     void shouldReturnStreamingStatusObjectWithSpotifyStatusSetFalseIfNoMovieFound() throws OAuthProblemException, OAuthSystemException {
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
@@ -94,7 +93,6 @@ class MainPageServiceTest {
         Assertions.assertThat(actual.getMovieName()).isEqualTo("noMovie");
         Assertions.assertThat(actual.getStreamingServiceStatus().get("deezer")).isEqualTo(false);
     }
-
     @Test
     void shouldReturnListOfMoviesFromSearchQuery() {
         Movie movie1 = Movie.builder().title("movie1").build();
@@ -115,7 +113,6 @@ class MainPageServiceTest {
 
         Assertions.assertThat(actual).containsAll(expected);
     }
-
     @Test
     void shouldFailSearchQueryIfNoMoviesFound() {
         Movie movie1 = Movie.builder().title("movie1").build();
@@ -136,6 +133,26 @@ class MainPageServiceTest {
         } catch (RuntimeException e) {
             Assertions.assertThat(e.getMessage()).isEqualTo("No movies found");
         }
+    }
+
+    @Test
+    void shouldReturnListOfSpotifyTracks() {
+        SpotifyTrack track1 = new SpotifyTrack();
+        track1.setName("track1");
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+        Mockito.when(spotifyApiConnect.getSpotifyAlbumTracksById("1234", "5678"))
+                .thenReturn(List.of(track1));
+
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        MainPageService mainPageService = new MainPageService(movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
+
+        List<SpotifyTrack> actual = mainPageService.getSpotifyAlbumTracksById("1234", "5678");
+
+        Assertions.assertThat(actual).contains(track1);
     }
 
 }

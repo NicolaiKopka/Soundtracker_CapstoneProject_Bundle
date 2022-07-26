@@ -17,5 +17,7 @@ public class SpotifyAlbum {
     private String name;
     @JsonProperty("release_date")
     private String releaseDate;
+    private String id;
+    private SpotifyMultiTracks tracks;
 
 }

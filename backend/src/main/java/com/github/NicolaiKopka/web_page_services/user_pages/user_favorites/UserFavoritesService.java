@@ -37,20 +37,17 @@ public class UserFavoritesService {
 
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
 
-        userFavoritesRepo.findByUserId(user.getId()).ifPresentOrElse(
-                userFavorites -> {
-                    userFavorites.addMovieId(movieId);
-                    userFavoritesRepo.save(userFavorites);
-                },
+        UserFavoritesSaveObject favoritesSaveObject = userFavoritesRepo.findByUserId(user.getId()).orElseGet(
                 () -> {
                     UserFavoritesSaveObject userFavorites = new UserFavoritesSaveObject();
                     userFavorites.setUserId(user.getId());
-                    userFavorites.addMovieId(movieId);
-                    userFavoritesRepo.save(userFavorites);
+                    return userFavorites;
                 }
         );
 
-        return userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+        favoritesSaveObject.addMovieId(movieId);
+        return userFavoritesRepo.save(favoritesSaveObject);
+
     }
     public Optional<UserFavoritesSaveObject> deleteMovieFromFavorites(int movieId, String username) {
         return myUserRepo.findByUsername(username)

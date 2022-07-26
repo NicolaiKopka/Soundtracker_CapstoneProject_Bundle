@@ -3,7 +3,7 @@ import {
     LoginResponseDTO,
     MovieItem,
     RegisterUserDTO,
-    SpotifyLoginResponseDTO,
+    SpotifyLoginResponseDTO, SpotifyTrackDTO,
     SpotifyUserPlaylists,
     StreamingStatusDTO
 } from "./models";
@@ -11,22 +11,22 @@ import {
 
 
 export function getStarterPageMovies() {
-    return axios.get("api/soundtracker")
+    return axios.get("/api/soundtracker")
         .then((response: AxiosResponse<MovieItem[]>) => response.data)
 }
 
 export function getStreamingDetails(movieName: string) {
-    return axios.get("api/soundtracker/streaming/" + movieName)
+    return axios.get("/api/soundtracker/streaming/" + movieName)
         .then((response: AxiosResponse<StreamingStatusDTO>) => response.data)
 }
 
 export function searchForMovie(query: string) {
-    return axios.get("api/soundtracker/search/" + query)
+    return axios.get("/api/soundtracker/search/" + query)
         .then((response: AxiosResponse<MovieItem[]>) => response.data)
 }
 
 export function loginUser(username: string, password: string) {
-    return axios.post("api/soundtracker/accounts/login", {
+    return axios.post("/api/soundtracker/accounts/login", {
         username,
         password
     }).then((response: AxiosResponse<LoginResponseDTO>) => response.data)
@@ -34,7 +34,7 @@ export function loginUser(username: string, password: string) {
 }
 
 export function registerUser(username: string, password: string, checkPassword: string) {
-    return axios.post("api/soundtracker/accounts/register", {
+    return axios.post("/api/soundtracker/accounts/register", {
         username,
         password,
         checkPassword
@@ -42,7 +42,7 @@ export function registerUser(username: string, password: string, checkPassword: 
 }
 
 export function addMovieToFavorites(id: number) {
-    return axios.put("api/soundtracker/user-favorites/" + id, {}, {
+    return axios.put("/api/soundtracker/user-favorites/" + id, {}, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
@@ -50,7 +50,7 @@ export function addMovieToFavorites(id: number) {
 }
 
 export function getFavoriteUserMovies() {
-    return axios.get("api/soundtracker/user-favorites", {
+    return axios.get("/api/soundtracker/user-favorites", {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
@@ -58,7 +58,7 @@ export function getFavoriteUserMovies() {
 }
 
 export function deleteMoviesFromFavorites(id: number) {
-    return axios.delete("api/soundtracker/user-favorites/" + id, {
+    return axios.delete("/api/soundtracker/user-favorites/" + id, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
@@ -78,7 +78,7 @@ export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
 }
 
 export function getAllUserPlaylists() {
-    return axios.get("api/soundtracker/user-favorites/spotify-playlists/" + localStorage.getItem("spotify_jwt"), {
+    return axios.get("/api/soundtracker/user-favorites/spotify-playlists/" + localStorage.getItem("spotify_jwt"), {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
@@ -86,7 +86,7 @@ export function getAllUserPlaylists() {
 }
 
 export function addSpotifyPlaylist(name: string, description: string, isPublic: boolean, collaborative: boolean) {
-    return axios.post("api/soundtracker/user-favorites/spotify-playlists/add/" + localStorage.getItem("spotify_jwt"), {
+    return axios.post("/api/soundtracker/user-favorites/spotify-playlists/add/" + localStorage.getItem("spotify_jwt"), {
         name,
         description,
         public: isPublic,
@@ -96,4 +96,12 @@ export function addSpotifyPlaylist(name: string, description: string, isPublic: 
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
     })
+}
+
+export function getSpotifyAlbumById(id: string) {
+    return axios.get("/api/soundtracker/spotify/album/" + id + "/" + localStorage.getItem("spotify_jwt"), {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
 }

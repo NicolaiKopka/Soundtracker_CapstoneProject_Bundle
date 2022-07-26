@@ -1,8 +1,6 @@
 package com.github.NicolaiKopka.api_services;
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbum;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumQueryObject;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyFirstQueryObject;
+import com.github.NicolaiKopka.db_models.spotifyModels.*;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
@@ -19,8 +17,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,6 +73,7 @@ public class SpotifyApiConnect {
             albumReference.setMovieTitle(spotifyAlbum.getName());
             albumReference.setAlbumUrl(spotifyAlbum.getExternalURLs().getAlbumUrl());
             albumReference.setSpotifyReleaseDate(spotifyAlbum.getReleaseDate());
+            albumReference.setSpotifyAlbumId(spotifyAlbum.getId());
             return albumReference;
         }).toList();
 
@@ -87,6 +88,16 @@ public class SpotifyApiConnect {
                 new HttpEntity<>(createAuthBearerHeader(spotifyToken)),
                 SpotifyUserPlaylists.class);
         return allUserPlaylists.getBody();
+    }
+
+    public List<SpotifyTrack> getSpotifyAlbumTracksById(String spotifyToken, String id) {
+        String queryUrl = "https://api.spotify.com/v1/albums/" + id;
+        ResponseEntity<SpotifyAlbum> allAlbumTracks = restTemplate.exchange(
+                queryUrl,
+                HttpMethod.GET,
+                new HttpEntity<>(createAuthBearerHeader(spotifyToken)),
+                SpotifyAlbum.class);
+        return Objects.requireNonNull(allAlbumTracks.getBody()).getTracks().getItems();
     }
 
     public SpotifyPlaylist addSpotifyPlaylist(String spotifyToken, String userId, AddPlaylistTransferData data) {

@@ -21,6 +21,9 @@ export interface StreamingStatusDTO {
     albumLinks: {
         [key: string]: string
     }
+    albumIds: {
+        [key: string]: string
+    }
 }
 
 export interface RegisterUserDTO {
@@ -45,6 +48,14 @@ export interface SpotifyPlaylist {
     name: string
     href: string
 }
+
+export interface SpotifyTrackDTO {
+    name: string
+    url: string
+    id: string
+}
+
+
 
 // const o = {}
 // let keys = Object.keys(o)
