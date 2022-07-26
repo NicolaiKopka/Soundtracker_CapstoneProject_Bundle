@@ -20,14 +20,12 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     const [spotifyLink, setSpotifyLink] = useState("")
     const [deezerStatus, setDeezerStatus] = useState(false)
     const [deezerLink, setDeezerLink] = useState("")
-    const [deezerAlbumId, setDeezerAlbumId] = useState("")
     const [favoriteStatus, setFavoriteStatus] = useState(false)
     const [cardElement, setCardElement] = useState({} as HTMLDivElement)
     const ref = useRef({} as HTMLDivElement);
 
     useEffect(() => {
         setCardElement(ref.current)
-        console.log(cardElement)
         if (props.favoriteMovieIds.includes(props.movie.id)) {
             setFavoriteStatus(true)
         }
@@ -42,7 +40,6 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
                 setSpotifyAlbumId(data.albumIds["spotify"])
                 setDeezerStatus(data.streamingServiceStatus["deezer"])
                 setDeezerLink(data.albumLinks["deezer"])
-                setDeezerAlbumId(data.albumIds["deezer"])
             })
     }
 

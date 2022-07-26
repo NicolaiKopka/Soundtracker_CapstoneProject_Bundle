@@ -18,7 +18,7 @@ export default function TrackElement(props: TrackListProps) {
     return (
         <div>
             <div>
-                <a onClick={createPlayer}>{props.track.name}</a>
+                <button onClick={createPlayer}>{props.track.name}</button>
             </div>
             {playerState &&
             <SpotifyPlayer

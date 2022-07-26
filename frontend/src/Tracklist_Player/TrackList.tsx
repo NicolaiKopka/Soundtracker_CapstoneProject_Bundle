@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import {getSpotifyAlbumById} from "../api_methods";
 import {SpotifyTrackDTO} from "../models";
 import TrackElement from "./TrackElement";
-import SpotifyPlayer from "react-spotify-web-playback";
 
 
 export default function TrackList() {
@@ -16,7 +15,7 @@ export default function TrackList() {
         if(id) {
             getSpotifyAlbumById(id).then((data) => setTrackList(data))
         }
-    }, [])
+    }, [id])
 
     const trackElements = trackList.map(track => <TrackElement key={track.id} track={track}/>)
 
