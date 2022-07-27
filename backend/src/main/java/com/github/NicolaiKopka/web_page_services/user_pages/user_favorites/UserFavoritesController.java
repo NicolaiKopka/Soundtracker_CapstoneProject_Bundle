@@ -5,6 +5,7 @@ import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
+import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylistSendObject;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,21 @@ public class UserFavoritesController {
                     .userPlaylists(userFavorites.getUserPlaylists()).build();
             return ResponseEntity.ok(userFavoritesDTO);
         } catch (NoSuchElementException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/user-playlist/add-track")
+    public ResponseEntity<UserFavoritesDTO> addTrackToUserPlaylist(Principal principal, @RequestBody UserPlaylistSendObject sendObject) {
+        try {
+            UserFavoritesSaveObject userFavorites = userFavoritesService.addTrackToUserPlaylist(principal.getName(), sendObject);
+            UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder()
+                    .movieIds(userFavorites.getMovieIds())
+                    .userPlaylists(userFavorites.getUserPlaylists()).build();
+            return ResponseEntity.ok(userFavoritesDTO);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

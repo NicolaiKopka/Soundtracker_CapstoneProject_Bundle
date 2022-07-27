@@ -5,7 +5,6 @@ import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
 import Header from "../Header/Header";
 import {Slide} from 'react-slideshow-image';
-import SpotifyPlayer from 'react-spotify-web-playback';
 
 interface AppProps {
     setErrorMessage: Function
@@ -35,8 +34,6 @@ export default function MainPageGallery(props: AppProps) {
         return getFavoriteUserMovies()
             .then(data => setUserMovies(data))
     }
-
-    const spotifyToken = localStorage.getItem("spotify_jwt")
 
     const userMoviesIds = userMovies.map(movie => movie.id)
 
