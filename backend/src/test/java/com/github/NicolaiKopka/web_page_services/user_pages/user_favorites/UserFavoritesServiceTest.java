@@ -6,15 +6,16 @@ import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
+import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylist;
+import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylistSendObject;
 import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -132,6 +133,7 @@ class UserFavoritesServiceTest {
         UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder()
                 .userId("1234")
                 .movieIds(List.of(1))
+                .userPlaylists(new HashMap<>())
                 .build();
 
         UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
@@ -167,7 +169,10 @@ class UserFavoritesServiceTest {
         favoritesObject.addMovieId(12);
         favoritesObject.addMovieId(13);
         favoritesObject.addMovieId(14);
-        UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder().movieIds(List.of(12, 14)).build();
+        UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder()
+                .movieIds(List.of(12, 14))
+                .userPlaylists(new HashMap<>())
+                .build();
 
         MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
         Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
@@ -243,5 +248,177 @@ class UserFavoritesServiceTest {
         SpotifyPlaylist actual = userFavoritesService.addSpotifyPlaylist("1234", "testUser", data);
 
         Assertions.assertThat(actual).isEqualTo(spotifyPlaylist);
+    }
+
+    @Test
+    void shouldCreateNewUserPlaylist() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        UserPlaylist userPlaylist = new UserPlaylist();
+        userPlaylist.setPlaylistName("newPlaylist");
+
+        Map<String, UserPlaylist> newPlaylist = new HashMap<>();
+        newPlaylist.put("newPlaylist", userPlaylist);
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().id("userId")
+                .userPlaylists(new HashMap<>())
+                .build();
+        UserFavoritesSaveObject expected = UserFavoritesSaveObject.builder().id("userId")
+                .userPlaylists(newPlaylist)
+                .build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        userFavoritesService.createNewUserPlaylist("testUser", "newPlaylist");
+
+        Mockito.verify(userFavoritesRepo).save(expected);
+    }
+
+    @Test
+    void shouldThrowIfUserPlaylistNameExistsOnCreation() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        UserPlaylist userPlaylist = new UserPlaylist();
+        userPlaylist.setPlaylistName("newPlaylist");
+
+        Map<String, UserPlaylist> newPlaylist = new HashMap<>();
+        newPlaylist.put("newPlaylist", userPlaylist);
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().id("userId")
+                .userPlaylists(newPlaylist)
+                .build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+
+        Assertions.assertThatThrownBy(() -> userFavoritesService.createNewUserPlaylist("testUser", "newPlaylist"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Playlist already exists");
+    }
+
+    @Test
+    void shouldCreatePlaylistAndAddTracks() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        UserPlaylistSendObject sendObject = UserPlaylistSendObject.builder()
+                .playlistName("playlist1")
+                .spotifyTrackId("1234")
+                .deezerTrackId("5678").build();
+
+        UserFavoritesSaveObject expected = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(Map.of("playlist1",
+                        new UserPlaylist(
+                                "playlist1",
+                                List.of("1234"),
+                                List.of("5678")
+                        ))).build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(new HashMap<>())
+                .build();
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+
+        userFavoritesService.addTrackToUserPlaylist("testUser", sendObject);
+
+        Mockito.verify(userFavoritesRepo).save(expected);
+    }
+
+    @Test
+    void shouldAddTracksToExistingPlaylist() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        UserPlaylistSendObject sendObject = UserPlaylistSendObject.builder()
+                .playlistName("playlist1")
+                .spotifyTrackId("1234")
+                .deezerTrackId("5678").build();
+
+        UserFavoritesSaveObject expected = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(Map.of("playlist1",
+                        new UserPlaylist(
+                                "playlist1",
+                                List.of("1234"),
+                                List.of("5678")
+                        ))).build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(Map.of("playlist1",
+                        new UserPlaylist("playlist1", new ArrayList<>(), new ArrayList<>())))
+                .build();
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+
+        userFavoritesService.addTrackToUserPlaylist("testUser", sendObject);
+
+        Mockito.verify(userFavoritesRepo).save(expected);
+    }
+
+    @Test
+    void shouldThrowIfTracksAlreadyExistInUserPlaylist() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        UserPlaylistSendObject sendObject = UserPlaylistSendObject.builder()
+                .playlistName("playlist1")
+                .spotifyTrackId("1234")
+                .deezerTrackId("5678").build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(Map.of("playlist1",
+                        new UserPlaylist("playlist1", List.of("1234"), List.of("5678"))))
+                .build();
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+
+        Assertions.assertThatThrownBy(() -> userFavoritesService.addTrackToUserPlaylist("testUser", sendObject))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Track already in playlist");
     }
 }

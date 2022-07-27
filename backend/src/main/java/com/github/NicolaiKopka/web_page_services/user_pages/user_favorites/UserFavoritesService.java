@@ -6,6 +6,7 @@ import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
+import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylistSendObject;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
@@ -66,5 +67,23 @@ public class UserFavoritesService {
 
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
         return spotifyApiConnect.addSpotifyPlaylist(spotifyToken, user.getSpotifyId(), data);
+    }
+
+    public UserFavoritesSaveObject createNewUserPlaylist(String username, String playlistName) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+
+        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+
+        favoritesObject.createNewUserPlaylist(playlistName);
+        return userFavoritesRepo.save(favoritesObject);
+    }
+
+    public UserFavoritesSaveObject addTrackToUserPlaylist(String username, UserPlaylistSendObject sendObject) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+
+        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+
+        favoritesObject.addTrackToPlaylist(sendObject);
+        return userFavoritesRepo.save(favoritesObject);
     }
 }
