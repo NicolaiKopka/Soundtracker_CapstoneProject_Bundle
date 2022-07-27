@@ -1,19 +1,18 @@
 package com.github.NicolaiKopka.db_models.userPlaylistModels;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPlaylistSendObject {
+public class UserPlaylist {
 
     private String playlistName;
-    private String spotifyTrackId;
-    private String deezerTrackId;
-
+    private List<String> spotifyTrackIds = new ArrayList<>();
+    private List<String> deezerTrackIds = new ArrayList<>();
 }

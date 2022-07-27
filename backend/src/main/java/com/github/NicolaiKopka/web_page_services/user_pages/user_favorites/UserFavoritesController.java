@@ -9,6 +9,7 @@ import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -45,6 +46,19 @@ public class UserFavoritesController {
         try {
             return ResponseEntity.ok(userFavoritesService.addSpotifyPlaylist(spotifyToken, principal.getName(), data));
         } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/create-user-playlist/{playlistName}")
+    public ResponseEntity<UserFavoritesDTO> createNewUserPlaylist(Principal principal, @PathVariable String playlistName) {
+        try {
+            UserFavoritesSaveObject userFavorites = userFavoritesService.createNewUserPlaylist(principal.getName(), playlistName);
+            UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder()
+                    .movieIds(userFavorites.getMovieIds())
+                    .userPlaylists(userFavorites.getUserPlaylists()).build();
+            return ResponseEntity.ok(userFavoritesDTO);
+        } catch (NoSuchElementException | IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
