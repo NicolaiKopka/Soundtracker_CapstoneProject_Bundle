@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {SpotifyUserPlaylists} from "../models";
-import {addSpotifyPlaylist, getAllUserPlaylists} from "../api_methods";
+import {addSpotifyPlaylist, getAllUserSpotifyPlaylists} from "../api_methods";
 import SpotifyPlaylistComponent from "./SpotifyPlaylistComponent";
 
 
@@ -34,7 +34,7 @@ export default function SpotifyPlaylistPage() {
     }
 
     function updateUserPlaylists() {
-        getAllUserPlaylists()
+        getAllUserSpotifyPlaylists()
             .then(data => setAllPlaylistsObject(data))
     }
 

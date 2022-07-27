@@ -55,6 +55,20 @@ export interface SpotifyTrackDTO {
     id: string
 }
 
+export interface UserFavoritesDTO {
+    movieIds: Array<number>
+    userPlaylists: {
+        [key: string]: UserPlaylist
+    }
+}
+
+export interface UserPlaylist {
+    playlistName: string
+    spotifyTrackIds: Array<number>
+    deezerTrackIds: Array<number>
+}
+
+
 
 
 // const o = {}

@@ -32,6 +32,17 @@ public class UserFavoritesController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    //potential conflict
+    @GetMapping("/all-user-playlists")
+    public ResponseEntity<UserFavoritesDTO> getAllUserPlaylists(Principal principal) {
+        try {
+            UserFavoritesSaveObject favoritesObject = userFavoritesService.getAllUserPlaylists(principal.getName());
+            UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().userPlaylists(favoritesObject.getUserPlaylists()).build();
+            return ResponseEntity.ok(userFavoritesDTO);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
     @GetMapping("/spotify-playlists/{spotifyToken}")
     public ResponseEntity<SpotifyUserPlaylists> getAllSpotifyPlaylistsFromUser(Principal principal, @PathVariable String spotifyToken) {

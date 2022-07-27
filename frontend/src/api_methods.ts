@@ -5,7 +5,7 @@ import {
     RegisterUserDTO,
     SpotifyLoginResponseDTO, SpotifyTrackDTO,
     SpotifyUserPlaylists,
-    StreamingStatusDTO
+    StreamingStatusDTO, UserFavoritesDTO
 } from "./models";
 
 
@@ -77,7 +77,7 @@ export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
         .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
 }
 
-export function getAllUserPlaylists() {
+export function getAllUserSpotifyPlaylists() {
     return axios.get("/api/soundtracker/user-favorites/spotify-playlists/" + localStorage.getItem("spotify_jwt"), {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
@@ -104,4 +104,12 @@ export function getSpotifyAlbumById(id: string) {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
     }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
+}
+
+export function getAllUserPlaylists() {
+    return axios.get("/api/soundtracker/user-favorites/all-user-playlists", {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<UserFavoritesDTO>) => response.data)
 }
