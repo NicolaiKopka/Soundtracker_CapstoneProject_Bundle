@@ -90,7 +90,6 @@ public class UserFavoritesController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
     }
 
     @DeleteMapping("/{movieId}")
@@ -102,5 +101,30 @@ public class UserFavoritesController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @DeleteMapping("/user-playlist/delete-track")
+    public ResponseEntity<UserFavoritesDTO> removeTrackFromPlaylist(Principal principal, @RequestBody UserPlaylistSendObject sendObject) {
+        try{
+            UserFavoritesSaveObject favoritesSaveObject = userFavoritesService.removeTrackFromPlaylist(principal.getName(), sendObject);
+            UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().userPlaylists(favoritesSaveObject.getUserPlaylists())
+                    .movieIds(favoritesSaveObject.getMovieIds()).build();
+            return ResponseEntity.ok(userFavoritesDTO);
+        } catch (NoSuchElementException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("/user-playlist/{playlistName}")
+    public ResponseEntity<UserFavoritesDTO> removeUserPlaylist(Principal principal, @PathVariable String playlistName) {
+        try{
+            UserFavoritesSaveObject favoritesSaveObject = userFavoritesService.removeUserPlaylist(principal.getName(), playlistName);
+            UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().movieIds(favoritesSaveObject.getMovieIds())
+                    .userPlaylists(favoritesSaveObject.getUserPlaylists()).build();
+            return ResponseEntity.ok(userFavoritesDTO);
+        } catch (NoSuchElementException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
 }

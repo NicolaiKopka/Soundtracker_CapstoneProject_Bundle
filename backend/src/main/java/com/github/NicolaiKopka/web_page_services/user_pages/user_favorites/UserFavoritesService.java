@@ -86,4 +86,22 @@ public class UserFavoritesService {
         favoritesObject.addTrackToPlaylist(sendObject);
         return userFavoritesRepo.save(favoritesObject);
     }
+
+    public UserFavoritesSaveObject removeTrackFromPlaylist(String username, UserPlaylistSendObject sendObject) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+
+        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+
+        favoritesObject.removeTrackFromPlaylist(sendObject);
+        return userFavoritesRepo.save(favoritesObject);
+    }
+
+    public UserFavoritesSaveObject removeUserPlaylist(String username, String playlistName) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+
+        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+
+        favoritesObject.removeUserPlaylist(playlistName);
+        return userFavoritesRepo.save(favoritesObject);
+    }
 }
