@@ -1,23 +1,25 @@
 import {NavLink} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {getAllUserPlaylists} from "../api_methods";
-import {UserPlaylist} from "../models";
+import UserPlaylistElement from "./UserPlaylistElement";
 
 export default function MyPlaylistsPage() {
     const [userPlaylists, setUserPlaylists] = useState({})
 
-    useEffect(() => {
+    const refreshPlaylists = useCallback(() => {
         getAllUserPlaylists().then(data => setUserPlaylists(data.userPlaylists))
     }, [])
+
+    useEffect(() => {
+        refreshPlaylists()
+    }, [refreshPlaylists])
 
     const playlists = Object.keys(userPlaylists)
 
     return (
         <div>
             My Playlists
-            <select>
-                {playlists.map(key => <option value={key}>{key}</option>)}
-            </select>
+            {playlists.map(key => <UserPlaylistElement refreshPlaylists={refreshPlaylists} userPlaylists={userPlaylists} playlistKey={key}/>)}
 
             {localStorage.getItem("spotify_jwt") &&
             <NavLink to={"/spotify-playlists"}><button>Show My Spotify Playlists</button></NavLink>}

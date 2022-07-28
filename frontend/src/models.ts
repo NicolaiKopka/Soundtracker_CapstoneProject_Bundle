@@ -57,15 +57,17 @@ export interface SpotifyTrackDTO {
 
 export interface UserFavoritesDTO {
     movieIds: Array<number>
-    userPlaylists: {
-        [key: string]: UserPlaylist
-    }
+    userPlaylists: UserPlaylistMap
+}
+
+export interface UserPlaylistMap {
+    [key: string]: UserPlaylist
 }
 
 export interface UserPlaylist {
     playlistName: string
-    spotifyTrackIds: Array<number>
-    deezerTrackIds: Array<number>
+    spotifyTrackIds: Array<string>
+    deezerTrackIds: Array<string>
 }
 
 

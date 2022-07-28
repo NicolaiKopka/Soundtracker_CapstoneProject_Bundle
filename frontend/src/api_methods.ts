@@ -113,3 +113,44 @@ export function getAllUserPlaylists() {
         }
     }).then((response: AxiosResponse<UserFavoritesDTO>) => response.data)
 }
+
+export function addTrackToUserPlaylist(playlistName:string, spotifyTrackId:string, deezerTrackId:string) {
+    return axios.post("/api/soundtracker/user-favorites/user-playlist/add-track", {
+        playlistName,
+        spotifyTrackId,
+        deezerTrackId
+    }, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+
+export function deleteTrackFromUserPlaylist(playlistName:string, spotifyTrackId:string, deezerTrackId:string) {
+    return axios.delete("/api/soundtracker/user-favorites/user-playlist/delete-track", {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }, data: {
+            playlistName,
+            spotifyTrackId,
+            deezerTrackId
+        }
+    }).then(response => response.data)
+}
+
+export function createNewUserPlaylist(playlistName: string) {
+   return axios.post(`/api/soundtracker/user-favorites/create-user-playlist/${playlistName}`, {}, {
+       headers: {
+           Authorization: "Bearer " + localStorage.getItem("jwt")
+       }
+   }).then(response => response.data)
+}
+
+export function deleteUserPlaylist(playlistName: string) {
+    return axios.delete(`/api/soundtracker/user-favorites/user-playlist/${playlistName}`, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+
