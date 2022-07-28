@@ -58,4 +58,23 @@ public class UserFavoritesSaveObject {
         currentPlaylist.getSpotifyTrackIds().add(sendObject.getSpotifyTrackId());
         currentPlaylist.getDeezerTrackIds().add(sendObject.getDeezerTrackId());
     }
+
+    public void removeTrackFromPlaylist(UserPlaylistSendObject sendObject) {
+        UserPlaylist currentPlaylist = userPlaylists.get(sendObject.getPlaylistName());
+
+        if(currentPlaylist == null) {
+            throw new IllegalArgumentException("Playlist not found");
+        }
+
+        currentPlaylist.getSpotifyTrackIds().remove(sendObject.getSpotifyTrackId());
+        currentPlaylist.getDeezerTrackIds().remove(sendObject.getDeezerTrackId());
+    }
+
+    public void removeUserPlaylist(String playlistName) {
+        if(userPlaylists.containsKey(playlistName)) {
+            userPlaylists.remove(playlistName);
+        } else {
+            throw new IllegalArgumentException("No Playlist found with this name");
+        }
+    }
 }
