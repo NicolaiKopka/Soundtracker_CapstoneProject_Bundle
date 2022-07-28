@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {UserPlaylistMap} from "../models";
 import {deleteUserPlaylist} from "../api_methods";
 
