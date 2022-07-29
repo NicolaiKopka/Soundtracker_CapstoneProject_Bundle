@@ -38,7 +38,7 @@ export default function LoginPage(props: AppProps) {
                     <button className={"login-button"} type={"submit"}>Login</button>
                 </form>
                 {/*<button onClick={spotifyLogin}>Login with Spotify</button>*/}
-                <a href={`https://accounts.spotify.com/authorize?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723&scope=streaming user-read-playback-state user-read-private user-modify-playback-state user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=${process.env.REACT_APP_CALLBACK_URL}`}>Login With Spotify</a>
+                <a href={`https://accounts.spotify.com/authorize?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723&scope=streaming user-read-playback-state user-read-private user-modify-playback-state user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=${process.env.SPOTIFY_CALLBACK_URI}`}>Login With Spotify</a>
             </div>
         </div>
     )
