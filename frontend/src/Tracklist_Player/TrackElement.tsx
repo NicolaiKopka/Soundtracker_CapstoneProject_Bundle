@@ -1,5 +1,5 @@
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
-import SpotifyPlayer from "react-spotify-web-playback";
+import Spotify from "react-spotify-embed";
 import {useEffect, useState} from "react";
 import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
 
@@ -13,7 +13,7 @@ interface TrackListProps {
 export default function TrackElement(props: TrackListProps) {
 
     const [currentKey, setCurrentKey] = useState("")
-    const [playerState, setPlayerState] = useState(false)
+    // const [playerState, setPlayerState] = useState(false)
     // const [userPlaylists, setUserPlaylists] = useState({} as UserPlaylistMap)
     // const [alreadyAdded, setAlreadyAdded] = useState(false)
 
@@ -30,9 +30,9 @@ export default function TrackElement(props: TrackListProps) {
     //     }
     // },[])
 
-    function createPlayer() {
-        setPlayerState(true)
-    }
+    // function createPlayer() {
+    //     setPlayerState(true)
+    // }
 
     function addToPlaylist() {
         if(currentKey === "New Playlist") {
@@ -53,14 +53,15 @@ export default function TrackElement(props: TrackListProps) {
     return (
         <div>
             <div>
-                <button onClick={createPlayer}>{props.track.name}</button>
+                {/*<button onClick={createPlayer}>{props.track.name}</button>*/}
                 <button onClick={addToPlaylist}>add</button>
                 <button onClick={deleteFromPlaylist}>delete</button>
             </div>
-            {playerState &&
-            <SpotifyPlayer
-                token={localStorage.getItem("spotify_jwt")!.toString()}
-                uris={[`spotify:track:${props.track.id}`]}/>}
+            <Spotify wide link={props.track.url}/>
+            {/*{playerState &&*/}
+            {/*<SpotifyPlayer*/}
+            {/*    token={localStorage.getItem("spotify_jwt")!.toString()}*/}
+            {/*    uris={[`spotify:track:${props.track.id}`]}/>}*/}
         </div>
     )
 }
