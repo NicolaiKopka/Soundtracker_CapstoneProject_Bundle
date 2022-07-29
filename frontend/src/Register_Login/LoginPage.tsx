@@ -34,7 +34,7 @@ export default function LoginPage(props: AppProps) {
             <div className={"login-form"}>
                 <form onSubmit={login}>
                     <input className={"form-items"} value={username} placeholder={"username"} onChange={ev => setUsername(ev.target.value)}/>
-                    <input className={"form-items"} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
+                    <input type={"password"} className={"form-items"} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
                     <button className={"login-button"} type={"submit"}>Login</button>
                 </form>
                 {/*<button onClick={spotifyLogin}>Login with Spotify</button>*/}
