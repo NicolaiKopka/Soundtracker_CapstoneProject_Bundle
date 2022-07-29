@@ -1,5 +1,6 @@
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import SpotifyPlayer from "react-spotify-web-playback";
+import Spotify from "react-spotify-embed";
 import {useEffect, useState} from "react";
 import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
 
@@ -57,10 +58,11 @@ export default function TrackElement(props: TrackListProps) {
                 <button onClick={addToPlaylist}>add</button>
                 <button onClick={deleteFromPlaylist}>delete</button>
             </div>
-            {playerState &&
-            <SpotifyPlayer
-                token={localStorage.getItem("spotify_jwt")!.toString()}
-                uris={[`spotify:track:${props.track.id}`]}/>}
+            <Spotify wide link={props.track.url}/>
+            {/*{playerState &&*/}
+            {/*<SpotifyPlayer*/}
+            {/*    token={localStorage.getItem("spotify_jwt")!.toString()}*/}
+            {/*    uris={[`spotify:track:${props.track.id}`]}/>}*/}
         </div>
     )
 }
