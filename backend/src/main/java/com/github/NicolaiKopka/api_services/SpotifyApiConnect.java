@@ -1,6 +1,7 @@
 package com.github.NicolaiKopka.api_services;
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.*;
+import com.github.NicolaiKopka.db_models.spotifyModels.authenticationModels.SpotifyOAuthResponse;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
@@ -17,6 +18,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -39,15 +42,32 @@ public class SpotifyApiConnect {
 
     public String getAccessToken() throws OAuthSystemException, OAuthProblemException {
 
-        OAuthClientRequest clientReqAccessToken = OAuthClientRequest
-                .tokenLocation("https://accounts.spotify.com/api/token")
-                .setGrantType(GrantType.CLIENT_CREDENTIALS).setClientId(SPOTIFY_ID).setClientSecret(SPOTIFY_SECRET)
-                .buildBodyMessage();
+//        OAuthClientRequest clientReqAccessToken = OAuthClientRequest
+//                .tokenLocation("https://accounts.spotify.com/api/token")
+//                .setGrantType(GrantType.CLIENT_CREDENTIALS).setClientId(SPOTIFY_ID).setClientSecret(SPOTIFY_SECRET)
+//                .buildBodyMessage();
+//
+//        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+//        OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(clientReqAccessToken);
+//
+//        return oAuthResponse.getAccessToken();
 
-        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-        OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(clientReqAccessToken);
-
-        return oAuthResponse.getAccessToken();
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "client_credentials");
+        HttpHeaders headers = createTokenHeaders();
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<SpotifyOAuthResponse> accessTokenResponse = restTemplate.exchange(
+                "https://accounts.spotify.com/api/token",
+                HttpMethod.POST,
+                request,
+                SpotifyOAuthResponse.class
+        );
+        return accessTokenResponse.getBody().getAccessToken();
+    }
+    HttpHeaders createTokenHeaders(){
+        HttpHeaders header = new HttpHeaders();
+        header.setBasicAuth(SPOTIFY_ID ,SPOTIFY_SECRET);
+        return header;
     }
 
     // TODO find a way to check if correct movie is returned, including netflix

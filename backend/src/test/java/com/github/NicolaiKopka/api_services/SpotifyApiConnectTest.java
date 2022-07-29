@@ -1,6 +1,8 @@
 package com.github.NicolaiKopka.api_services;
 
+import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.*;
+import com.github.NicolaiKopka.db_models.spotifyModels.authenticationModels.SpotifyOAuthResponse;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
@@ -14,6 +16,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,36 +28,53 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SpotifyApiConnectTest {
 
-//    @Test
-//    void shouldReturnListOfSoundtrackAlbums() throws OAuthProblemException, OAuthSystemException {
-//        SpotifyAlbum spotifyAlbum1 = new SpotifyAlbum();
-//        spotifyAlbum1.setName("album1");
-//
-//        SpotifyAlbum spotifyAlbum2 = new SpotifyAlbum();
-//        spotifyAlbum2.setName("album2");
-//
-//        SpotifyAlbumQueryObject spotifyAlbumQueryObject = new SpotifyAlbumQueryObject();
-//        spotifyAlbumQueryObject.setAlbumQueryList(List.of(spotifyAlbum1, spotifyAlbum2));
-//
-//        SpotifyFirstQueryObject spotifyFirstQueryObject = new SpotifyFirstQueryObject();
-//        spotifyFirstQueryObject.setAlbums(spotifyAlbumQueryObject);
-//
-//
-//        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-//        HttpHeaders header = new HttpHeaders();
-//        header.set("Authorization", "Bearer accessToken");
-//        Mockito.when(restTemplate.exchange("https://api.spotify.com/v1/search?q=searchAlbum&type=album",
-//                HttpMethod.GET,
-//                new HttpEntity<>(header),
-//                SpotifyFirstQueryObject.class)).thenReturn(ResponseEntity.of(Optional.of(spotifyFirstQueryObject)));
-//
-//        SpotifyApiConnect spotifyApiConnect = new SpotifyApiConnect(restTemplate, "testId", "testSecret");
-//        Mockito.when(spotifyApiConnect.getAccessToken()).thenReturn("accessToken");
-//
-//        List<SpotifyAlbum> actual = spotifyApiConnect.getSpotifyListOfMovieAlbums("searchAlbum");
-//
-//        Assertions.assertThat(actual).contains(spotifyAlbum1, spotifyAlbum2);
-//}
+    @Test
+    void shouldReturnListOfSoundtrackAlbums() throws OAuthProblemException, OAuthSystemException {
+        SpotifyAlbum spotifyAlbum1 = new SpotifyAlbum();
+        spotifyAlbum1.setId("album1");
+        spotifyAlbum1.setExternalURLs(new SpotifyAlbumExternalURLs());
+
+        SpotifyAlbum spotifyAlbum2 = new SpotifyAlbum();
+        spotifyAlbum2.setId("album2");
+        spotifyAlbum2.setExternalURLs(new SpotifyAlbumExternalURLs());
+
+        SpotifyAlbumQueryObject spotifyAlbumQueryObject = new SpotifyAlbumQueryObject();
+        spotifyAlbumQueryObject.setAlbumQueryList(List.of(spotifyAlbum1, spotifyAlbum2));
+
+        SpotifyFirstQueryObject spotifyFirstQueryObject = new SpotifyFirstQueryObject();
+        spotifyFirstQueryObject.setAlbums(spotifyAlbumQueryObject);
+
+
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        HttpHeaders header = new HttpHeaders();
+        header.set("Authorization", "Bearer accessToken");
+        Mockito.when(restTemplate.exchange("https://api.spotify.com/v1/search?q=searchAlbum&type=album",
+                HttpMethod.GET,
+                new HttpEntity<>(header),
+                SpotifyFirstQueryObject.class)).thenReturn(ResponseEntity.of(Optional.of(spotifyFirstQueryObject)));
+
+        SpotifyApiConnect spotifyApiConnect = new SpotifyApiConnect(restTemplate, "testId", "testSecret");
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "client_credentials");
+        HttpHeaders accessHeader = new HttpHeaders();
+        accessHeader.setBasicAuth("testId", "testSecret");
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, accessHeader);
+
+        SpotifyOAuthResponse response = new SpotifyOAuthResponse();
+        response.setAccessToken("accessToken");
+
+        Mockito.when(restTemplate.exchange("https://accounts.spotify.com/api/token",
+                HttpMethod.POST,
+                request,
+                SpotifyOAuthResponse.class
+                )).thenReturn(ResponseEntity.of(Optional.of(response)));
+
+        List<AlbumReferenceDTO> actual = spotifyApiConnect.getSpotifyListOfMovieAlbums("searchAlbum");
+
+        Assertions.assertThat(actual.get(0).getSpotifyAlbumId()).isEqualTo("album1");
+        Assertions.assertThat(actual.get(1).getSpotifyAlbumId()).isEqualTo("album2");
+}
 
     @Test
     void shouldReturnAllSpotifyPlaylistsObjectByUser() {
