@@ -5,7 +5,7 @@ import {
     RegisterUserDTO,
     SpotifyLoginResponseDTO, SpotifyTrackDTO,
     SpotifyUserPlaylists,
-    StreamingStatusDTO
+    StreamingStatusDTO, UserFavoritesDTO
 } from "./models";
 
 
@@ -77,7 +77,7 @@ export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
         .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
 }
 
-export function getAllUserPlaylists() {
+export function getAllUserSpotifyPlaylists() {
     return axios.get("/api/soundtracker/user-favorites/spotify-playlists/" + localStorage.getItem("spotify_jwt"), {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
@@ -105,3 +105,52 @@ export function getSpotifyAlbumById(id: string) {
         }
     }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
 }
+
+export function getAllUserPlaylists() {
+    return axios.get("/api/soundtracker/user-favorites/all-user-playlists", {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<UserFavoritesDTO>) => response.data)
+}
+
+export function addTrackToUserPlaylist(playlistName:string, spotifyTrackId:string, deezerTrackId:string) {
+    return axios.post("/api/soundtracker/user-favorites/user-playlist/add-track", {
+        playlistName,
+        spotifyTrackId,
+        deezerTrackId
+    }, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+
+export function deleteTrackFromUserPlaylist(playlistName:string, spotifyTrackId:string, deezerTrackId:string) {
+    return axios.delete("/api/soundtracker/user-favorites/user-playlist/delete-track", {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }, data: {
+            playlistName,
+            spotifyTrackId,
+            deezerTrackId
+        }
+    }).then(response => response.data)
+}
+
+export function createNewUserPlaylist(playlistName: string) {
+   return axios.post(`/api/soundtracker/user-favorites/create-user-playlist/${playlistName}`, {}, {
+       headers: {
+           Authorization: "Bearer " + localStorage.getItem("jwt")
+       }
+   }).then(response => response.data)
+}
+
+export function deleteUserPlaylist(playlistName: string) {
+    return axios.delete(`/api/soundtracker/user-favorites/user-playlist/${playlistName}`, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+

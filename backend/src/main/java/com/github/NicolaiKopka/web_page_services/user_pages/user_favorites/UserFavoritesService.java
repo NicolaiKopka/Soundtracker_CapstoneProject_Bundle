@@ -104,4 +104,10 @@ public class UserFavoritesService {
         favoritesObject.removeUserPlaylist(playlistName);
         return userFavoritesRepo.save(favoritesObject);
     }
+
+    public UserFavoritesSaveObject getAllUserPlaylists(String username) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+
+        return userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+    }
 }
