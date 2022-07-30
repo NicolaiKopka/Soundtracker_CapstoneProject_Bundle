@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @CrossOrigin
@@ -35,7 +37,7 @@ public class MainPageController {
         return mainPageService.getSoundtrackOnSpotify(movieName);
     }
     @GetMapping("/spotify/album/{id}/{token}")
-    public ResponseEntity<List<SpotifyTrackDTO>> getSpotifyAlbumById(@PathVariable String id, @PathVariable String token) {
+    public ResponseEntity<Collection<SpotifyTrackDTO>> getSpotifyAlbumById(@PathVariable String id, @PathVariable String token) {
         try {
             List<SpotifyTrack> spotifyAlbumTracksById = mainPageService.getSpotifyAlbumTracksById(token, id);
             List<SpotifyTrackDTO> spotifyTrackDTO = spotifyAlbumTracksById.stream().map(track -> {
@@ -50,9 +52,8 @@ public class MainPageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
     @GetMapping("/search/{query}")
-    public ResponseEntity getMoviesByQuery(@PathVariable String query) {
+    public ResponseEntity<?> getMoviesByQuery(@PathVariable String query) {
         try {
             return ResponseEntity.ok(mainPageService.getMoviesByQuery(query));
         } catch (RuntimeException e) {

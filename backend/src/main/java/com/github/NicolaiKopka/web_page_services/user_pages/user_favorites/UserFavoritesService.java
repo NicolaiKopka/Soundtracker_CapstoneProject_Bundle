@@ -72,7 +72,13 @@ public class UserFavoritesService {
     public UserFavoritesSaveObject createNewUserPlaylist(String username, String playlistName) {
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
 
-        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+        UserFavoritesSaveObject favoritesObject = userFavoritesRepo.findByUserId(user.getId()).orElseGet(
+                () -> {
+                    UserFavoritesSaveObject newFavorites = new UserFavoritesSaveObject();
+                    newFavorites.setUserId(user.getId());
+                    return newFavorites;
+                }
+        );
 
         favoritesObject.createNewUserPlaylist(playlistName);
         return userFavoritesRepo.save(favoritesObject);

@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("api/soundtracker/user-favorites")
+@RequestMapping("/api/soundtracker/user-favorites")
 @RequiredArgsConstructor
 public class UserFavoritesController {
 
