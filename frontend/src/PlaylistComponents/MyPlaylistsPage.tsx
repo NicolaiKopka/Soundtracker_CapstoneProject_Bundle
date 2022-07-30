@@ -2,6 +2,7 @@ import {NavLink} from "react-router-dom";
 import {useCallback, useEffect, useState} from "react";
 import {getAllUserPlaylists} from "../api_methods";
 import UserPlaylistElement from "./UserPlaylistElement";
+import Header from "../Header/Header";
 
 export default function MyPlaylistsPage() {
     const [userPlaylists, setUserPlaylists] = useState({})
@@ -18,6 +19,7 @@ export default function MyPlaylistsPage() {
 
     return (
         <div>
+            <Header/>
             My Playlists
             {playlists.map(key => <UserPlaylistElement refreshPlaylists={refreshPlaylists} userPlaylists={userPlaylists} playlistKey={key}/>)}
 

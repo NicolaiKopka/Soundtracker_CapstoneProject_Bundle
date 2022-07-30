@@ -24,9 +24,9 @@ export default function LoginPage(props: AppProps) {
             .catch(() => props.setErrorMessage("Oops, wrong credentials"))
     }
 
-    // function spotifyLogin() {
-    //     authorizeWithSpotify().catch()
-    // }
+    function throwAlert() {
+        alert("Spotify is currently in dev mode for this app. In order to login, your spotify email will have to be deposited in the current project. Contact for more information. If your mail is already deposited you can login.")
+    }
 
     return (
         <div className={"login-form-wrapper"}>
@@ -37,8 +37,8 @@ export default function LoginPage(props: AppProps) {
                     <input type={"password"} className={"form-items"} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
                     <button className={"login-button"} type={"submit"}>Login</button>
                 </form>
-                {/*<button onClick={spotifyLogin}>Login with Spotify</button>*/}
-                <a href={`https://accounts.spotify.com/authorize?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723&scope=streaming user-read-playback-state user-read-private user-modify-playback-state user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=${process.env.REACT_APP_SPOTIFY_CALLBACK_URI}`}>Login With Spotify</a>
+                <a href={"/register"}>No account? Click to register</a>
+                <a onClick={throwAlert} href={`https://accounts.spotify.com/authorize?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723&scope=streaming user-read-playback-state user-read-private user-modify-playback-state user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=${process.env.REACT_APP_SPOTIFY_CALLBACK_URI}`}>Login With Spotify</a>
             </div>
         </div>
     )
