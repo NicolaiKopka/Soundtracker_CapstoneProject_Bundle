@@ -154,3 +154,11 @@ export function deleteUserPlaylist(playlistName: string) {
     }).then(response => response.data)
 }
 
+export function getAllSpotifyTracksInPlaylist(playlistName: string) {
+    return axios.get(`/api/soundtracker/user-favorites/tracks/user-playlist/${playlistName}`, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
+}
+
