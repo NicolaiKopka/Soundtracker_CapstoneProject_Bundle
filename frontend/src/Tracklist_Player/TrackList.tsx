@@ -3,6 +3,7 @@ import {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {getAllUserPlaylists, getSpotifyAlbumById} from "../api_methods";
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import TrackElement from "./TrackElement";
+import Header from "../Header/Header";
 
 export default function TrackList() {
 
@@ -27,7 +28,6 @@ export default function TrackList() {
         updateUserPlaylists()
     }, [updateUserPlaylists])
 
-
     const setKey = (event: ChangeEvent<HTMLSelectElement>) => {
         setCurrentPlaylistKey(event.target.value)
         console.log(currentPlaylistKey)
@@ -38,15 +38,20 @@ export default function TrackList() {
         newPlaylistName={newPlaylistName}
         currentKey={currentPlaylistKey}
         userPlaylists={userPlaylists}
+        updatePlaylists={updateUserPlaylists}
+        setCurrentPlaylistKey={setCurrentPlaylistKey}
+        setNewPlaylistName={setNewPlaylistName}
         track={track}/>)
+
     const playlists = Object.keys(userPlaylists)
 
     return (
         <div>
-            {currentPlaylistKey === "New Playlist" && <input value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>}
+            <Header/>
+            {currentPlaylistKey === "New Playlist" && <input required={true} value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>}
             <select value={currentPlaylistKey} onChange={setKey}>
-                <option selected={true} value={"New Playlist"}>New Playlist</option>
-                {playlists.map(key => <option key={key} value={key}>{key}</option>)}
+                <option selected={currentPlaylistKey === "New Playlist"} value={"New Playlist"}>New Playlist</option>
+                {playlists.map(key => <option key={key} selected={currentPlaylistKey === key} value={key}>{key}</option>)}
             </select>
             {trackElements}
         </div>
