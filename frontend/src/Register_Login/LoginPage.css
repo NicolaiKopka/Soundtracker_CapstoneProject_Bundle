@@ -4,12 +4,16 @@ button {
     cursor: pointer;
 }
 
+a {
+    margin: 0.8rem 0 ;
+}
+
 .login-button {
     background-color: #F6F6F6;
     border-radius: 8px;
     padding: 0.5rem;
     font-weight: 700;
-    margin-top: 1rem;
+    margin: 1rem 0;
     box-shadow: 3px 2px 4px lightgrey;
     width: 10rem;
     align-self: center;

@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {UserPlaylistMap} from "../models";
 import {deleteUserPlaylist} from "../api_methods";
+import "./UserPlaylistElement.css"
 
 interface MyPlaylistPageProps {
     userPlaylists: UserPlaylistMap
@@ -28,8 +29,9 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
 
     return (
         <div>
-            <button onClick={switchShowStatus}>{props.playlistKey}</button>
-            <button onClick={deletePlaylist}>Delete Playlist</button>
+            <button className={"playlist-button"} onClick={switchShowStatus}>{props.playlistKey}<i
+                className="fa-solid fa-arrow-down spacer-left"></i></button>
+            <button className={"playlist-button delete-button"} onClick={deletePlaylist}><i className="fa-solid fa-trash-can spacer"></i>Delete Playlist</button>
             {showStatus &&
                 <div>
                     {props.userPlaylists[props.playlistKey].spotifyTrackIds.map(track => <div>{track}</div>)}

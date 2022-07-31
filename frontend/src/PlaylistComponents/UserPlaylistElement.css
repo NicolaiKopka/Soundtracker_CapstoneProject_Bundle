@@ -1,0 +1,23 @@
+.playlist-button {
+    background-color: #F6F6F6;
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-weight: 700;
+    margin: 0.7rem 0.7rem;
+    box-shadow: 3px 2px 4px lightgrey;
+    width: 10rem;
+    align-self: center;
+    font-size: 0.9rem;
+}
+
+.spacer {
+    padding-right: 0.5rem;
+}
+
+.spacer-left {
+     padding-left: 1rem;
+ }
+
+.delete-button {
+    background-color: #FC4F4F;
+}

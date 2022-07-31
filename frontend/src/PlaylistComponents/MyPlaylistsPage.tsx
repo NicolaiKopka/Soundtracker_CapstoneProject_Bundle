@@ -3,6 +3,7 @@ import {useCallback, useEffect, useState} from "react";
 import {getAllUserPlaylists} from "../api_methods";
 import UserPlaylistElement from "./UserPlaylistElement";
 import Header from "../Header/Header";
+import "./MyPlaylistPage.css"
 
 export default function MyPlaylistsPage() {
     const [userPlaylists, setUserPlaylists] = useState({})
@@ -20,8 +21,10 @@ export default function MyPlaylistsPage() {
     return (
         <div>
             <Header/>
-            My Playlists
-            {playlists.map(key => <UserPlaylistElement refreshPlaylists={refreshPlaylists} userPlaylists={userPlaylists} playlistKey={key}/>)}
+            <h2>My Playlists</h2>
+            <div className={"playlist-wrapper"}>
+                {playlists.map(key => <UserPlaylistElement refreshPlaylists={refreshPlaylists} userPlaylists={userPlaylists} playlistKey={key}/>)}
+            </div>
 
             {localStorage.getItem("spotify_jwt") &&
             <NavLink to={"/spotify-playlists"}><button>Show My Spotify Playlists</button></NavLink>}
