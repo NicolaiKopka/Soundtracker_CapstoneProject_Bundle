@@ -41,7 +41,6 @@ public class SpotifyApiConnect {
                 request,
                 SpotifyOAuthResponse.class
         );
-        System.out.println(accessTokenResponse.getBody().getAccessToken());
         return accessTokenResponse.getBody().getAccessToken();
     }
     HttpHeaders createTokenHeaders(){
@@ -116,20 +115,25 @@ public class SpotifyApiConnect {
         );
         return addPlaylistResponse.getBody();
     }
-    public SpotifyTrackDTO getMultipleSpotifyTracksById(List<String> playlistTracks) {
+    public List<SpotifyTrack> getMultipleSpotifyTracksById(List<String> playlistTracks) {
         String accessToken = getAccessToken();
 
         StringBuilder builder = new StringBuilder();
         playlistTracks.forEach(track -> {
             builder.append(track);
-            builder.append("%");
+            builder.append(",");
         });
         builder.deleteCharAt(builder.length() - 1);
         String allTrackIds = builder.toString();
 
         String queryUrl = "https://api.spotify.com/v1/tracks?ids=" + allTrackIds;
 
-        return null;
+        ResponseEntity<SpotifyMultiTracks> multiTrackResponse = restTemplate.exchange(queryUrl,
+                HttpMethod.GET,
+                new HttpEntity<>(createAuthBearerHeader(accessToken)),
+                SpotifyMultiTracks.class);
+
+        return multiTrackResponse.getBody().getTracks();
     }
     private HttpHeaders createAuthBearerHeader(String token) {
         String authValue = "Bearer " + token;

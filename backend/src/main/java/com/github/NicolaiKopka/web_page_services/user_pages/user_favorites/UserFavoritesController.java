@@ -2,6 +2,7 @@ package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 
 
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
@@ -13,9 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -46,8 +49,21 @@ public class UserFavoritesController {
     }
     @GetMapping("/tracks/user-playlist/{playlistName}")
     public ResponseEntity<Collection<SpotifyTrackDTO>> getTracksOfUserPlaylist(Principal principal, @PathVariable String playlistName) {
-        userFavoritesService.getTracksOfUserPlaylist(principal.getName(), playlistName);
-        return null;
+        try{
+            Collection<SpotifyTrack> allTracks = userFavoritesService.getTracksOfUserPlaylist(principal.getName(), playlistName);
+            List<SpotifyTrackDTO> spotifyTrackDTOList = allTracks.stream().map(track -> {
+                SpotifyTrackDTO spotifyTrackDTO = new SpotifyTrackDTO();
+                spotifyTrackDTO.setId(track.getId());
+                spotifyTrackDTO.setName(track.getName());
+                spotifyTrackDTO.setUrl(track.getExternalURLs().getAlbumUrl());
+                return spotifyTrackDTO;
+            }).toList();
+            return ResponseEntity.ok(spotifyTrackDTOList);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (HttpClientErrorException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("/spotify-playlists/{spotifyToken}")

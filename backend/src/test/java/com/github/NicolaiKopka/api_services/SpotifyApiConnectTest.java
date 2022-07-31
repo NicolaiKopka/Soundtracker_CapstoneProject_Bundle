@@ -17,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -159,7 +160,7 @@ class SpotifyApiConnectTest {
         track2.setName("track2");
 
         SpotifyAlbum spotifyAlbum = new SpotifyAlbum();
-        spotifyAlbum.setTracks(new SpotifyMultiTracks(List.of(track1, track2)));
+        spotifyAlbum.setTracks(new SpotifyMultiTracks(List.of(track1, track2), new ArrayList<>()));
 
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
@@ -192,5 +193,51 @@ class SpotifyApiConnectTest {
         List<SpotifyTrack> actual = spotifyApiConnect.getSpotifyAlbumTracksById("5678");
 
         Assertions.assertThat(actual).contains(track1, track2);
+    }
+    @Test
+    void shouldReturnMultipleSpotifyTracksWhenGivenListOfTrackIds() {
+        SpotifyTrack track1 = SpotifyTrack.builder().id("1234").build();
+        SpotifyTrack track2 = SpotifyTrack.builder().id("5678").build();
+
+        SpotifyMultiTracks spotifyMultiTracks = new SpotifyMultiTracks();
+        spotifyMultiTracks.setTracks(List.of(track1, track2));
+
+        List<String> trackIds = new ArrayList<>();
+        trackIds.add("1234");
+        trackIds.add("5678");
+
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "client_credentials");
+        HttpHeaders accessHeader = new HttpHeaders();
+        accessHeader.setBasicAuth("testId", "testSecret");
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, accessHeader);
+
+        SpotifyOAuthResponse response = new SpotifyOAuthResponse();
+        response.setAccessToken("accessToken");
+
+        Mockito.when(restTemplate.exchange("https://accounts.spotify.com/api/token",
+                HttpMethod.POST,
+                request,
+                SpotifyOAuthResponse.class
+        )).thenReturn(ResponseEntity.of(Optional.of(response)));
+
+        HttpHeaders header = new HttpHeaders();
+        header.set("Authorization", "Bearer accessToken");
+
+        Mockito.when(restTemplate.exchange(
+                "https://api.spotify.com/v1/tracks?ids=1234,5678",
+                HttpMethod.GET,
+                new HttpEntity<>(header),
+                SpotifyMultiTracks.class
+        )).thenReturn(ResponseEntity.of(Optional.of(spotifyMultiTracks)));
+
+        SpotifyApiConnect spotifyApiConnect = new SpotifyApiConnect(restTemplate, "testId", "testSecret");
+        List<SpotifyTrack> actual = spotifyApiConnect.getMultipleSpotifyTracksById(trackIds);
+
+        Assertions.assertThat(actual).isEqualTo(List.of(track1, track2));
+
+
     }
 }

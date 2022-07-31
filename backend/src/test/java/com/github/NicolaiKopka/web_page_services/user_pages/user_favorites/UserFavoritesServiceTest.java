@@ -10,12 +10,9 @@ import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylist;
 import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylistSendObject;
 import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
-import lombok.NoArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.*;
 
@@ -577,5 +574,33 @@ class UserFavoritesServiceTest {
         Assertions.assertThatThrownBy(() -> userFavoritesService.removeUserPlaylist("testUser", "playlist2"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("No Playlist found with this name");
+    }
+    @Test
+    void shouldReturnListOfSpotifyTracksByPlaylist() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        List<String> trackList = new ArrayList<>();
+        trackList.add("1234");
+        trackList.add("5678");
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(Map.of("playlist1",
+                        new UserPlaylist("playlist1", trackList, new ArrayList<>())))
+                .build();
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        userFavoritesService.getTracksOfUserPlaylist("testUser", "playlist1");
+
+        Mockito.verify(spotifyApiConnect).getMultipleSpotifyTracksById(trackList);
     }
 }

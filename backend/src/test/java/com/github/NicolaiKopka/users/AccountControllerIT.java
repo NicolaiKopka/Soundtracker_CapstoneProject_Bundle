@@ -15,6 +15,7 @@ import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -214,7 +215,7 @@ class AccountControllerIT {
     // TODO correct for deezer when implemented. In add track section.
     @Test
     @Order(4)
-    void userNavigatesToSoundtrackPageCreatesAPlaylistAddsAndDeletesTracksAndDeletesRespectivePlaylist(){
+    void userNavigatesToSoundtrackPageCreatesAPlaylistAddsAndDeletesTracksGetsPlaylistTracksAndDeletesRespectivePlaylist(){
         // register User 1
         RegisterData newUser1 = RegisterData.builder()
                 .username("user1")
@@ -302,8 +303,8 @@ class AccountControllerIT {
         Assertions.assertThat(deletedTrackResponse.getBody().getUserPlaylists()
                 .get("newPlaylist").getSpotifyTrackIds()).contains("track2");
 
-        // user gets all playlist on playlist page and deletes playlist
-        ResponseEntity<UserFavoritesDTO> allPlaylistsResponse = restTemplate.exchange("/api/soundtracker/user-favorites//all-user-playlists",
+        // user gets all playlist on playlist page and shows all tracks of specific playlist
+        ResponseEntity<UserFavoritesDTO> allPlaylistsResponse = restTemplate.exchange("/api/soundtracker/user-favorites/all-user-playlists",
                 HttpMethod.GET,
                 new HttpEntity<>(createHeader(user1Token)),
                 UserFavoritesDTO.class);
@@ -312,6 +313,21 @@ class AccountControllerIT {
 
         String playlistKey = allPlaylistsResponse.getBody().getUserPlaylists().keySet().stream().findFirst().orElseThrow();
 
+        List<String> currentAvailableIds = allPlaylistsResponse.getBody().getUserPlaylists().get(playlistKey).getSpotifyTrackIds();
+
+        List<SpotifyTrack> trackListAfterDelete = new ArrayList<>();
+        trackListAfterDelete.add(track2);
+
+        Mockito.when(spotifyApiConnect.getMultipleSpotifyTracksById(currentAvailableIds)).thenReturn(trackListAfterDelete);
+
+        ResponseEntity<SpotifyTrackDTO[]> playlistTracksResponse = restTemplate.exchange("/api/soundtracker/user-favorites/tracks/user-playlist/" + playlistKey,
+                HttpMethod.GET,
+                new HttpEntity<>(createHeader(user1Token)),
+                SpotifyTrackDTO[].class);
+
+        Assertions.assertThat(playlistTracksResponse.getBody()[0].getId()).isEqualTo("track2");
+
+        //user deletes playlist
         ResponseEntity<UserFavoritesDTO> deletedPlaylistResponse = restTemplate.exchange("/api/soundtracker/user-favorites/user-playlist/" + playlistKey,
                 HttpMethod.DELETE,
                 new HttpEntity<>(createHeader(user1Token)),
