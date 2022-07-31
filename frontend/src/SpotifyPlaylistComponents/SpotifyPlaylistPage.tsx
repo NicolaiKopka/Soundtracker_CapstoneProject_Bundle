@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {SpotifyUserPlaylists} from "../models";
 import {addSpotifyPlaylist, getAllUserSpotifyPlaylists} from "../api_methods";
 import SpotifyPlaylistComponent from "./SpotifyPlaylistComponent";
+import "./SpotifyPlaylistPage.css"
 
 
 export default function SpotifyPlaylistPage() {
@@ -41,8 +42,8 @@ export default function SpotifyPlaylistPage() {
     const playlists = allPlaylistsObject?.items.map(playlist => <SpotifyPlaylistComponent key={playlist.name} playlist={playlist}/>)
 
     return (
-        <div>
-            <form onSubmit={addPlaylist}>
+        <div className={"playlist-form-wrapper"}>
+            <form className={"playlist-form-wrapper"} onSubmit={addPlaylist}>
                 <input required={true} placeholder={"name"} value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>
                 <input placeholder={"description"} value={newPlaylistDescription} onChange={ev => setNewPlaylistDescription(ev.target.value)}/>
                 {newPlaylistName !== "" &&

@@ -1,6 +1,7 @@
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import Spotify from "react-spotify-embed";
 import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
+import "./TrackElement.css"
 
 interface TrackListProps {
     userPlaylists: UserPlaylistMap
@@ -37,14 +38,14 @@ export default function TrackElement(props: TrackListProps) {
     }
 
     return (
-        <div>
+        <div className={"track-element"}>
+            <Spotify className={"spotify-player"} wide link={props.track.url}/>
             <div>
                 {props.userPlaylists[props.currentKey] !== undefined && props.userPlaylists[props.currentKey].spotifyTrackIds.includes(props.track.id) ?
-                    <button onClick={deleteFromPlaylist}>delete</button> :
-                    <button onClick={addToPlaylist}>add</button>
+                    <button className="favorites-button delete-button" onClick={deleteFromPlaylist}>delete from playlist</button> :
+                    <button className="favorites-button" onClick={addToPlaylist}>add to playlist</button>
                 }
             </div>
-            <Spotify wide link={props.track.url}/>
         </div>
     )
 }

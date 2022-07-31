@@ -8,6 +8,7 @@ button {
     display: flex;
     align-self: center;
     justify-content: center;
+    margin-top: 2rem;
 }
 
 .movie-card img {
@@ -60,7 +61,7 @@ button {
     transform: rotateY(180deg);
 }
 
-.favorites-button {
+.favorites-button-card {
     background-color: #C4DDFF;
     border-radius: 8px;
     padding: 0.5rem;
