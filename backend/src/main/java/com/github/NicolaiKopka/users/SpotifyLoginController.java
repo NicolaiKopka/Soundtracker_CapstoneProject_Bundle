@@ -35,14 +35,16 @@ public class SpotifyLoginController {
     private final String spotifyCallbackURL;
     private final SpotifyLoginService spotifyLoginService;
     private final JWTService jwtService;
+    private final AccountService accountService;
     private final AuthenticationManager authenticationManager;
 
-    public SpotifyLoginController(RestTemplate restTemplate, @Value("${spotify.api.id}") String SPOTIFY_ID, @Value("${spotify.api.secret}") String SPOTIFY_SECRET, @Value("${spotify.callback.url}") String spotifyCallbackURL,SpotifyLoginService spotifyLoginService, JWTService jwtService, AuthenticationManager authenticationManager) {
+    public SpotifyLoginController(RestTemplate restTemplate, @Value("${spotify.api.id}") String SPOTIFY_ID, @Value("${spotify.api.secret}") String SPOTIFY_SECRET, @Value("${spotify.callback.url}") String spotifyCallbackURL,SpotifyLoginService spotifyLoginService, JWTService jwtService, AccountService accountService, AuthenticationManager authenticationManager) {
         this.restTemplate = restTemplate;
         this.SPOTIFY_ID = SPOTIFY_ID;
         this.SPOTIFY_SECRET = SPOTIFY_SECRET;
         this.spotifyCallbackURL = spotifyCallbackURL;
         this.jwtService = jwtService;
+        this.accountService = accountService;
         this.authenticationManager = authenticationManager;
         this.spotifyLoginService = spotifyLoginService;
     }
@@ -67,6 +69,9 @@ public class SpotifyLoginController {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", user.getRoles());
+
+        //following is after deploy to ensure every user's DB entries are modified according to possible code changes
+        accountService.modifyDBOnLogin(user);
 
         String jwtToken = jwtService.createToken(claims, user.getUsername());
 

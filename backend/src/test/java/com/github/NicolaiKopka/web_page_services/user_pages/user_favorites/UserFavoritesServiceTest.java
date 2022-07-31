@@ -66,7 +66,7 @@ class UserFavoritesServiceTest {
         try{
             userFavoritesService.getAllFavoriteMoviesFromDbByUser(user.getUsername());
             fail();
-        } catch (NoSuchElementException e) {}
+        } catch (NoSuchElementException ignored) {}
     }
 
     @Test
@@ -88,7 +88,7 @@ class UserFavoritesServiceTest {
         try{
             userFavoritesService.getAllFavoriteMoviesFromDbByUser(user.getUsername());
             fail();
-        } catch (NoSuchElementException e) {}
+        } catch (NoSuchElementException ignored) {}
     }
 
     @Test
@@ -117,31 +117,6 @@ class UserFavoritesServiceTest {
 
         Mockito.verify(userFavoritesRepo).save(expectedFavorites);
     }
-
-    @Test
-    void shouldCreateFavoriteObjectAndAddMovieId() {
-        MyUser user = MyUser.builder().username("user").id("1234").build();
-
-        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
-        Mockito.when(myUserRepo.findByUsername("user")).thenReturn(Optional.of(user));
-
-        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
-        Mockito.when(userFavoritesRepo.findByUserId("1234")).thenReturn(Optional.empty());
-
-        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
-
-        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
-
-        UserFavoritesSaveObject expectedFavorites = UserFavoritesSaveObject.builder()
-                .userId("1234")
-                .movieIds(List.of(1))
-                .userPlaylists(new HashMap<>())
-                .build();
-
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
-        userFavoritesService.addMovieToFavorites(1, "user");
-        Mockito.verify(userFavoritesRepo).save(expectedFavorites);
-    }
     @Test
     void shouldThrowIfUserNotFoundOnAddMovieID() {
         MyUser user = MyUser.builder().username("noUser").id("1234").build();
@@ -160,7 +135,7 @@ class UserFavoritesServiceTest {
         try{
             userFavoritesService.addMovieToFavorites(1, user.getUsername());
             fail();
-        } catch (NoSuchElementException e) {}
+        } catch (NoSuchElementException ignored) {}
     }
     @Test
     void shouldDeleteMovieIdFromFavoritesList() {
@@ -312,6 +287,45 @@ class UserFavoritesServiceTest {
         Assertions.assertThatThrownBy(() -> userFavoritesService.createNewUserPlaylist("testUser", "newPlaylist"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Playlist already exists");
+    }
+
+    @Test
+    void shouldThrowIfUserPlaylistNameIsInvalid() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        UserPlaylist userPlaylist = new UserPlaylist();
+        userPlaylist.setPlaylistName("playlist1");
+
+        Map<String, UserPlaylist> newPlaylist = new HashMap<>();
+        newPlaylist.put("playlist1", userPlaylist);
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().id("userId")
+                .userPlaylists(newPlaylist)
+                .build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+
+        Assertions.assertThatThrownBy(() -> userFavoritesService.createNewUserPlaylist("testUser", "New Playlist"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The chosen playlist name is not compatible");
+
+        Assertions.assertThatThrownBy(() -> userFavoritesService.createNewUserPlaylist("testUser", ""))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The chosen playlist name is not compatible");
+
+        Assertions.assertThatThrownBy(() -> userFavoritesService.createNewUserPlaylist("testUser", " "))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The chosen playlist name is not compatible");
     }
 
     @Test

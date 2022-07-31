@@ -13,11 +13,8 @@ import com.github.NicolaiKopka.dto.LoginResponseDTO;
 import com.github.NicolaiKopka.dto.RegisterUserDTO;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -180,7 +177,7 @@ class AccountControllerIT {
     }
     @Test
     @Order(2)
-    void userChecksForSoundtrackAvailabilityOnStreamingServices() throws OAuthProblemException, OAuthSystemException {
+    void userChecksForSoundtrackAvailabilityOnStreamingServices(){
         AlbumReferenceDTO reference1 = AlbumReferenceDTO.builder()
                 .movieTitle("wrongMovie(Official)")
                         .albumUrl("wrongMovie.com").build();
@@ -217,7 +214,7 @@ class AccountControllerIT {
     // TODO correct for deezer when implemented. In add track section.
     @Test
     @Order(4)
-    void userNavigatesToSoundtrackPageCreatesAPlaylistAddsAndDeletesTracksAndDeletesRespectivePlaylist() {
+    void userNavigatesToSoundtrackPageCreatesAPlaylistAddsAndDeletesTracksAndDeletesRespectivePlaylist(){
         // register User 1
         RegisterData newUser1 = RegisterData.builder()
                 .username("user1")
@@ -248,11 +245,11 @@ class AccountControllerIT {
         trackList.add(track1);
         trackList.add(track2);
 
-        Mockito.when(spotifyApiConnect.getSpotifyAlbumTracksById("spotifyToken", "movieId"))
+        Mockito.when(spotifyApiConnect.getSpotifyAlbumTracksById("movieId"))
                 .thenReturn(trackList);
 
         ResponseEntity<SpotifyTrackDTO[]> spotifyTracksResponse = restTemplate.exchange(
-                "/api/soundtracker/spotify/album/movieId/spotifyToken",
+                "/api/soundtracker/spotify/album/movieId",
                 HttpMethod.GET,
                 new HttpEntity<>(createHeader(user1Token)),
                 SpotifyTrackDTO[].class);

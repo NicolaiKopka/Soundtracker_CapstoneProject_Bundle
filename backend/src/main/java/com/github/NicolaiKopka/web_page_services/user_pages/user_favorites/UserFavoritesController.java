@@ -2,6 +2,7 @@ package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 
 
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
+import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
@@ -42,6 +43,11 @@ public class UserFavoritesController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @GetMapping("/tracks/user-playlist/{playlistName}")
+    public ResponseEntity<Collection<SpotifyTrackDTO>> getTracksOfUserPlaylist(Principal principal, @PathVariable String playlistName) {
+        userFavoritesService.getTracksOfUserPlaylist(principal.getName(), playlistName);
+        return null;
     }
 
     @GetMapping("/spotify-playlists/{spotifyToken}")
