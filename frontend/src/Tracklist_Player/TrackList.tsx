@@ -4,6 +4,7 @@ import {getAllUserPlaylists, getSpotifyAlbumById} from "../api_methods";
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import TrackElement from "./TrackElement";
 import Header from "../Header/Header";
+import "./TrackList.css"
 
 export default function TrackList() {
 
@@ -48,12 +49,19 @@ export default function TrackList() {
     return (
         <div>
             <Header/>
-            {currentPlaylistKey === "New Playlist" && <input required={true} value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>}
-            <select value={currentPlaylistKey} onChange={setKey}>
-                <option selected={currentPlaylistKey === "New Playlist"} value={"New Playlist"}>New Playlist</option>
-                {playlists.map(key => <option key={key} selected={currentPlaylistKey === key} value={key}>{key}</option>)}
-            </select>
-            {trackElements}
+            <div className={"track-wrapper"}>
+                {currentPlaylistKey === "New Playlist" && <input className={"form-spacer"} placeholder={"Enter new playlist name"} required={true} value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>}
+                <div>
+                    <label>Choose Playlist: </label>
+                    <select className={"track-selector form-spacer"} value={currentPlaylistKey} onChange={setKey}>
+                        <option selected={currentPlaylistKey === "New Playlist"} value={"New Playlist"}>New Playlist</option>
+                        {playlists.map(key => <option key={key} selected={currentPlaylistKey === key} value={key}>{key}</option>)}
+                    </select>
+                </div>
+            </div>
+            <div>
+                {trackElements}
+            </div>
         </div>
     )
 }

@@ -1,0 +1,19 @@
+label {
+    font-size: 1.2rem;
+}
+
+.track-selector {
+    font-size: 1.2rem;
+    width: 12rem;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.track-wrapper {
+    margin: 1.5rem 0;
+}
+
+.form-spacer {
+    margin-bottom: 0.9rem;
+}
+

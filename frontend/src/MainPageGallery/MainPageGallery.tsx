@@ -60,7 +60,7 @@ export default function MainPageGallery(props: AppProps) {
                 </form>
             </div>
             {searchMovies.length > 0 && <Slide>{searchComponents}</Slide>}
-            <h2>Top 10 Movies</h2>
+            <h2 className={"top-movies-header"}>Top 10 Movies</h2>
             {components && components.length > 0 && <Slide>{components}</Slide>}
         </div>
     )

@@ -1,0 +1,22 @@
+
+.track-element {
+    margin-bottom: 1rem;
+}
+
+.favorites-button {
+    background-color: #F6F6F6;
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-weight: 700;
+    margin-top: 0.7rem;
+    box-shadow: 3px 2px 4px lightgrey;
+    width: 10rem;
+}
+
+.delete-button {
+    background-color: #FC4F4F;
+}
+
+.spotify-player {
+    width: 22rem;
+}

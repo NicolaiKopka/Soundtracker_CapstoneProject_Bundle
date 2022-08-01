@@ -38,3 +38,7 @@ input {
     flex-direction: column;
     justify-content: center;
 }
+.top-movies-header {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
