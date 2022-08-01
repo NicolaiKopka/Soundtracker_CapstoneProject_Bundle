@@ -162,3 +162,16 @@ export function getAllSpotifyTracksInPlaylist(playlistName: string) {
     }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
 }
 
+export function createSpotifyPlaylistAndAddTracks(playlistName: string) {
+    return axios.post(`/api/soundtracker/user-favorites/user-playlist/to-spotify/${playlistName}/` + localStorage.getItem("spotify_jwt"), {
+        name: playlistName,
+        public: true,
+        collaborative: false,
+        description: ""
+    }, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+

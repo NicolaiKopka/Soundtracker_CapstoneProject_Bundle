@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
-import {deleteUserPlaylist, getAllSpotifyTracksInPlaylist} from "../api_methods";
+import {createSpotifyPlaylistAndAddTracks, deleteUserPlaylist, getAllSpotifyTracksInPlaylist} from "../api_methods";
 import "./UserPlaylistElement.css"
 import MyPlaylistTrackElement from "./MyPlaylistTrackElement";
 
@@ -8,6 +8,8 @@ interface MyPlaylistPageProps {
     userPlaylists: UserPlaylistMap
     playlistKey: string
     refreshPlaylists: () => void
+    editMode: boolean
+    spotifyMode: boolean
 }
 
 export default function UserPlaylistElement(props: MyPlaylistPageProps) {
@@ -33,13 +35,20 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             .catch()
     }
 
+    function sendPlaylistToSpotify() {
+        createSpotifyPlaylistAndAddTracks(props.playlistKey).catch()
+    }
+
     const allPlaylistTrackElements = allPlaylistTracks?.map(track => <MyPlaylistTrackElement track={track}/>)
 
     return (
         <div>
             <button className={"playlist-button"} onClick={switchShowStatus}>{props.playlistKey}<i
                 className="fa-solid fa-arrow-down spacer-left"></i></button>
-            <button className={"playlist-button delete-button"} onClick={deletePlaylist}><i className="fa-solid fa-trash-can spacer"></i>Delete Playlist</button>
+            {props.editMode &&
+                <button className={"playlist-button delete-button"} onClick={deletePlaylist}><i className="fa-solid fa-trash-can spacer"></i>Delete Playlist</button>}
+            {props.spotifyMode &&
+            <button onClick={sendPlaylistToSpotify}>Send to Spotify</button>}
             {showStatus &&
                 <div>
                     {allPlaylistTrackElements}
