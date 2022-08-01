@@ -1,6 +1,6 @@
-import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
+// import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
 import Spotify from "react-spotify-embed";
-import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
+import {SpotifyTrackDTO} from "../models";
 
 interface TrackListProps {
     // userPlaylists: UserPlaylistMap

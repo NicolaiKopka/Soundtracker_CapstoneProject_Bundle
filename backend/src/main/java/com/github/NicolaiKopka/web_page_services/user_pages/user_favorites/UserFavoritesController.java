@@ -113,10 +113,10 @@ public class UserFavoritesController {
         }
     }
     // Throws NSEE
-    @PostMapping("/user-playlist/to-spotify/{playlistName}")
-    public ResponseEntity<Object> createSpotifyPlaylistWithTracksInUserPlaylist(Principal principal, @PathVariable String playlistName, @RequestBody AddPlaylistTransferData transferData) {
+    @PostMapping("/user-playlist/to-spotify/{playlistName}/{spotifyToken}")
+    public ResponseEntity<Object> createSpotifyPlaylistWithTracksInUserPlaylist(Principal principal, @PathVariable String playlistName, @PathVariable String spotifyToken, @RequestBody AddPlaylistTransferData transferData) {
         try{
-            userFavoritesService.createSpotifyPlaylistWithTracksInUserPlaylist(principal.getName(), playlistName, transferData);
+            userFavoritesService.createSpotifyPlaylistWithTracksInUserPlaylist(principal.getName(), playlistName, transferData, spotifyToken);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -103,15 +103,15 @@ public class UserFavoritesService {
 
         return spotifyApiConnect.getMultipleSpotifyTracksById(spotifyTrackIds);
     }
-    public void createSpotifyPlaylistWithTracksInUserPlaylist(String username, String playlistName, AddPlaylistTransferData transferData) {
+    public void createSpotifyPlaylistWithTracksInUserPlaylist(String username, String playlistName, AddPlaylistTransferData transferData, String spotifyToken) {
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
 
         UserFavoritesSaveObject saveObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
         List<String> spotifyTrackIds = saveObject.getUserPlaylists().get(playlistName).getSpotifyTrackIds();
 
-        SpotifyPlaylist newSpotifyPlaylist = spotifyApiConnect.addSpotifyPlaylist(transferData.getSpotifyToken(), user.getSpotifyId(), transferData);
+        SpotifyPlaylist newSpotifyPlaylist = spotifyApiConnect.addSpotifyPlaylist(spotifyToken, user.getSpotifyId(), transferData);
 
-        spotifyApiConnect.addTracksInUserPlaylistToNewSpotifyPlaylist(spotifyTrackIds, newSpotifyPlaylist.getId(), transferData.getSpotifyToken());
+        spotifyApiConnect.addTracksInUserPlaylistToNewSpotifyPlaylist(spotifyTrackIds, newSpotifyPlaylist.getId(), spotifyToken);
     }
     public void addTracksToExistingSpotifyPlaylist() {
 
