@@ -37,6 +37,9 @@ public class UserFavoritesSaveObject {
         if(userPlaylists.containsKey(playlistName)){
             throw new IllegalArgumentException("Playlist already exists");
         }
+        if(playlistName.isBlank() || playlistName.equalsIgnoreCase("new playlist")) {
+            throw new IllegalArgumentException("The chosen playlist name is not compatible");
+        }
         UserPlaylist playlist = new UserPlaylist();
         playlist.setPlaylistName(playlistName);
         userPlaylists.put(playlistName, playlist);

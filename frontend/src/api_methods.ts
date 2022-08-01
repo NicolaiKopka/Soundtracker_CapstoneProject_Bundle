@@ -99,7 +99,7 @@ export function addSpotifyPlaylist(name: string, description: string, isPublic: 
 }
 
 export function getSpotifyAlbumById(id: string) {
-    return axios.get("/api/soundtracker/spotify/album/" + id + "/" + localStorage.getItem("spotify_jwt"), {
+    return axios.get("/api/soundtracker/spotify/album/" + id, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }

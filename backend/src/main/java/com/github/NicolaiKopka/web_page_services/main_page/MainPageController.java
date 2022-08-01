@@ -6,14 +6,11 @@ import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import lombok.RequiredArgsConstructor;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,13 +30,13 @@ public class MainPageController {
 
     // TODO add bucket4j to limit request count
     @GetMapping("/streaming/{movieName}")
-    public StreamingStatusDTO getMovieSoundtrackStreamingStatus(@PathVariable String movieName) throws OAuthProblemException, OAuthSystemException {
+    public StreamingStatusDTO getMovieSoundtrackStreamingStatus(@PathVariable String movieName){
         return mainPageService.getSoundtrackOnSpotify(movieName);
     }
-    @GetMapping("/spotify/album/{id}/{token}")
-    public ResponseEntity<Collection<SpotifyTrackDTO>> getSpotifyAlbumById(@PathVariable String id, @PathVariable String token) {
+    @GetMapping("/spotify/album/{id}")
+    public ResponseEntity<Collection<SpotifyTrackDTO>> getSpotifyAlbumById(@PathVariable String id) {
         try {
-            List<SpotifyTrack> spotifyAlbumTracksById = mainPageService.getSpotifyAlbumTracksById(token, id);
+            List<SpotifyTrack> spotifyAlbumTracksById = mainPageService.getSpotifyAlbumTracksById(id);
             List<SpotifyTrackDTO> spotifyTrackDTO = spotifyAlbumTracksById.stream().map(track -> {
                 SpotifyTrackDTO trackDTO = new SpotifyTrackDTO();
                 trackDTO.setName(track.getName());

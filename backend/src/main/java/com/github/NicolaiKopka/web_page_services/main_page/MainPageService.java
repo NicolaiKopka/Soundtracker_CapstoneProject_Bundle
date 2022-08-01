@@ -10,8 +10,6 @@ import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import lombok.RequiredArgsConstructor;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.springframework.stereotype.Service;
 
 
@@ -30,7 +28,7 @@ public class MainPageService {
         return movieDBApiConnect.getPopularMovies();
     }
 
-    public StreamingStatusDTO getSoundtrackOnSpotify(String movieName) throws OAuthProblemException, OAuthSystemException {
+    public StreamingStatusDTO getSoundtrackOnSpotify(String movieName){
         StreamingStatusDTO streamingStatusDTO = new StreamingStatusDTO();
         streamingStatusDTO.setMovieName(movieName);
 
@@ -61,8 +59,8 @@ public class MainPageService {
         return streamingStatusDTO;
     }
 
-    public List<SpotifyTrack> getSpotifyAlbumTracksById(String token, String id) {
-       return spotifyApiConnect.getSpotifyAlbumTracksById(token, id);
+    public List<SpotifyTrack> getSpotifyAlbumTracksById(String id){
+       return spotifyApiConnect.getSpotifyAlbumTracksById(id);
     }
 
     private Optional<AlbumReferenceDTO> checkForExactSoundtrackOnDeezer(List<AlbumReferenceDTO> albumList, String movieName) {
@@ -74,9 +72,17 @@ public class MainPageService {
         return Optional.empty();
     }
     private Optional<AlbumReferenceDTO> checkForExactSoundtrack(List<AlbumReferenceDTO> albumList, String movieName) {
-        return albumList.stream()
+        Optional<AlbumReferenceDTO> firstQuery = albumList.stream()
                 .filter(album -> checkForExactTitle(album.getMovieTitle(), movieName) && checkForKeywords(album))
                 .findFirst();
+
+        if(firstQuery.isEmpty()){
+            return albumList.stream()
+                    .filter(album -> checkForExactTitle(album.getMovieTitle(), movieName))
+                    .findFirst();
+        } else {
+            return firstQuery;
+        }
     }
     private boolean checkForKeywords(AlbumReferenceDTO album) {
         return album.getMovieTitle().toLowerCase().contains("official") || album.getMovieTitle().toLowerCase().contains("motion picture")

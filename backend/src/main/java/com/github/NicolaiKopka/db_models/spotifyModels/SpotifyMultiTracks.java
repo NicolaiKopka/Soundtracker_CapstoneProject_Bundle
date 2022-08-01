@@ -12,5 +12,6 @@ import java.util.List;
 public class SpotifyMultiTracks {
 
     private List<SpotifyTrack> items;
+    private List<SpotifyTrack> tracks;
 
 }

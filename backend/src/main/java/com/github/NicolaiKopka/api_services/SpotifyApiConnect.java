@@ -5,13 +5,6 @@ import com.github.NicolaiKopka.db_models.spotifyModels.authenticationModels.Spot
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthAccessTokenResponse;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,18 +30,7 @@ public class SpotifyApiConnect {
         this.SPOTIFY_SECRET = SPOTIFY_SECRET;
     }
 
-    public String getAccessToken() throws OAuthSystemException, OAuthProblemException {
-
-//        OAuthClientRequest clientReqAccessToken = OAuthClientRequest
-//                .tokenLocation("https://accounts.spotify.com/api/token")
-//                .setGrantType(GrantType.CLIENT_CREDENTIALS).setClientId(SPOTIFY_ID).setClientSecret(SPOTIFY_SECRET)
-//                .buildBodyMessage();
-//
-//        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-//        OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(clientReqAccessToken);
-//
-//        return oAuthResponse.getAccessToken();
-
+    public String getAccessToken(){
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("grant_type", "client_credentials");
         HttpHeaders headers = createTokenHeaders();
@@ -71,7 +50,7 @@ public class SpotifyApiConnect {
     }
 
     // TODO find a way to check if correct movie is returned, including netflix
-    public List<AlbumReferenceDTO> getSpotifyListOfMovieAlbums(String movieName) throws OAuthProblemException, OAuthSystemException {
+    public List<AlbumReferenceDTO> getSpotifyListOfMovieAlbums(String movieName){
         String accessToken = getAccessToken();
 
         String queryUrl = "https://api.spotify.com/v1/search?q="
@@ -110,12 +89,13 @@ public class SpotifyApiConnect {
         return allUserPlaylists.getBody();
     }
 
-    public List<SpotifyTrack> getSpotifyAlbumTracksById(String spotifyToken, String id) {
+    public List<SpotifyTrack> getSpotifyAlbumTracksById(String id){
         String queryUrl = "https://api.spotify.com/v1/albums/" + id;
+        String accessToken = getAccessToken();
         ResponseEntity<SpotifyAlbum> allAlbumTracks = restTemplate.exchange(
                 queryUrl,
                 HttpMethod.GET,
-                new HttpEntity<>(createAuthBearerHeader(spotifyToken)),
+                new HttpEntity<>(createAuthBearerHeader(accessToken)),
                 SpotifyAlbum.class);
         return Objects.requireNonNull(allAlbumTracks.getBody()).getTracks().getItems();
     }
@@ -135,10 +115,32 @@ public class SpotifyApiConnect {
         );
         return addPlaylistResponse.getBody();
     }
+    public List<SpotifyTrack> getMultipleSpotifyTracksById(List<String> playlistTracks) {
+        String accessToken = getAccessToken();
+
+        StringBuilder builder = new StringBuilder();
+        playlistTracks.forEach(track -> {
+            builder.append(track);
+            builder.append(",");
+        });
+        builder.deleteCharAt(builder.length() - 1);
+        String allTrackIds = builder.toString();
+
+        String queryUrl = "https://api.spotify.com/v1/tracks?ids=" + allTrackIds;
+
+        ResponseEntity<SpotifyMultiTracks> multiTrackResponse = restTemplate.exchange(queryUrl,
+                HttpMethod.GET,
+                new HttpEntity<>(createAuthBearerHeader(accessToken)),
+                SpotifyMultiTracks.class);
+
+        return multiTrackResponse.getBody().getTracks();
+    }
     private HttpHeaders createAuthBearerHeader(String token) {
         String authValue = "Bearer " + token;
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", authValue);
         return header;
     }
+
+
 }

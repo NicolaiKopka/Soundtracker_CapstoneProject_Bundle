@@ -4,8 +4,6 @@ import com.github.NicolaiKopka.dto.LoginResponseDTO;
 import com.github.NicolaiKopka.dto.RegisterUserDTO;
 import com.github.NicolaiKopka.security.JWTService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.imageio.spi.RegisterableService;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +46,9 @@ public class AccountController {
             MyUser user = myUserRepo.findByUsername(loginData.getUsername()).orElseThrow();
             Map<String, Object> claims = new HashMap<>();
             claims.put("roles", user.getRoles());
+
+            //following is after deploy to ensure every user's DB entries are modified according to possible code changes
+            accountService.modifyDBOnLogin(user);
 
             return ResponseEntity.ok(new LoginResponseDTO(jwtService.createToken(claims, loginData.getUsername())));
         } catch (Exception e) {
