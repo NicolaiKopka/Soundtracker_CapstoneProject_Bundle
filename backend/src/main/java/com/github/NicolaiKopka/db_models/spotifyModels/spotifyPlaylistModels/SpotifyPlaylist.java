@@ -12,5 +12,6 @@ public class SpotifyPlaylist {
     private boolean collaborative;
     @JsonProperty("public")
     private boolean isPublic;
+    private String id;
 
 }

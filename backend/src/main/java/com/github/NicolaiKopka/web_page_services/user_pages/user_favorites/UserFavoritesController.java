@@ -12,6 +12,7 @@ import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -111,12 +112,21 @@ public class UserFavoritesController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
+    // Throws NSEE
+    @PostMapping("/user-playlist/to-spotify/{playlistName}")
+    public ResponseEntity<Object> createSpotifyPlaylistWithTracksInUserPlaylist(Principal principal, @PathVariable String playlistName, @RequestBody AddPlaylistTransferData transferData) {
+        try{
+            userFavoritesService.createSpotifyPlaylistWithTracksInUserPlaylist(principal.getName(), playlistName, transferData);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (HttpClientErrorException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
     @PutMapping("/{movieId}")
     public ResponseEntity<UserFavoritesDTO> addMovieToFavorites(@PathVariable int movieId, Principal principal) {
         try {
-//            userFavoritesService.addMovieToFavorites(movieId, principal.getName());
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
             UserFavoritesSaveObject userFavorites = userFavoritesService.addMovieToFavorites(movieId, principal.getName());
             UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().movieIds(userFavorites.getMovieIds()).build();
             return ResponseEntity.ok(userFavoritesDTO);

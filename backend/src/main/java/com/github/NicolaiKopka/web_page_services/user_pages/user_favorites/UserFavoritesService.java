@@ -4,7 +4,6 @@ import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
@@ -103,5 +102,18 @@ public class UserFavoritesService {
         List<String> spotifyTrackIds = saveObject.getUserPlaylists().get(playlistName).getSpotifyTrackIds();
 
         return spotifyApiConnect.getMultipleSpotifyTracksById(spotifyTrackIds);
+    }
+    public void createSpotifyPlaylistWithTracksInUserPlaylist(String username, String playlistName, AddPlaylistTransferData transferData) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+
+        UserFavoritesSaveObject saveObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+        List<String> spotifyTrackIds = saveObject.getUserPlaylists().get(playlistName).getSpotifyTrackIds();
+
+        SpotifyPlaylist newSpotifyPlaylist = spotifyApiConnect.addSpotifyPlaylist(transferData.getSpotifyToken(), user.getSpotifyId(), transferData);
+
+        spotifyApiConnect.addTracksInUserPlaylistToNewSpotifyPlaylist(spotifyTrackIds, newSpotifyPlaylist.getId(), transferData.getSpotifyToken());
+    }
+    public void addTracksToExistingSpotifyPlaylist() {
+
     }
 }

@@ -603,4 +603,35 @@ class UserFavoritesServiceTest {
 
         Mockito.verify(spotifyApiConnect).getMultipleSpotifyTracksById(trackList);
     }
+    @Test
+    void shouldCreateSpotifyPlaylistAndAddTracks() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        List<String> trackList = new ArrayList<>();
+        trackList.add("1234");
+        trackList.add("5678");
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(Map.of("playlist1",
+                        new UserPlaylist("playlist1", trackList, new ArrayList<>())))
+                .build();
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        AddPlaylistTransferData transferData = new AddPlaylistTransferData();
+        transferData.setSpotifyToken("accessToken");
+
+        SpotifyPlaylist spotifyPlaylist = new SpotifyPlaylist();
+        spotifyPlaylist.setId("playlistId");
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+        Mockito.when(spotifyApiConnect.addSpotifyPlaylist("accessToken", "userId", transferData))
+                .thenReturn(spotifyPlaylist);
+    }
 }

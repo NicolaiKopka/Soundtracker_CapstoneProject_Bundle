@@ -31,7 +31,6 @@ export default function TrackList() {
 
     const setKey = (event: ChangeEvent<HTMLSelectElement>) => {
         setCurrentPlaylistKey(event.target.value)
-        console.log(currentPlaylistKey)
     }
 
     const trackElements = trackList.map(track => <TrackElement
