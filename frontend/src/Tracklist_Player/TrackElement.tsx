@@ -2,6 +2,8 @@ import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import Spotify from "react-spotify-embed";
 import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
 import "./TrackElement.css"
+import {tableHeadClasses} from "@mui/material";
+import toast from "react-hot-toast";
 
 interface TrackListProps {
     userPlaylists: UserPlaylistMap
@@ -22,19 +24,21 @@ export default function TrackElement(props: TrackListProps) {
                     .then(() => props.updatePlaylists())
                     .then(() => props.setCurrentPlaylistKey(props.newPlaylistName))
                     .then(() => props.setNewPlaylistName("")))
-                    .catch()
+                .then(() => toast.success("Added to playlist"))
+                .catch(error => toast.error(error.response.data))
         } else {
             addTrackToUserPlaylist(props.currentKey, props.track.id, props.track.id)
                 .then(() => props.updatePlaylists())
-                .catch()
+                .then(() => toast.success("Added to playlist"))
+                .catch(error => error.response.data)
         }
     }
-
 
     function deleteFromPlaylist() {
         deleteTrackFromUserPlaylist(props.currentKey, props.track.id, props.track.id)
             .then(() => props.updatePlaylists())
-            .catch()
+            .then(() => toast.success("Deleted from playlist"))
+            .catch(error => error.response.data)
     }
 
     return (

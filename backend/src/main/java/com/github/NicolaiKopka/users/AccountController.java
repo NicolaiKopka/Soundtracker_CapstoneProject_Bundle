@@ -28,13 +28,14 @@ public class AccountController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterUserDTO> registerUser(@RequestBody RegisterData registerData) {
+    public ResponseEntity<Object> registerUser(@RequestBody RegisterData registerData) {
         try {
             MyUser newlySavedUser = accountService.registerUser(registerData);
             RegisterUserDTO registerUserDTO = RegisterUserDTO.builder().username(newlySavedUser.getUsername()).build();
             return ResponseEntity.status(HttpStatus.CREATED).body(registerUserDTO);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

@@ -10,6 +10,7 @@ import SpotifyLoginRedirect from "./Register_Login/streamingLogin/SpotifyLoginRe
 import SpotifyPlaylistPage from "./SpotifyPlaylistComponents/SpotifyPlaylistPage";
 import TrackList from "./Tracklist_Player/TrackList";
 import MyPlaylistsPage from "./PlaylistComponents/MyPlaylistsPage";
+import toast, {Toaster} from "react-hot-toast";
 
 function App() {
 
@@ -17,10 +18,12 @@ function App() {
 
     useEffect(() => {
         setTimeout(() => setErrorMessage(""), 2000)
+
     }, [errorMessage])
 
     return (
         <div className="App">
+            <Toaster/>
             {errorMessage && <div>{errorMessage}</div>}
             <h1>Soundtracker</h1>
             <BrowserRouter>

@@ -3,6 +3,7 @@ import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import {createSpotifyPlaylistAndAddTracks, deleteUserPlaylist, getAllSpotifyTracksInPlaylist} from "../api_methods";
 import "./UserPlaylistElement.css"
 import MyPlaylistTrackElement from "./MyPlaylistTrackElement";
+import toast from "react-hot-toast";
 
 interface MyPlaylistPageProps {
     userPlaylists: UserPlaylistMap
@@ -32,7 +33,8 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
     function deletePlaylist() {
         deleteUserPlaylist(props.playlistKey)
             .then(() => props.refreshPlaylists())
-            .catch()
+            .then(() => toast.success("Playlist deleted"))
+            .catch(error => error.response.data)
     }
 
     function sendPlaylistToSpotify() {
