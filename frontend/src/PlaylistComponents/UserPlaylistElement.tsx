@@ -1,16 +1,28 @@
 import {useState} from "react";
-import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
-import {createSpotifyPlaylistAndAddTracks, deleteUserPlaylist, getAllSpotifyTracksInPlaylist} from "../api_methods";
+import {SpotifyTrackDTO} from "../models";
+import {
+    addSpotifyPlaylist,
+    addTracksToSpotifyPlaylist,
+    deleteUserPlaylist,
+    getAllSpotifyTracksInPlaylist
+} from "../api_methods";
 import "./UserPlaylistElement.css"
 import MyPlaylistTrackElement from "./MyPlaylistTrackElement";
 import toast from "react-hot-toast";
 
 interface MyPlaylistPageProps {
-    userPlaylists: UserPlaylistMap
     playlistKey: string
     refreshPlaylists: () => void
     editMode: boolean
     spotifyMode: boolean
+    playlistDescription: string
+    playlistName: string
+    isPublic: boolean
+    isCollaborative: boolean
+    setPlaylistName: Function
+    setPlaylistDescription: Function
+    setPlaylistIsPublic: Function
+    setPlaylistCollab: Function
 }
 
 export default function UserPlaylistElement(props: MyPlaylistPageProps) {
@@ -23,11 +35,14 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             setShowStatus(false)
         }else{
             setShowStatus(true)
-            getAllSpotifyTracksInPlaylist(props.playlistKey)
-                .then(data => setAllPlaylistTracks(data))
-                .then()
-                .catch()
+            getAllPlaylistTracks()
         }
+    }
+
+    function getAllPlaylistTracks() {
+        getAllSpotifyTracksInPlaylist(props.playlistKey)
+            .then(data => setAllPlaylistTracks(data))
+            .catch(error => error.response.data)
     }
 
     function deletePlaylist() {
@@ -38,10 +53,24 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
     }
 
     function sendPlaylistToSpotify() {
-        createSpotifyPlaylistAndAddTracks(props.playlistKey).catch()
+        addSpotifyPlaylist(props.playlistName, props.playlistDescription, props.isPublic, props.isCollaborative)
+            .then(data => {
+                return data
+            }).then(data => {
+                addTracksToSpotifyPlaylist(data.id, props.playlistKey)
+                    .then(() => {
+                        toast.success("Sent playlist to spotify")
+                        props.setPlaylistName("")
+                        props.setPlaylistDescription("")
+                        props.setPlaylistIsPublic(false)
+                        props.setPlaylistCollab(false)
+                    })
+                    .catch()
+            }).catch(error => toast.error(error.response.data))
     }
 
-    const allPlaylistTrackElements = allPlaylistTracks?.map(track => <MyPlaylistTrackElement track={track}/>)
+    const allPlaylistTrackElements = allPlaylistTracks?.map(track => <MyPlaylistTrackElement refreshTracks={getAllPlaylistTracks} playlistKey={props.playlistKey} editMode={props.editMode} track={track}/>)
+
 
     return (
         <div>
@@ -50,11 +79,10 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             {props.editMode &&
                 <button className={"playlist-button delete-button"} onClick={deletePlaylist}><i className="fa-solid fa-trash-can spacer"></i>Delete Playlist</button>}
             {props.spotifyMode &&
-            <button onClick={sendPlaylistToSpotify}>Send to Spotify</button>}
+            <button className={"playlist-button"} onClick={sendPlaylistToSpotify}>Send to Spotify</button>}
             {showStatus &&
                 <div>
                     {allPlaylistTrackElements}
-                    {/*{props.userPlaylists[props.playlistKey].spotifyTrackIds.map(track => <div>{track}</div>)}*/}
                 </div>}
         </div>
     )

@@ -8,11 +8,11 @@ import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.Spo
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylist;
 import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylistSendObject;
+import com.github.NicolaiKopka.dto.AddToStreamingPlaylistDTO;
 import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.*;
@@ -203,10 +203,22 @@ class UserFavoritesServiceTest {
         SpotifyPlaylist spotifyPlaylist = new SpotifyPlaylist();
         spotifyPlaylist.setName("playlist1");
 
+        SpotifyPlaylist spotifyPlaylistExisting = new SpotifyPlaylist();
+        spotifyPlaylistExisting.setName("playlist2");
+
         MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
         Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
 
+        List<SpotifyPlaylist> userPlaylists = new ArrayList<>();
+        userPlaylists.add(spotifyPlaylistExisting);
+
+        SpotifyUserPlaylists spotifyUserPlaylists = new SpotifyUserPlaylists();
+        spotifyUserPlaylists.setItems(userPlaylists);
+
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+        Mockito.when(spotifyApiConnect.getAllUserPlaylists("1234", "spotifyId"))
+                .thenReturn(spotifyUserPlaylists);
+
         Mockito.when(spotifyApiConnect.addSpotifyPlaylist(
                 "1234",
                 "spotifyId",
@@ -221,6 +233,48 @@ class UserFavoritesServiceTest {
         SpotifyPlaylist actual = userFavoritesService.addSpotifyPlaylist("1234", "testUser", data);
 
         Assertions.assertThat(actual).isEqualTo(spotifyPlaylist);
+    }
+
+    @Test
+    void shouldThrowOnExistingPlaylistOnAddPlaylist() {
+        MyUser user = MyUser.builder().username("testUser").spotifyId("spotifyId").build();
+
+        AddPlaylistTransferData data = new AddPlaylistTransferData();
+        data.setName("playlist1");
+
+        SpotifyPlaylist spotifyPlaylist = new SpotifyPlaylist();
+        spotifyPlaylist.setName("playlist1");
+
+        SpotifyPlaylist spotifyPlaylistExisting = new SpotifyPlaylist();
+        spotifyPlaylistExisting.setName("playlist1");
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        List<SpotifyPlaylist> userPlaylists = new ArrayList<>();
+        userPlaylists.add(spotifyPlaylistExisting);
+
+        SpotifyUserPlaylists spotifyUserPlaylists = new SpotifyUserPlaylists();
+        spotifyUserPlaylists.setItems(userPlaylists);
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+        Mockito.when(spotifyApiConnect.getAllUserPlaylists("1234", "spotifyId"))
+                .thenReturn(spotifyUserPlaylists);
+
+        Mockito.when(spotifyApiConnect.addSpotifyPlaylist(
+                "1234",
+                "spotifyId",
+                data)).thenReturn(spotifyPlaylist);
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+
+        Assertions.assertThatThrownBy(() -> userFavoritesService.addSpotifyPlaylist("1234", "testUser", data))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Playlist already exists");
     }
 
     @Test
@@ -627,15 +681,15 @@ class UserFavoritesServiceTest {
 
         AddPlaylistTransferData transferData = new AddPlaylistTransferData();
 
-        SpotifyPlaylist spotifyPlaylist = new SpotifyPlaylist();
-        spotifyPlaylist.setId("playlistId");
-
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
-        Mockito.when(spotifyApiConnect.addSpotifyPlaylist("accessToken", "spotifyId", transferData))
-                .thenReturn(spotifyPlaylist);
+
+        AddToStreamingPlaylistDTO playlistDTO = new AddToStreamingPlaylistDTO();
+        playlistDTO.setUserPlaylistName("playlist1");
+        playlistDTO.setSpotifyToken("accessToken");
+        playlistDTO.setSpotifyPlaylistId("playlistId");
 
         UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
-        userFavoritesService.createSpotifyPlaylistWithTracksInUserPlaylist("testUser", "playlist1", transferData, "accessToken");
+        userFavoritesService.addTracksToSpotifyPlaylist("testUser", playlistDTO);
 
         Mockito.verify(spotifyApiConnect).addTracksInUserPlaylistToNewSpotifyPlaylist(List.of("1234", "5678"), "playlistId", "accessToken");
     }

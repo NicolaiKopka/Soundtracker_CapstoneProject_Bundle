@@ -79,9 +79,13 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
                         <div className={"card-title"}>
                             {props.movie.title}
                         </div>
-                        {favoriteStatus ?
-                            <button className={"favorites-button-card"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
-                            <button className={"favorites-button-card"} onClick={addToFavorites}>To Favorites</button>}
+                        {localStorage.getItem("jwt") &&
+                            <div>
+                                {favoriteStatus ?
+                                <button className={"favorites-button-card"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
+                                <button className={"favorites-button-card"} onClick={addToFavorites}>To Favorites</button>}
+                            </div>
+                        }
                     </div>
                     <div onClick={flipCard} className={"card-face card-back"}>
                         {spotifyStatus ? <div><div className={"card-status"}><a rel={"noreferrer"} target={"_blank"} href={spotifyLink}>Link to Spotify</a></div></div>:
@@ -89,9 +93,13 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
                         {localStorage.getItem("jwt") && <NavLink to={`/tracks/${spotifyAlbumId}`}>To Track List</NavLink>}
                         {deezerStatus ? <div className={"card-status"}><a rel={"noreferrer"} target={"_blank"} href={deezerLink}>Link to Deezer</a></div> :
                             <div className={"card-status"}>Deezer not available</div>}
-                        {favoriteStatus ?
-                            <button className={"favorites-button-card"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
-                            <button className={"favorites-button-card"} onClick={addToFavorites}>To Favorites</button>}
+                        {localStorage.getItem("jwt") &&
+                            <div>
+                                {favoriteStatus ?
+                                    <button className={"favorites-button-card"} onClick={deleteFromFavorites}>Delete From Favorite</button> :
+                                    <button className={"favorites-button-card"} onClick={addToFavorites}>To Favorites</button>}
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

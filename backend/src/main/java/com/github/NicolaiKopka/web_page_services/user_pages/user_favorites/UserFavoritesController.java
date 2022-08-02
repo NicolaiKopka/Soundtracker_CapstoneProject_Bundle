@@ -8,12 +8,11 @@ import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.Add
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylistSendObject;
+import com.github.NicolaiKopka.dto.AddToStreamingPlaylistDTO;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -77,11 +76,13 @@ public class UserFavoritesController {
     }
 
     @PostMapping("/spotify-playlists/add/{spotifyToken}")
-    public ResponseEntity<SpotifyPlaylist> addSpotifyPlaylist(Principal principal, @PathVariable String spotifyToken, @RequestBody AddPlaylistTransferData data) {
+    public ResponseEntity<Object> addSpotifyPlaylist(Principal principal, @PathVariable String spotifyToken, @RequestBody AddPlaylistTransferData data) {
         try {
             return ResponseEntity.ok(userFavoritesService.addSpotifyPlaylist(spotifyToken, principal.getName(), data));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -115,10 +116,10 @@ public class UserFavoritesController {
         }
     }
     // Throws NSEE
-    @PostMapping("/user-playlist/to-spotify/{playlistName}/{spotifyToken}")
-    public ResponseEntity<Object> createSpotifyPlaylistWithTracksInUserPlaylist(Principal principal, @PathVariable String playlistName, @PathVariable String spotifyToken, @RequestBody AddPlaylistTransferData transferData) {
+    @PostMapping("/user-playlist/to-spotify")
+    public ResponseEntity<Object> addTracksToSpotifyPlaylist(Principal principal, @RequestBody AddToStreamingPlaylistDTO transferData) {
         try{
-            userFavoritesService.createSpotifyPlaylistWithTracksInUserPlaylist(principal.getName(), playlistName, transferData, spotifyToken);
+            userFavoritesService.addTracksToSpotifyPlaylist(principal.getName(), transferData);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
