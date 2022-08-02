@@ -11,5 +11,4 @@ public class AddPlaylistTransferData {
     private boolean isPublic;
     private boolean collaborative;
     private String description;
-
 }

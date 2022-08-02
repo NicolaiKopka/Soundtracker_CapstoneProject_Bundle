@@ -154,3 +154,24 @@ export function deleteUserPlaylist(playlistName: string) {
     }).then(response => response.data)
 }
 
+export function getAllSpotifyTracksInPlaylist(playlistName: string) {
+    return axios.get(`/api/soundtracker/user-favorites/tracks/user-playlist/${playlistName}`, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
+}
+
+export function createSpotifyPlaylistAndAddTracks(playlistName: string) {
+    return axios.post(`/api/soundtracker/user-favorites/user-playlist/to-spotify/${playlistName}/` + localStorage.getItem("spotify_jwt"), {
+        name: playlistName,
+        public: true,
+        collaborative: false,
+        description: ""
+    }, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+

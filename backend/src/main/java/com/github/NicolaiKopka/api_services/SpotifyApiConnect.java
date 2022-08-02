@@ -135,12 +135,25 @@ public class SpotifyApiConnect {
 
         return multiTrackResponse.getBody().getTracks();
     }
+
+    public void addTracksInUserPlaylistToNewSpotifyPlaylist(List<String> spotifyTrackIds, String playlistId, String spotifyToken) {
+        StringBuilder builder = new StringBuilder();
+        spotifyTrackIds.forEach(id -> builder.append("spotify:track:").append(id).append(","));
+        builder.deleteCharAt(builder.length() - 1);
+        String allTrackIds = builder.toString();
+
+        String queryUrl = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks?uris=" + allTrackIds;
+
+        restTemplate.exchange(queryUrl,
+                HttpMethod.POST,
+                new HttpEntity<>(createAuthBearerHeader(spotifyToken)),
+                Void.class);
+    }
     private HttpHeaders createAuthBearerHeader(String token) {
         String authValue = "Bearer " + token;
         HttpHeaders header = new HttpHeaders();
         header.set("Authorization", authValue);
         return header;
     }
-
 
 }

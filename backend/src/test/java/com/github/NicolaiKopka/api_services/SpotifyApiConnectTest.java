@@ -9,10 +9,7 @@ import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.Spo
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -237,7 +234,33 @@ class SpotifyApiConnectTest {
         List<SpotifyTrack> actual = spotifyApiConnect.getMultipleSpotifyTracksById(trackIds);
 
         Assertions.assertThat(actual).isEqualTo(List.of(track1, track2));
+    }
 
+    @Test
+    void shouldAddTracksToSpotifyPlaylist() {
+        List<String> trackIds = new ArrayList<>();
+        trackIds.add("1234");
+        trackIds.add("5678");
 
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+
+        HttpHeaders header = new HttpHeaders();
+        header.set("Authorization", "Bearer accessToken");
+
+        Mockito.when(restTemplate.exchange(
+                "https://api.spotify.com/v1/playlists/playlistId/tracks?uris=spotify:track:1234,spotify:track:5678",
+                HttpMethod.POST,
+                new HttpEntity<>(header),
+                Void.class)).thenReturn(ResponseEntity.status(HttpStatus.CREATED).build());
+
+        SpotifyApiConnect spotifyApiConnect = new SpotifyApiConnect(restTemplate, "testId", "testSecret");
+
+        spotifyApiConnect.addTracksInUserPlaylistToNewSpotifyPlaylist(trackIds, "playlistId", "accessToken");
+
+        Mockito.verify(restTemplate).exchange(
+                "https://api.spotify.com/v1/playlists/playlistId/tracks?uris=spotify:track:1234,spotify:track:5678",
+                HttpMethod.POST,
+                new HttpEntity<>(header),
+                Void.class);
     }
 }

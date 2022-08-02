@@ -12,6 +12,7 @@ import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.*;
@@ -602,5 +603,40 @@ class UserFavoritesServiceTest {
         userFavoritesService.getTracksOfUserPlaylist("testUser", "playlist1");
 
         Mockito.verify(spotifyApiConnect).getMultipleSpotifyTracksById(trackList);
+    }
+    @Test
+    void shouldCreateSpotifyPlaylistAndAddTracks() {
+        MyUser user = MyUser.builder().username("testUser").id("userId").spotifyId("spotifyId").build();
+
+        MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
+        Mockito.when(myUserRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        List<String> trackList = new ArrayList<>();
+        trackList.add("1234");
+        trackList.add("5678");
+
+        UserFavoritesSaveObject saveObject = UserFavoritesSaveObject.builder().userId("userId")
+                .userPlaylists(Map.of("playlist1",
+                        new UserPlaylist("playlist1", trackList, new ArrayList<>())))
+                .build();
+
+        UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
+        Mockito.when(userFavoritesRepo.findByUserId("userId")).thenReturn(Optional.of(saveObject));
+
+        MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
+
+        AddPlaylistTransferData transferData = new AddPlaylistTransferData();
+
+        SpotifyPlaylist spotifyPlaylist = new SpotifyPlaylist();
+        spotifyPlaylist.setId("playlistId");
+
+        SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+        Mockito.when(spotifyApiConnect.addSpotifyPlaylist("accessToken", "spotifyId", transferData))
+                .thenReturn(spotifyPlaylist);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        userFavoritesService.createSpotifyPlaylistWithTracksInUserPlaylist("testUser", "playlist1", transferData, "accessToken");
+
+        Mockito.verify(spotifyApiConnect).addTracksInUserPlaylistToNewSpotifyPlaylist(List.of("1234", "5678"), "playlistId", "accessToken");
     }
 }
