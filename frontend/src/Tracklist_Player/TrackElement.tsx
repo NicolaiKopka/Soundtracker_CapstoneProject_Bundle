@@ -2,7 +2,6 @@ import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import Spotify from "react-spotify-embed";
 import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
 import "./TrackElement.css"
-import {tableHeadClasses} from "@mui/material";
 import toast from "react-hot-toast";
 
 interface TrackListProps {
