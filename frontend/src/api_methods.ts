@@ -3,7 +3,7 @@ import {
     LoginResponseDTO,
     MovieItem,
     RegisterUserDTO,
-    SpotifyLoginResponseDTO, SpotifyTrackDTO,
+    SpotifyLoginResponseDTO, SpotifyPlaylist, SpotifyTrackDTO,
     SpotifyUserPlaylists,
     StreamingStatusDTO, UserFavoritesDTO
 } from "./models";
@@ -95,7 +95,7 @@ export function addSpotifyPlaylist(name: string, description: string, isPublic: 
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
-    })
+    }).then((response: AxiosResponse<SpotifyPlaylist>) => response.data)
 }
 
 export function getSpotifyAlbumById(id: string) {
@@ -162,12 +162,11 @@ export function getAllSpotifyTracksInPlaylist(playlistName: string) {
     }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
 }
 
-export function createSpotifyPlaylistAndAddTracks(playlistName: string) {
-    return axios.post(`/api/soundtracker/user-favorites/user-playlist/to-spotify/${playlistName}/` + localStorage.getItem("spotify_jwt"), {
-        name: playlistName,
-        public: true,
-        collaborative: false,
-        description: ""
+export function addTracksToSpotifyPlaylist(playlistId: string, playlistName: string) {
+    return axios.post(`/api/soundtracker/user-favorites/user-playlist/to-spotify`, {
+        spotifyToken: localStorage.getItem("spotify_jwt"),
+        spotifyPlaylistId: playlistId,
+        userPlaylistName: playlistName
     }, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")

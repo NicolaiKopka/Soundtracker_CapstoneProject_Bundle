@@ -47,6 +47,7 @@ export interface SpotifyPlaylist {
     description: string
     name: string
     href: string
+    id: string
 }
 
 export interface SpotifyTrackDTO {
