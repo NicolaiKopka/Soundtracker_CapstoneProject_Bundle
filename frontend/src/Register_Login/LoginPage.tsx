@@ -3,6 +3,7 @@ import {FormEvent, useState} from "react";
 import {loginUser} from "../api_methods";
 import {useNavigate} from "react-router-dom";
 import "./LoginPage.css"
+import toast from "react-hot-toast";
 
 interface AppProps {
     setErrorMessage: Function
@@ -21,7 +22,11 @@ export default function LoginPage(props: AppProps) {
                 localStorage.setItem("jwt", data.token)
             })
             .then(() => nav("/"))
-            .catch(() => props.setErrorMessage("Oops, wrong credentials"))
+            .then(() => toast.success("You are logged in"))
+            .catch(() => {
+                toast.error("Oops, wrong credentials")
+                // props.setErrorMessage("Oops, wrong credentials")
+            })
     }
 
     function throwAlert() {
@@ -33,8 +38,8 @@ export default function LoginPage(props: AppProps) {
             <Header />
             <div className={"login-form"}>
                 <form onSubmit={login}>
-                    <input className={"form-items"} value={username} placeholder={"username"} onChange={ev => setUsername(ev.target.value)}/>
-                    <input type={"password"} className={"form-items"} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
+                    <input className={"form-items"} required={true} value={username} placeholder={"username"} onChange={ev => setUsername(ev.target.value)}/>
+                    <input type={"password"} className={"form-items"} required={true} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
                     <button className={"login-button"} type={"submit"}>Login</button>
                 </form>
                 <a href={"/register"}>No account? Click to register</a>

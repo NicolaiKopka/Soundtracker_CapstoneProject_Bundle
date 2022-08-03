@@ -5,6 +5,7 @@ import {useEffect, useRef, useState} from "react";
 import 'react-slideshow-image/dist/styles.css';
 import altImage from "../images/page-not-found-ge8454dec1_1280.jpg"
 import {NavLink} from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 interface MainPageGalleryProps {
@@ -47,7 +48,8 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
         addMovieToFavorites(props.movie.id)
             .then(() => setFavoriteStatus(true))
             .then(() => props.getUserMovies)
-            .catch()
+            .then(() => toast.success("Movie added to favorites"))
+            .catch(error => error.response.data)
 
     }
 
@@ -55,7 +57,8 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
         deleteMoviesFromFavorites(props.movie.id)
             .then(() => setFavoriteStatus(false))
             .then(() => props.getUserMovies())
-            .catch()
+            .then(() => toast.success("Movie deleted from favorites"))
+            .catch(error => error.response.data)
     }
 
     function flipCard() {

@@ -86,15 +86,17 @@ public class UserFavoritesController {
     }
 
     @PostMapping("/create-user-playlist/{playlistName}")
-    public ResponseEntity<UserFavoritesDTO> createNewUserPlaylist(Principal principal, @PathVariable String playlistName) {
+    public ResponseEntity<Object> createNewUserPlaylist(Principal principal, @PathVariable String playlistName) {
         try {
             UserFavoritesSaveObject userFavorites = userFavoritesService.createNewUserPlaylist(principal.getName(), playlistName);
             UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder()
                     .movieIds(userFavorites.getMovieIds())
                     .userPlaylists(userFavorites.getUserPlaylists()).build();
             return ResponseEntity.ok(userFavoritesDTO);
-        } catch (NoSuchElementException | IllegalArgumentException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -125,13 +127,15 @@ public class UserFavoritesController {
         }
     }
     @PutMapping("/{movieId}")
-    public ResponseEntity<UserFavoritesDTO> addMovieToFavorites(@PathVariable int movieId, Principal principal) {
+    public ResponseEntity<Object> addMovieToFavorites(@PathVariable int movieId, Principal principal) {
         try {
             UserFavoritesSaveObject userFavorites = userFavoritesService.addMovieToFavorites(movieId, principal.getName());
             UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().movieIds(userFavorites.getMovieIds()).build();
             return ResponseEntity.ok(userFavoritesDTO);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -158,14 +162,16 @@ public class UserFavoritesController {
     }
 
     @DeleteMapping("/user-playlist/{playlistName}")
-    public ResponseEntity<UserFavoritesDTO> removeUserPlaylist(Principal principal, @PathVariable String playlistName) {
+    public ResponseEntity<Object> removeUserPlaylist(Principal principal, @PathVariable String playlistName) {
         try{
             UserFavoritesSaveObject favoritesSaveObject = userFavoritesService.removeUserPlaylist(principal.getName(), playlistName);
             UserFavoritesDTO userFavoritesDTO = UserFavoritesDTO.builder().movieIds(favoritesSaveObject.getMovieIds())
                     .userPlaylists(favoritesSaveObject.getUserPlaylists()).build();
             return ResponseEntity.ok(userFavoritesDTO);
-        } catch (NoSuchElementException | IllegalArgumentException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch(IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

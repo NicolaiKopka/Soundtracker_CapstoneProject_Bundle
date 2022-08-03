@@ -25,7 +25,7 @@ public class UserFavoritesSaveObject {
     private Map<String, UserPlaylist> userPlaylists = new HashMap<>();
     public void addMovieId(Integer movieId) {
         if(movieIds.contains(movieId)) {
-            throw new IllegalArgumentException("Movie already in list");
+            throw new IllegalArgumentException("This movie already exists");
         }
         movieIds.add(movieId);
     }
