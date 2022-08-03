@@ -39,6 +39,11 @@ export interface SpotifyLoginResponseDTO {
     spotifyToken: string
 }
 
+export interface DeezerLoginResponseDTO {
+    jwtToken: string
+    deezerToken: string
+}
+
 export interface SpotifyUserPlaylists {
     items: Array<SpotifyPlaylist>
 }
