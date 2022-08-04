@@ -38,7 +38,7 @@ function App() {
                     <Route path={"/deezer-redirect"} element={<DeezerLoginRedirect/>} />
                     <Route path={"/my-playlists"} element={<MyPlaylistsPage/>} />
                     <Route path={"/spotify-playlists"} element={<SpotifyPlaylistPage/>} />
-                    <Route path={"/tracks/:id"} element={<TrackList/>} />
+                    <Route path={"/tracks/:spotifyId/:deezerId"} element={<TrackList/>} />
                 </Routes>
             </BrowserRouter>
         </div>

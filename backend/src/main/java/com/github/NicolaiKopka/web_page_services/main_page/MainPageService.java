@@ -4,10 +4,9 @@ import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerTrack;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
-import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,10 @@ public class MainPageService {
     }
 
     public List<SpotifyTrack> getSpotifyAlbumTracksById(String id){
-       return spotifyApiConnect.getSpotifyAlbumTracksById(id);
+        return spotifyApiConnect.getSpotifyAlbumTracksById(id);
+    }
+    public List<DeezerTrack> getDeezerAlbumTracksById(String id) {
+        return deezerApiConnect.getAllTracksByAlbumId(Long.parseLong(id));
     }
 
     private Optional<AlbumReferenceDTO> checkForExactSoundtrackOnDeezer(List<AlbumReferenceDTO> albumList, String movieName) {

@@ -1,29 +1,34 @@
 import {useParams} from "react-router-dom";
 import {ChangeEvent, useCallback, useEffect, useState} from "react";
-import {getAllUserPlaylists, getSpotifyAlbumById} from "../api_methods";
-import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
-import TrackElement from "./TrackElement";
+import {getAllUserPlaylists, getDeezerAlbumById, getSpotifyAlbumById} from "../api_methods";
+import {DeezerTrack, SpotifyTrackDTO, UserPlaylistMap} from "../models";
+import SpotifyTrackElement from "./SpotifyTrackElement";
 import Header from "../Header/Header";
 import "./TrackList.css"
+import DeezerTrackElement from "./DeezerTrackElement";
 
 export default function TrackList() {
 
-    const [trackList, setTrackList] = useState<Array<SpotifyTrackDTO>>([])
+    const [spotifyTrackList, setSpotifyTrackList] = useState<Array<SpotifyTrackDTO>>([])
+    const [deezerTrackList, setDeezerTrackList] = useState<Array<DeezerTrack>>([])
     const [userPlaylists, setUserPlaylists] = useState({} as UserPlaylistMap)
     const [currentPlaylistKey, setCurrentPlaylistKey] = useState("New Playlist")
     const [newPlaylistName, setNewPlaylistName] = useState("")
 
-    const {id} = useParams()
+    const {spotifyId, deezerId} = useParams()
 
     const updateUserPlaylists = useCallback(() => {
         getAllUserPlaylists().then(data => setUserPlaylists(data.userPlaylists))
     }, [])
 
     useEffect(() => {
-        if(id) {
-            getSpotifyAlbumById(id).then((data) => setTrackList(data))
+        if(spotifyId) {
+            getSpotifyAlbumById(spotifyId).then((data) => setSpotifyTrackList(data))
         }
-    }, [id])
+        if(deezerId) {
+            getDeezerAlbumById(deezerId).then(data => setDeezerTrackList(data))
+        }
+    }, [spotifyId, deezerId])
 
     useEffect(() => {
         updateUserPlaylists()
@@ -33,7 +38,7 @@ export default function TrackList() {
         setCurrentPlaylistKey(event.target.value)
     }
 
-    const trackElements = trackList.map(track => <TrackElement
+    const trackElements = spotifyTrackList.map(track => <SpotifyTrackElement
         key={track.id}
         newPlaylistName={newPlaylistName}
         currentKey={currentPlaylistKey}
@@ -42,6 +47,8 @@ export default function TrackList() {
         setCurrentPlaylistKey={setCurrentPlaylistKey}
         setNewPlaylistName={setNewPlaylistName}
         track={track}/>)
+
+    const deezerTrackElements = deezerTrackList.map(track => <DeezerTrackElement key={track.id} track={track}/>)
 
     const playlists = Object.keys(userPlaylists)
 
@@ -60,6 +67,7 @@ export default function TrackList() {
             </div>
             <div>
                 {trackElements}
+                {deezerTrackElements}
             </div>
         </div>
     )

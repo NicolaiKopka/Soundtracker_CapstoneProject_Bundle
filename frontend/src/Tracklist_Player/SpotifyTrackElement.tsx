@@ -14,7 +14,7 @@ interface TrackListProps {
     setNewPlaylistName: Function
 }
 
-export default function TrackElement(props: TrackListProps) {
+export default function SpotifyTrackElement(props: TrackListProps) {
 
     function addToPlaylist() {
         if(props.currentKey === "New Playlist") {

@@ -1,6 +1,7 @@
 package com.github.NicolaiKopka.web_page_services.main_page;
 
 
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerTrack;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
@@ -48,6 +49,10 @@ public class MainPageController {
         } catch (HttpClientErrorException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @GetMapping("/deezer/album/{id}")
+    public ResponseEntity<Collection<DeezerTrack>> getDeezerAlbumById(@PathVariable String id) {
+        return ResponseEntity.ok(mainPageService.getDeezerAlbumTracksById(id));
     }
     @GetMapping("/search/{query}")
     public ResponseEntity<?> getMoviesByQuery(@PathVariable String query) {

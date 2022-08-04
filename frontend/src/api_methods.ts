@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import {
-    DeezerLoginResponseDTO,
+    DeezerLoginResponseDTO, DeezerTrack,
     LoginResponseDTO,
     MovieItem,
     RegisterUserDTO,
@@ -8,8 +8,6 @@ import {
     SpotifyUserPlaylists,
     StreamingStatusDTO, UserFavoritesDTO
 } from "./models";
-
-
 
 export function getStarterPageMovies() {
     return axios.get("/api/soundtracker")
@@ -31,7 +29,6 @@ export function loginUser(username: string, password: string) {
         username,
         password
     }).then((response: AxiosResponse<LoginResponseDTO>) => response.data)
-
 }
 
 export function registerUser(username: string, password: string, checkPassword: string) {
@@ -110,6 +107,14 @@ export function getSpotifyAlbumById(id: string) {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
     }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
+}
+
+export function getDeezerAlbumById(id: string) {
+    return axios.get("/api/soundtracker/deezer/album/" + id, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<Array<DeezerTrack>>) => response.data)
 }
 
 export function getAllUserPlaylists() {

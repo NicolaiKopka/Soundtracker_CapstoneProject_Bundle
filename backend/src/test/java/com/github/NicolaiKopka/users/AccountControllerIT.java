@@ -15,7 +15,6 @@ import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,8 +25,6 @@ import org.springframework.http.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

@@ -2,11 +2,14 @@ package com.github.NicolaiKopka.api_services;
 
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerAlbum;
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerMultiTracks;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerSearchData;
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerTrack;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,6 +46,18 @@ public class DeezerApiConnect {
 
         currentAlbum.setAlbumUrl(deezerAlbum.getLink());
         return currentAlbum;
+    }
+
+    public List<DeezerTrack> getAllTracksByAlbumId(long id) {
+        String queryUrl = "https://api.deezer.com/album/" + id + "/tracks";
+        DeezerMultiTracks deezerAllTracks = restTemplate.getForObject(queryUrl, DeezerMultiTracks.class);
+
+        if(deezerAllTracks == null) {
+            return new ArrayList<>();
+        }
+
+        return deezerAllTracks.getData();
+
     }
 
 }

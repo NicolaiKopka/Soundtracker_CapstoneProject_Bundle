@@ -61,6 +61,12 @@ export interface SpotifyTrackDTO {
     id: string
 }
 
+export interface DeezerTrack {
+    id: number
+    title: string
+    link: string
+}
+
 export interface UserFavoritesDTO {
     movieIds: Array<number>
     userPlaylists: UserPlaylistMap
