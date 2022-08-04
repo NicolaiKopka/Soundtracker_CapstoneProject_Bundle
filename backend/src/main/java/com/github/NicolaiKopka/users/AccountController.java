@@ -34,7 +34,6 @@ public class AccountController {
             RegisterUserDTO registerUserDTO = RegisterUserDTO.builder().username(newlySavedUser.getUsername()).build();
             return ResponseEntity.status(HttpStatus.CREATED).body(registerUserDTO);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

@@ -126,6 +126,11 @@ class AccountServiceTest {
                 .checkPassword("password")
                 .build();
 
+        RegisterData newUser2 = RegisterData.builder().username("user(deezerUser)")
+                .password("password")
+                .checkPassword("password")
+                .build();
+
         MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
 
         PasswordEncoder encoder = Mockito.mock(PasswordEncoder.class);
@@ -133,12 +138,15 @@ class AccountServiceTest {
         UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
 
         AccountService accountService = new AccountService(userFavoritesRepo, myUserRepo, encoder);
-        try{
-            accountService.registerUser(newUser);
-            fail();
-        } catch (IllegalStateException e) {
-            Assertions.assertThat(e.getMessage()).isEqualTo("Illegal username combination");
-        }
+
+        Assertions.assertThatThrownBy(() -> accountService.registerUser(newUser))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Illegal username combination");
+
+        Assertions.assertThatThrownBy(() -> accountService.registerUser(newUser2))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Illegal username combination");
+
     }
 
     //test section for after deploy on login DB modification

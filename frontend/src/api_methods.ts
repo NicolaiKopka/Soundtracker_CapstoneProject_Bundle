@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import {
+    DeezerLoginResponseDTO,
     LoginResponseDTO,
     MovieItem,
     RegisterUserDTO,
@@ -75,6 +76,11 @@ export function authorizeWithSpotify() {
 export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
     return axios.get("/api/spotify/callback" + spotifyCode)
         .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
+}
+
+export function getDeezerAccessTokenFromBackend(deezerCode: string) {
+    return axios.get("/api/deezer/callback" + deezerCode)
+        .then((response:AxiosResponse<DeezerLoginResponseDTO>) => response.data)
 }
 
 export function getAllUserSpotifyPlaylists() {

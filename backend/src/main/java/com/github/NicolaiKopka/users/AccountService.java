@@ -17,7 +17,7 @@ public class AccountService {
     private final PasswordEncoder encoder;
     public MyUser registerUser(RegisterData registerData) {
 
-        if(registerData.getUsername().contains("(spotifyUser)")){
+        if(registerData.getUsername().contains("(") || registerData.getUsername().contains(")")){
             throw new IllegalStateException("Illegal username combination");
         }
         if(registerData.getUsername().isBlank() || registerData.getPassword().isBlank() || registerData.getCheckPassword().isBlank()  ||
