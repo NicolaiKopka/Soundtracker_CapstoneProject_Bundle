@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -112,6 +109,21 @@ public class StreamingProviderLoginController {
         String jwtToken = jwtService.createToken(claims, user.getUsername());
 
         return new DeezerLoginResponseDTO(jwtToken, accessToken);
+
+    }
+
+    @GetMapping("/deezer/callback/{currentJwt}")
+    public DeezerLoginResponseDTO deezerCallback(@RequestParam String code, @PathVariable String currentJwt) {
+        String queryUrl = "https://connect.deezer.com/oauth/access_token.php?" +
+                "app_id=" + DEEZER_ID +
+                "&secret=" + DEEZER_SECRET +
+                "&code=" + code;
+
+        String deezerResponse = restTemplate.getForObject(queryUrl, String.class);
+        String accessTokenFull = deezerResponse.split("&")[0];
+        String accessToken = accessTokenFull.split("=")[1];
+
+        return new DeezerLoginResponseDTO(currentJwt, accessToken);
 
     }
 

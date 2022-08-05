@@ -81,6 +81,15 @@ export function getDeezerAccessTokenFromBackend(deezerCode: string) {
         .then((response:AxiosResponse<DeezerLoginResponseDTO>) => response.data)
 }
 
+export function getDeezerAccessWithoutLogin(deezerCode: string) {
+    return axios.get("/api/deezer/callback/" + localStorage.getItem("jwt") + deezerCode, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    })
+        .then((response:AxiosResponse<DeezerLoginResponseDTO>) => response.data)
+}
+
 export function getAllUserSpotifyPlaylists() {
     return axios.get("/api/soundtracker/user-favorites/spotify-playlists/" + localStorage.getItem("spotify_jwt"), {
         headers: {

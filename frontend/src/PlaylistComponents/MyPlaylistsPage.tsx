@@ -79,7 +79,8 @@ export default function MyPlaylistsPage() {
                     <div>
                         {localStorage.getItem("spotify_jwt") ? <p>Spotify key available</p>:
                             <a>Get your spotify key</a>}
-                        {localStorage.getItem("deezer_jwt") ? <p>Deezer key available</p>: <a>Get your deezer key</a>}
+                        {localStorage.getItem("deezer_jwt") ? <p>Deezer key available</p>:
+                            <a href={`https://connect.deezer.com/oauth/auth.php?app_id=${process.env.REACT_APP_DEEZER_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_DEEZER_CALLBACK_URI}&perms=basic_access,email,manage_library`}>Get your deezer key</a>}
                     </div>
                 <div className={"playlist-form-wrapper"}>
                     <input required={true} placeholder={"name"}  value={newPlaylistName}

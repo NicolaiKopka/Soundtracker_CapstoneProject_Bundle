@@ -96,7 +96,7 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             {props.editMode &&
                 <button className={"playlist-button delete-button"} onClick={deletePlaylist}><i className="fa-solid fa-trash-can spacer"></i>Delete Playlist</button>}
             {props.spotifyMode && props.currentProvider === "spotify" &&
-            <button className={"playlist-button"} onClick={sendPlaylistToSpotify}>Send to Spotify</button>}
+            <button disabled={props.playlistName === ""} className={"playlist-button"} onClick={sendPlaylistToSpotify}>Send to Spotify</button>}
             {props.spotifyMode && props.currentProvider === "deezer" &&
                 <button className={"playlist-button"} onClick={sendPlaylistToDeezer}>Send to Deezer</button>}
             {showStatus &&
