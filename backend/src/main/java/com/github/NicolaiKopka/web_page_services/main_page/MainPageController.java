@@ -1,6 +1,7 @@
 package com.github.NicolaiKopka.web_page_services.main_page;
 
 
+import com.github.NicolaiKopka.db_models.StreamingTracks;
 import com.github.NicolaiKopka.db_models.deezerModels.DeezerTrack;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
@@ -34,18 +35,25 @@ public class MainPageController {
     public StreamingStatusDTO getMovieSoundtrackStreamingStatus(@PathVariable String movieName){
         return mainPageService.getSoundtrackOnSpotify(movieName);
     }
-    @GetMapping("/spotify/album/{id}")
-    public ResponseEntity<Collection<SpotifyTrackDTO>> getSpotifyAlbumById(@PathVariable String id) {
+    @GetMapping("/spotify/album/{spotifyId}/{deezerId}")
+    public ResponseEntity<StreamingTracks> getSpotifyAlbumById(@PathVariable String spotifyId, @PathVariable String deezerId) {
         try {
-            List<SpotifyTrack> spotifyAlbumTracksById = mainPageService.getSpotifyAlbumTracksById(id);
-            List<SpotifyTrackDTO> spotifyTrackDTO = spotifyAlbumTracksById.stream().map(track -> {
-                SpotifyTrackDTO trackDTO = new SpotifyTrackDTO();
-                trackDTO.setName(track.getName());
-                trackDTO.setUrl(track.getExternalURLs().getAlbumUrl());
-                trackDTO.setId(track.getId());
-                return trackDTO;
+            List<SpotifyTrack> spotifyAlbumTracksById = mainPageService.getSpotifyAlbumTracksById(spotifyId);
+            List<DeezerTrack> deezerAlbumTracksById = mainPageService.getDeezerAlbumTracksById(deezerId);
+
+            List<SpotifyTrackDTO> spotifyTrackDTOs = spotifyAlbumTracksById.stream().map(spotifyTrack -> {
+                SpotifyTrackDTO spotifyTrackDTO = new SpotifyTrackDTO();
+                spotifyTrackDTO.setId(spotifyTrack.getId());
+                spotifyTrackDTO.setUrl(spotifyTrack.getExternalURLs().getAlbumUrl());
+                spotifyTrackDTO.setName(spotifyTrack.getName());
+                return spotifyTrackDTO;
             }).toList();
-            return ResponseEntity.ok(spotifyTrackDTO);
+
+            StreamingTracks streamingTracks = new StreamingTracks();
+            streamingTracks.setSpotifyTracks(spotifyTrackDTOs);
+            streamingTracks.setDeezerTracks(deezerAlbumTracksById);
+            return ResponseEntity.ok(streamingTracks);
+
         } catch (HttpClientErrorException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

@@ -1,52 +1,32 @@
-import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
+import {DeezerTrack, SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import Spotify from "react-spotify-embed";
 import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
 import "./TrackElement.css"
 import toast from "react-hot-toast";
+import {useEffect, useState} from "react";
 
 interface TrackListProps {
     userPlaylists: UserPlaylistMap
     currentKey: string
     track: SpotifyTrackDTO
-    newPlaylistName: string
-    updatePlaylists: Function
-    setCurrentPlaylistKey: Function
-    setNewPlaylistName: Function
+    index: number
+    addToPlaylist: (index: number) => void
+    deleteFromPlaylist: (index: number) => void
 }
 
 export default function SpotifyTrackElement(props: TrackListProps) {
 
-    function addToPlaylist() {
-        if(props.currentKey === "New Playlist") {
-            createNewUserPlaylist(props.newPlaylistName).then(
-                () => addTrackToUserPlaylist(props.newPlaylistName, props.track.id, props.track.id)
-                    .then(() => props.updatePlaylists())
-                    .then(() => props.setCurrentPlaylistKey(props.newPlaylistName))
-                    .then(() => props.setNewPlaylistName("")))
-                .then(() => toast.success("Added to playlist"))
-                .catch(error => toast.error(error.response.data))
-        } else {
-            addTrackToUserPlaylist(props.currentKey, props.track.id, props.track.id)
-                .then(() => props.updatePlaylists())
-                .then(() => toast.success("Added to playlist"))
-                .catch(error => error.response.data)
-        }
-    }
 
-    function deleteFromPlaylist() {
-        deleteTrackFromUserPlaylist(props.currentKey, props.track.id, props.track.id)
-            .then(() => props.updatePlaylists())
-            .then(() => toast.success("Deleted from playlist"))
-            .catch(error => error.response.data)
-    }
+
+
 
     return (
         <div className={"track-element"}>
             <Spotify className={"spotify-player"} wide link={props.track.url}/>
             <div>
                 {props.userPlaylists[props.currentKey] !== undefined && props.userPlaylists[props.currentKey].spotifyTrackIds.includes(props.track.id) ?
-                    <button className="favorites-button delete-button" onClick={deleteFromPlaylist}>delete from playlist</button> :
-                    <button className="favorites-button" onClick={addToPlaylist}>add to playlist</button>
+                    <button className="favorites-button delete-button" onClick={() => props.deleteFromPlaylist(props.index)}>delete from playlist</button> :
+                    <button className="favorites-button" onClick={() => props.addToPlaylist(props.index)}>add to playlist</button>
                 }
             </div>
         </div>

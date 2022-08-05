@@ -1,12 +1,13 @@
 import axios, {AxiosResponse} from "axios";
 import {
+    DeezerAddPlaylistDTO,
     DeezerLoginResponseDTO, DeezerTrack,
     LoginResponseDTO,
     MovieItem,
     RegisterUserDTO,
     SpotifyLoginResponseDTO, SpotifyPlaylist, SpotifyTrackDTO,
     SpotifyUserPlaylists,
-    StreamingStatusDTO, UserFavoritesDTO
+    StreamingStatusDTO, StreamingTracks, UserFavoritesDTO
 } from "./models";
 
 export function getStarterPageMovies() {
@@ -101,12 +102,23 @@ export function addSpotifyPlaylist(name: string, description: string, isPublic: 
     }).then((response: AxiosResponse<SpotifyPlaylist>) => response.data)
 }
 
-export function getSpotifyAlbumById(id: string) {
-    return axios.get("/api/soundtracker/spotify/album/" + id, {
+export function addDeezerPlaylist(playlistName: string) {
+    return axios.post("/api/soundtracker/user-favorites/deezer-playlists/add", {
+        deezerToken: localStorage.getItem("deezer_jwt"),
+        playlistName
+    }, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
-    }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
+    }).then((response: AxiosResponse<DeezerAddPlaylistDTO>) => response.data)
+}
+
+export function getStreamingAlbumsById(spotifyId: string, deezerId: string) {
+    return axios.get(`/api/soundtracker/spotify/album/${spotifyId}/${deezerId}`, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<StreamingTracks>) => response.data)
 }
 
 export function getDeezerAlbumById(id: string) {
@@ -178,6 +190,18 @@ export function addTracksToSpotifyPlaylist(playlistId: string, playlistName: str
         spotifyToken: localStorage.getItem("spotify_jwt"),
         spotifyPlaylistId: playlistId,
         userPlaylistName: playlistName
+    }, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+
+export function addTracksToDeezerPlaylist(playlistId: string, playlistName: string) {
+    return axios.post(`/api/soundtracker/user-favorites/user-playlist/to-deezer`, {
+        deezerToken: localStorage.getItem("deezer_jwt"),
+        id: playlistId,
+        playlistName
     }, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")

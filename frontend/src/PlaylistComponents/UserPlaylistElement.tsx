@@ -1,7 +1,8 @@
 import {useState} from "react";
-import {SpotifyTrackDTO} from "../models";
+import {SpotifyTrackDTO, UserFavoritesDTO, UserPlaylistMap} from "../models";
 import {
-    addSpotifyPlaylist,
+    addDeezerPlaylist,
+    addSpotifyPlaylist, addTracksToDeezerPlaylist,
     addTracksToSpotifyPlaylist,
     deleteUserPlaylist,
     getAllSpotifyTracksInPlaylist
@@ -23,12 +24,15 @@ interface MyPlaylistPageProps {
     setPlaylistDescription: Function
     setPlaylistIsPublic: Function
     setPlaylistCollab: Function
+    currentProvider: string
+    playlistMap: UserPlaylistMap
 }
 
 export default function UserPlaylistElement(props: MyPlaylistPageProps) {
 
     const [showStatus, setShowStatus] = useState(false)
     const [allPlaylistTracks, setAllPlaylistTracks] = useState<Array<SpotifyTrackDTO>>()
+    const [deezerTrackIds, setDeezerTrackIds] = useState<Array<string>>([])
 
     function switchShowStatus() {
         if(showStatus) {
@@ -42,6 +46,7 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
     function getAllPlaylistTracks() {
         getAllSpotifyTracksInPlaylist(props.playlistKey)
             .then(data => setAllPlaylistTracks(data))
+            .then(() => setDeezerTrackIds(props.playlistMap[props.playlistKey].deezerTrackIds))
             .catch(error => error.response.data)
     }
 
@@ -69,7 +74,19 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             }).catch(error => toast.error(error.response.data))
     }
 
-    const allPlaylistTrackElements = allPlaylistTracks?.map(track => <MyPlaylistTrackElement refreshTracks={getAllPlaylistTracks} playlistKey={props.playlistKey} editMode={props.editMode} track={track}/>)
+    function sendPlaylistToDeezer() {
+        addDeezerPlaylist(props.playlistName)
+            .then(data => {
+                addTracksToDeezerPlaylist(data.id, props.playlistKey)
+                    .then(() => {
+                        toast.success("Sent playlist to deezer")
+                        props.setPlaylistName("")
+                    })
+            })
+    }
+
+    const allPlaylistTrackElements = allPlaylistTracks?.map((track, index) =>
+        <MyPlaylistTrackElement refreshTracks={getAllPlaylistTracks} playlistKey={props.playlistKey} editMode={props.editMode} track={track} deezerId={deezerTrackIds[index]}/>)
 
 
     return (
@@ -78,8 +95,10 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
                 className="fa-solid fa-arrow-down spacer-left"></i></button>
             {props.editMode &&
                 <button className={"playlist-button delete-button"} onClick={deletePlaylist}><i className="fa-solid fa-trash-can spacer"></i>Delete Playlist</button>}
-            {props.spotifyMode &&
+            {props.spotifyMode && props.currentProvider === "spotify" &&
             <button className={"playlist-button"} onClick={sendPlaylistToSpotify}>Send to Spotify</button>}
+            {props.spotifyMode && props.currentProvider === "deezer" &&
+                <button className={"playlist-button"} onClick={sendPlaylistToDeezer}>Send to Deezer</button>}
             {showStatus &&
                 <div>
                     {allPlaylistTrackElements}

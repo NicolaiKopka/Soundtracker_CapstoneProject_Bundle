@@ -62,7 +62,7 @@ export interface SpotifyTrackDTO {
 }
 
 export interface DeezerTrack {
-    id: number
+    id: string
     title: string
     link: string
 }
@@ -80,6 +80,17 @@ export interface UserPlaylist {
     playlistName: string
     spotifyTrackIds: Array<string>
     deezerTrackIds: Array<string>
+}
+
+export interface DeezerAddPlaylistDTO {
+    deezerToken: string
+    playlistName: string
+    id: string
+}
+
+export interface StreamingTracks {
+    spotifyTracks: Array<SpotifyTrackDTO>
+    deezerTracks: Array<DeezerTrack>
 }
 
 

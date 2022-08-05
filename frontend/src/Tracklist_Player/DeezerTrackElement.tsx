@@ -4,6 +4,7 @@ import Iframe from "react-iframe";
 
 interface TrackListProps {
     track: DeezerTrack
+    index: number
 }
 
 export default function DeezerTrackElement(props: TrackListProps) {

@@ -98,7 +98,7 @@ public class StreamingProviderLoginController {
 
         String deezerResponse = restTemplate.getForObject(queryUrl, String.class);
         String accessTokenFull = deezerResponse.split("&")[0];
-        String accessToken = deezerResponse.split("=")[1];
+        String accessToken = accessTokenFull.split("=")[1];
 
         DeezerUserData deezerUserData = getDeezerUserData(accessTokenFull);
 

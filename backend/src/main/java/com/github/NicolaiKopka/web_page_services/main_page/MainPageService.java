@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -59,9 +60,15 @@ public class MainPageService {
     }
 
     public List<SpotifyTrack> getSpotifyAlbumTracksById(String id){
+        if(id.equals("0")) {
+            return new ArrayList<>();
+        }
         return spotifyApiConnect.getSpotifyAlbumTracksById(id);
     }
     public List<DeezerTrack> getDeezerAlbumTracksById(String id) {
+        if(id.equals("undefined")) {
+            return new ArrayList<>();
+        }
         return deezerApiConnect.getAllTracksByAlbumId(Long.parseLong(id));
     }
 
