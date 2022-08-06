@@ -53,17 +53,21 @@ export default function MyPlaylistsPage() {
         }
     }
 
+    function throwAlert() {
+        alert("Spotify is currently in dev mode for this app. In order to login, your spotify email will have to be deposited in the current project. Contact for more information. If your mail is already deposited you can login.")
+    }
+
     const playlists = Object.keys(userPlaylists)
 
     return (
         <div>
             <Header/>
             <h2>My Playlists</h2>
-            {!spotifyMode && <span>
+            {!spotifyMode && <><span>
                 <span>Edit: </span>
-                <Switch name={"Edit Mode"} onChange={toggleEditMode} checked={editMode}/></span>}
+                <Switch name={"Edit Mode"} onChange={toggleEditMode} checked={editMode}/></span>
 
-            {(localStorage.getItem("spotify_jwt") || localStorage.getItem("deezer_jwt")) && <>
+
                 <span>Export: </span>
                 <Switch name={"SpotifyMode"} onChange={toggleSpotifyMode} checked={spotifyMode}/>
             </>
@@ -78,10 +82,11 @@ export default function MyPlaylistsPage() {
                     </div>
                     <div>
                         {localStorage.getItem("spotify_jwt") ? <p>Spotify key available</p>:
-                            <a>Get your spotify key</a>}
+                            <a onClick={throwAlert} href={`https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}&scope=streaming user-read-playback-state user-read-private user-modify-playback-state user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=${process.env.REACT_APP_SPOTIFY_CALLBACK_URI}`}>Get your spotify key</a>}
                         {localStorage.getItem("deezer_jwt") ? <p>Deezer key available</p>:
                             <a href={`https://connect.deezer.com/oauth/auth.php?app_id=${process.env.REACT_APP_DEEZER_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_DEEZER_CALLBACK_URI}&perms=basic_access,email,manage_library`}>Get your deezer key</a>}
-                    </div>
+                    </div></>}
+                {(localStorage.getItem("spotify_jwt") !== null || localStorage.getItem("deezer_jwt") !== null) &&
                 <div className={"playlist-form-wrapper"}>
                     <input required={true} placeholder={"name"}  value={newPlaylistName}
                            onChange={ev => setNewPlaylistName(ev.target.value)}/>
@@ -98,7 +103,7 @@ export default function MyPlaylistsPage() {
                                    onChange={ev => setNewPlaylistIsCollaborativeStatus(ev.target.checked)}/>
                         </div>
                     }
-                </div> </>}
+                </div>}
                 <div className={"playlist-wrapper"}>
                     {playlists.map(key => <UserPlaylistElement key={key} spotifyMode={spotifyMode} editMode={editMode}
                                                                refreshPlaylists={refreshPlaylists} playlistDescription={newPlaylistDescription}

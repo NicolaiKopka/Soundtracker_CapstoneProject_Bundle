@@ -66,7 +66,7 @@ export function deleteMoviesFromFavorites(id: number) {
 
 export function authorizeWithSpotify() {
     return axios.get(`https://accounts.spotify.com/authorize
-                        ?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723
+                        ?response_type=code&client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}
                         &scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private
                         &redirect_uri=${process.env.SPOTIFY_CALLBACK_URI}`)
 }
@@ -88,6 +88,15 @@ export function getDeezerAccessWithoutLogin(deezerCode: string) {
         }
     })
         .then((response:AxiosResponse<DeezerLoginResponseDTO>) => response.data)
+}
+
+export function getSpotifyAccessWithoutLogin(spotifyCode: string) {
+    return axios.get("/api/spotify/callback/" + localStorage.getItem("jwt") + spotifyCode,  {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    })
+        .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
 }
 
 export function getAllUserSpotifyPlaylists() {

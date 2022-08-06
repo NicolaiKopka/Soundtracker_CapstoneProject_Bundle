@@ -43,7 +43,7 @@ export default function LoginPage(props: AppProps) {
                     <button className={"login-button"} type={"submit"}>Login</button>
                 </form>
                 <a href={"/register"}>No account? Click to register</a>
-                <a onClick={throwAlert} href={`https://accounts.spotify.com/authorize?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723&scope=streaming user-read-playback-state user-read-private user-modify-playback-state user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=${process.env.REACT_APP_SPOTIFY_CALLBACK_URI}`}>Login With Spotify</a>
+                <a onClick={throwAlert} href={`https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}&scope=streaming user-read-playback-state user-read-private user-modify-playback-state user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private&redirect_uri=${process.env.REACT_APP_SPOTIFY_CALLBACK_URI}`}>Login With Spotify</a>
                 <a href={`https://connect.deezer.com/oauth/auth.php?app_id=${process.env.REACT_APP_DEEZER_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_DEEZER_CALLBACK_URI}&perms=basic_access,email,manage_library`}>Login With Deezer</a>
 
             </div>

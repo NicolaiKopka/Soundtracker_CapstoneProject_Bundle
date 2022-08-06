@@ -98,7 +98,7 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             {props.spotifyMode && props.currentProvider === "spotify" &&
             <button disabled={props.playlistName === ""} className={"playlist-button"} onClick={sendPlaylistToSpotify}>Send to Spotify</button>}
             {props.spotifyMode && props.currentProvider === "deezer" &&
-                <button className={"playlist-button"} onClick={sendPlaylistToDeezer}>Send to Deezer</button>}
+                <button disabled={props.playlistName === ""} className={"playlist-button"} onClick={sendPlaylistToDeezer}>Send to Deezer</button>}
             {showStatus &&
                 <div>
                     {allPlaylistTrackElements}
