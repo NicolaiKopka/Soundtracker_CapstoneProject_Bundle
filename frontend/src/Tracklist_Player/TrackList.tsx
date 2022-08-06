@@ -28,13 +28,7 @@ export default function TrackList() {
     }, [])
 
     useEffect(() => {
-        if(!spotifyId){
-            spotifyId = "0"
-        }
-        if(!deezerId){
-            deezerId = "0"
-        }
-        getStreamingAlbumsById(spotifyId, deezerId).then((data) => {
+        getStreamingAlbumsById(spotifyId!, deezerId!).then((data) => {
             setSpotifyTrackList(data.spotifyTracks)
             setDeezerTrackList(data.deezerTracks)
         })
