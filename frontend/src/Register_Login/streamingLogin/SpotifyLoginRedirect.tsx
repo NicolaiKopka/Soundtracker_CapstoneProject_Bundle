@@ -1,6 +1,5 @@
 import {useEffect} from "react";
 import {
-    getDeezerAccessWithoutLogin,
     getSpotifyAccessTokenFromBackend,
     getSpotifyAccessWithoutLogin
 } from "../../api_methods";

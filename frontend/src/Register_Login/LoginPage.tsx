@@ -5,11 +5,7 @@ import {useNavigate} from "react-router-dom";
 import "./LoginPage.css"
 import toast from "react-hot-toast";
 
-interface AppProps {
-    setErrorMessage: Function
-}
-
-export default function LoginPage(props: AppProps) {
+export default function LoginPage() {
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")

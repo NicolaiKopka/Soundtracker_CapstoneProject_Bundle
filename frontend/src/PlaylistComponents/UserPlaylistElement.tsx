@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {SpotifyTrackDTO, UserFavoritesDTO, UserPlaylistMap} from "../models";
+import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import {
     addDeezerPlaylist,
     addSpotifyPlaylist, addTracksToDeezerPlaylist,

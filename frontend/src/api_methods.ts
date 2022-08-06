@@ -1,7 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 import {
     DeezerAddPlaylistDTO,
-    DeezerLoginResponseDTO, DeezerTrack,
+    DeezerLoginResponseDTO,
     LoginResponseDTO,
     MovieItem,
     RegisterUserDTO,
@@ -139,13 +139,13 @@ export function getStreamingAlbumsById(spotifyId: string, deezerId: string) {
     }).then((response: AxiosResponse<StreamingTracks>) => response.data)
 }
 
-export function getDeezerAlbumById(id: string) {
-    return axios.get("/api/soundtracker/deezer/album/" + id, {
-        headers: {
-            Authorization: "Bearer " + localStorage.getItem("jwt")
-        }
-    }).then((response: AxiosResponse<Array<DeezerTrack>>) => response.data)
-}
+// export function getDeezerAlbumById(id: string) {
+//     return axios.get("/api/soundtracker/deezer/album/" + id, {
+//         headers: {
+//             Authorization: "Bearer " + localStorage.getItem("jwt")
+//         }
+//     }).then((response: AxiosResponse<Array<DeezerTrack>>) => response.data)
+// }
 
 export function getAllUserPlaylists() {
     return axios.get("/api/soundtracker/user-favorites/all-user-playlists", {

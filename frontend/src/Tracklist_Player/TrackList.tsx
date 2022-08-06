@@ -4,10 +4,9 @@ import {
     addTrackToUserPlaylist,
     createNewUserPlaylist, deleteTrackFromUserPlaylist,
     getAllUserPlaylists,
-    getDeezerAlbumById,
     getStreamingAlbumsById
 } from "../api_methods";
-import {DeezerTrack, SpotifyTrackDTO, StreamingTracks, UserPlaylistMap} from "../models";
+import {DeezerTrack, SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import SpotifyTrackElement from "./SpotifyTrackElement";
 import Header from "../Header/Header";
 import "./TrackList.css"
@@ -15,8 +14,6 @@ import DeezerTrackElement from "./DeezerTrackElement";
 import toast from "react-hot-toast";
 
 export default function TrackList() {
-
-    const [streamingDTO, setStreamingDTO] = useState<StreamingTracks>()
     const [spotifyTrackList, setSpotifyTrackList] = useState<Array<SpotifyTrackDTO>>([])
     const [deezerTrackList, setDeezerTrackList] = useState<Array<DeezerTrack>>([])
     const [userPlaylists, setUserPlaylists] = useState({} as UserPlaylistMap)

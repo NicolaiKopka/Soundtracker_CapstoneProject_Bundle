@@ -5,11 +5,7 @@ import {useNavigate} from "react-router-dom";
 import "./RegisterPage.css"
 import toast from "react-hot-toast";
 
-interface AppProps {
-    setErrorMessage: Function
-}
-
-export default function RegisterPage(props: AppProps) {
+export default function RegisterPage() {
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")

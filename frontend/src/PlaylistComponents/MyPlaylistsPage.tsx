@@ -5,7 +5,7 @@ import UserPlaylistElement from "./UserPlaylistElement";
 import Header from "../Header/Header";
 import "./MyPlaylistPage.css"
 import {Switch} from "@mui/material";
-import {UserFavoritesDTO, UserPlaylistMap} from "../models";
+import {UserPlaylistMap} from "../models";
 
 export default function MyPlaylistsPage() {
     const [userPlaylists, setUserPlaylists] = useState<UserPlaylistMap>({})

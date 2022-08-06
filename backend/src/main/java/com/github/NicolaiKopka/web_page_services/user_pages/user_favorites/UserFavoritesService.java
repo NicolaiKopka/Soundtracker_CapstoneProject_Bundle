@@ -26,7 +26,6 @@ public class UserFavoritesService {
     private final UserFavoritesRepo userFavoritesRepo;
     private final MovieDBApiConnect movieDBApiConnect;
     private final SpotifyApiConnect spotifyApiConnect;
-
     private final DeezerApiConnect deezerApiConnect;
 
     public Collection<Movie> getAllFavoriteMoviesFromDbByUser(String username) {

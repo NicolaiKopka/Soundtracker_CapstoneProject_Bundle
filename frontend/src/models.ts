@@ -8,10 +8,10 @@ export interface MovieItem {
     release_date: string;
 }
 
-export interface UserInfoDTO {
-    username: string
-    movieIds: Array<number>
-}
+// export interface UserInfoDTO {
+//     username: string
+//     movieIds: Array<number>
+// }
 
 export interface StreamingStatusDTO {
     movieName: string
