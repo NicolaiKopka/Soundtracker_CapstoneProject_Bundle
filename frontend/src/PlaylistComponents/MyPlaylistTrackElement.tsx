@@ -3,6 +3,7 @@ import Spotify from "react-spotify-embed";
 import {SpotifyTrackDTO} from "../models";
 import {deleteTrackFromUserPlaylist} from "../api_methods";
 import toast from "react-hot-toast";
+import "./MyPlaylistTrackElement.css"
 
 interface TrackListProps {
     refreshTracks: Function
@@ -22,12 +23,10 @@ export default function MyPlaylistTrackElement(props: TrackListProps) {
     }
 
     return (
-        <div className={"track-element"}>
-            <Spotify className={"spotify-player"} wide link={props.track.url}/>
-            <div>
+        <div className={"my-playlist-track-element"}>
+            <Spotify className={"my-playlist-spotify"} wide link={props.track.url}/>
                 {props.editMode &&
-                    <button onClick={deleteFromPlaylist} className="favorites-button delete-button">delete from playlist</button>}
-            </div>
+                    <button className={"playlist-delete-button"} onClick={deleteFromPlaylist}><i className="fa-solid fa-circle-xmark fa-xl x-icon"></i></button>}
         </div>
     )
 }
