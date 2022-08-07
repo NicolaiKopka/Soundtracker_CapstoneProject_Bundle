@@ -1,4 +1,4 @@
-import {NavLink} from "react-router-dom";
+
 import {useCallback, useEffect, useState} from "react";
 import {getAllUserPlaylists} from "../api_methods";
 import UserPlaylistElement from "./UserPlaylistElement";
@@ -90,7 +90,7 @@ export default function MyPlaylistsPage() {
                                            disabled={localStorage.getItem("spotify_jwt") === null}
                                            onChange={ev => setCurrentProvider(ev.target.value)} value={"spotify"}
                                            checked={currentProvider === "spotify"}/>
-                                    <img src={spotifyImg}/>
+                                    <img alt={"spotify"} src={spotifyImg}/>
                                 </div>
                             </td>
                             <td>
@@ -99,7 +99,7 @@ export default function MyPlaylistsPage() {
                                            disabled={localStorage.getItem("deezer_jwt") === null}
                                            onChange={ev => setCurrentProvider(ev.target.value)} value={"deezer"}
                                            checked={currentProvider === "deezer"}/>
-                                    <img id={"deezer-img"} src={deezerImg}/>
+                                    <img alt={"deezer"} id={"deezer-img"} src={deezerImg}/>
                                 </div>
                             </td>
                         </tr>

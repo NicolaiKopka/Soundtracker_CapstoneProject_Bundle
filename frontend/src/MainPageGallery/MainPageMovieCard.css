@@ -53,12 +53,20 @@ button {
     overflow: hidden;
 }
 
-.card-front {
-
+.card-status a {
+    text-decoration: none;
+    color: black;
 }
 
 .card-back {
     transform: rotateY(180deg);
+}
+
+.back-card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding-bottom: 5rem;
 }
 
 .favorites-button-card {
@@ -83,4 +91,17 @@ button {
 .card-image {
     margin: 0.4rem;
     border-radius: 8px;
+}
+
+.not-available {
+    color: red;
+}
+
+#card-icon {
+    width: 4rem;
+}
+
+.back-nav-link {
+    text-decoration: none;
+    font-size: 1.3rem;
 }

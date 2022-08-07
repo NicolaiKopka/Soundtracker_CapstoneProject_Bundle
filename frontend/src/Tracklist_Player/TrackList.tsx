@@ -107,7 +107,7 @@ export default function TrackList() {
                                        disabled={localStorage.getItem("spotify_jwt") === null}
                                        onChange={ev => setStreamingMode(ev.target.value)} value={"spotify"}
                                        checked={streamingMode === "spotify"}/>
-                                <img src={spotifyImg}/>
+                                <img alt={"spotify"} src={spotifyImg}/>
                             </div>
                         </td>
                         <td>
@@ -116,7 +116,7 @@ export default function TrackList() {
                                        disabled={true}
                                        onChange={ev => setStreamingMode(ev.target.value)} value={"deezer"}
                                        checked={streamingMode === "deezer"}/>
-                                <img id={"deezer-img"} src={deezerImg}/>
+                                <img alt={"deezer"} id={"deezer-img"} src={deezerImg}/>
                             </div>
                         </td>
                     </tr>
