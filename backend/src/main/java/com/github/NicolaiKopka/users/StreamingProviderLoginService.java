@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +30,13 @@ public class StreamingProviderLoginService {
                 .spotifyId(deezerUserData.getEmail())
                 .roles(List.of("user"))
                 .build()));
+    }
+
+    public void addSpotifyIdForNonSpotifyUser(String username, String spotifyId) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+        if(user.getSpotifyId() == null) {
+            user.setSpotifyId(spotifyId);
+            myUserRepo.save(user);
+        }
     }
 }

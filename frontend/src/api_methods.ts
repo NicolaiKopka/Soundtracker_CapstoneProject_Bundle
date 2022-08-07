@@ -1,15 +1,14 @@
 import axios, {AxiosResponse} from "axios";
 import {
+    DeezerAddPlaylistDTO,
     DeezerLoginResponseDTO,
     LoginResponseDTO,
     MovieItem,
     RegisterUserDTO,
     SpotifyLoginResponseDTO, SpotifyPlaylist, SpotifyTrackDTO,
     SpotifyUserPlaylists,
-    StreamingStatusDTO, UserFavoritesDTO
+    StreamingStatusDTO, StreamingTracks, UserFavoritesDTO
 } from "./models";
-
-
 
 export function getStarterPageMovies() {
     return axios.get("/api/soundtracker")
@@ -31,7 +30,6 @@ export function loginUser(username: string, password: string) {
         username,
         password
     }).then((response: AxiosResponse<LoginResponseDTO>) => response.data)
-
 }
 
 export function registerUser(username: string, password: string, checkPassword: string) {
@@ -68,7 +66,7 @@ export function deleteMoviesFromFavorites(id: number) {
 
 export function authorizeWithSpotify() {
     return axios.get(`https://accounts.spotify.com/authorize
-                        ?response_type=code&client_id=3ed8e5d98a3b469db405d1bb01652723
+                        ?response_type=code&client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}
                         &scope=user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private
                         &redirect_uri=${process.env.SPOTIFY_CALLBACK_URI}`)
 }
@@ -81,6 +79,24 @@ export function getSpotifyAccessTokenFromBackend(spotifyCode: string) {
 export function getDeezerAccessTokenFromBackend(deezerCode: string) {
     return axios.get("/api/deezer/callback" + deezerCode)
         .then((response:AxiosResponse<DeezerLoginResponseDTO>) => response.data)
+}
+
+export function getDeezerAccessWithoutLogin(deezerCode: string) {
+    return axios.get("/api/deezer/callback/" + localStorage.getItem("jwt") + deezerCode, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    })
+        .then((response:AxiosResponse<DeezerLoginResponseDTO>) => response.data)
+}
+
+export function getSpotifyAccessWithoutLogin(spotifyCode: string) {
+    return axios.get("/api/spotify/callback/" + localStorage.getItem("jwt") + spotifyCode,  {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    })
+        .then((response:AxiosResponse<SpotifyLoginResponseDTO>) => response.data)
 }
 
 export function getAllUserSpotifyPlaylists() {
@@ -104,13 +120,32 @@ export function addSpotifyPlaylist(name: string, description: string, isPublic: 
     }).then((response: AxiosResponse<SpotifyPlaylist>) => response.data)
 }
 
-export function getSpotifyAlbumById(id: string) {
-    return axios.get("/api/soundtracker/spotify/album/" + id, {
+export function addDeezerPlaylist(playlistName: string) {
+    return axios.post("/api/soundtracker/user-favorites/deezer-playlists/add", {
+        deezerToken: localStorage.getItem("deezer_jwt"),
+        playlistName
+    }, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")
         }
-    }).then((response: AxiosResponse<Array<SpotifyTrackDTO>>) => response.data)
+    }).then((response: AxiosResponse<DeezerAddPlaylistDTO>) => response.data)
 }
+
+export function getStreamingAlbumsById(spotifyId: string, deezerId: string) {
+    return axios.get(`/api/soundtracker/spotify/album/${spotifyId}/${deezerId}`, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then((response: AxiosResponse<StreamingTracks>) => response.data)
+}
+
+// export function getDeezerAlbumById(id: string) {
+//     return axios.get("/api/soundtracker/deezer/album/" + id, {
+//         headers: {
+//             Authorization: "Bearer " + localStorage.getItem("jwt")
+//         }
+//     }).then((response: AxiosResponse<Array<DeezerTrack>>) => response.data)
+// }
 
 export function getAllUserPlaylists() {
     return axios.get("/api/soundtracker/user-favorites/all-user-playlists", {
@@ -173,6 +208,18 @@ export function addTracksToSpotifyPlaylist(playlistId: string, playlistName: str
         spotifyToken: localStorage.getItem("spotify_jwt"),
         spotifyPlaylistId: playlistId,
         userPlaylistName: playlistName
+    }, {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+    }).then(response => response.data)
+}
+
+export function addTracksToDeezerPlaylist(playlistId: string, playlistName: string) {
+    return axios.post(`/api/soundtracker/user-favorites/user-playlist/to-deezer`, {
+        deezerToken: localStorage.getItem("deezer_jwt"),
+        id: playlistId,
+        playlistName
     }, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("jwt")

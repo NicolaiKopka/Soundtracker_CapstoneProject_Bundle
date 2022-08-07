@@ -21,6 +21,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
     const [spotifyLink, setSpotifyLink] = useState("")
     const [deezerStatus, setDeezerStatus] = useState(false)
     const [deezerLink, setDeezerLink] = useState("")
+    const [deezerAlbumId, setDeezerAlbumId] = useState("")
     const [favoriteStatus, setFavoriteStatus] = useState(false)
     const [cardElement, setCardElement] = useState({} as HTMLDivElement)
     const ref = useRef({} as HTMLDivElement);
@@ -41,6 +42,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
                 setSpotifyAlbumId(data.albumIds["spotify"])
                 setDeezerStatus(data.streamingServiceStatus["deezer"])
                 setDeezerLink(data.albumLinks["deezer"])
+                setDeezerAlbumId(data.albumIds["deezer"])
             })
     }
 
@@ -90,7 +92,7 @@ export default function MainPageMovieCard(props: MainPageGalleryProps) {
                     <div onClick={flipCard} className={"card-face card-back"}>
                         {spotifyStatus ? <div><div className={"card-status"}><a rel={"noreferrer"} target={"_blank"} href={spotifyLink}>Link to Spotify</a></div></div>:
                             <div className={"card-status"}>Spotify not available</div>}
-                        {localStorage.getItem("jwt") && <NavLink to={`/tracks/${spotifyAlbumId}`}>To Track List</NavLink>}
+                        {localStorage.getItem("jwt") && <NavLink to={`/tracks/${spotifyAlbumId}/${deezerAlbumId}`}>To Track List</NavLink>}
                         {deezerStatus ? <div className={"card-status"}><a rel={"noreferrer"} target={"_blank"} href={deezerLink}>Link to Deezer</a></div> :
                             <div className={"card-status"}>Deezer not available</div>}
                         {localStorage.getItem("jwt") &&

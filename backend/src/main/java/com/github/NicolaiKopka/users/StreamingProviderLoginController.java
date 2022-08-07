@@ -14,12 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -89,6 +87,27 @@ public class StreamingProviderLoginController {
         return new SpotifyLoginResponseDTO(jwtToken, accessTokenResponse.getBody().getAccessToken());
     }
 
+    @GetMapping("/spotify/callback/{currenJwt}")
+    public SpotifyLoginResponseDTO callbackUrl(@RequestParam String code, @PathVariable String currenJwt, Principal principal) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "authorization_code");
+        map.add("code", code);
+        map.add("redirect_uri", spotifyCallbackURL);
+        HttpHeaders headers = createTokenHeaders();
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<SpotifyOAuthResponse> accessTokenResponse = restTemplate.exchange(
+                "https://accounts.spotify.com/api/token",
+                HttpMethod.POST,
+                request,
+                SpotifyOAuthResponse.class
+        );
+        SpotifyUserData userData = getSpotifyUserData(Objects.requireNonNull(accessTokenResponse.getBody()));
+
+        streamingProviderLoginService.addSpotifyIdForNonSpotifyUser(principal.getName(), userData.getSpotifyUserId());
+
+        return new SpotifyLoginResponseDTO(currenJwt, accessTokenResponse.getBody().getAccessToken());
+    }
+
     @GetMapping("/deezer/callback")
     public DeezerLoginResponseDTO deezerCallback(@RequestParam String code) {
         String queryUrl = "https://connect.deezer.com/oauth/access_token.php?" +
@@ -98,7 +117,7 @@ public class StreamingProviderLoginController {
 
         String deezerResponse = restTemplate.getForObject(queryUrl, String.class);
         String accessTokenFull = deezerResponse.split("&")[0];
-        String accessToken = deezerResponse.split("=")[1];
+        String accessToken = accessTokenFull.split("=")[1];
 
         DeezerUserData deezerUserData = getDeezerUserData(accessTokenFull);
 
@@ -112,6 +131,21 @@ public class StreamingProviderLoginController {
         String jwtToken = jwtService.createToken(claims, user.getUsername());
 
         return new DeezerLoginResponseDTO(jwtToken, accessToken);
+
+    }
+
+    @GetMapping("/deezer/callback/{currentJwt}")
+    public DeezerLoginResponseDTO deezerCallback(@RequestParam String code, @PathVariable String currentJwt) {
+        String queryUrl = "https://connect.deezer.com/oauth/access_token.php?" +
+                "app_id=" + DEEZER_ID +
+                "&secret=" + DEEZER_SECRET +
+                "&code=" + code;
+
+        String deezerResponse = restTemplate.getForObject(queryUrl, String.class);
+        String accessTokenFull = deezerResponse.split("&")[0];
+        String accessToken = accessTokenFull.split("=")[1];
+
+        return new DeezerLoginResponseDTO(currentJwt, accessToken);
 
     }
 

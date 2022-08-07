@@ -9,12 +9,13 @@ interface TrackListProps {
     playlistKey: string
     track: SpotifyTrackDTO
     editMode: boolean
+    deezerId: string
 }
 
 export default function MyPlaylistTrackElement(props: TrackListProps) {
 
     function deleteFromPlaylist() {
-        deleteTrackFromUserPlaylist(props.playlistKey, props.track.id, props.track.id)
+        deleteTrackFromUserPlaylist(props.playlistKey, props.track.id, props.deezerId)
             .then(() => props.refreshTracks())
             .then(() => toast.success("Deleted from playlist"))
             .catch(error => error.response.data)

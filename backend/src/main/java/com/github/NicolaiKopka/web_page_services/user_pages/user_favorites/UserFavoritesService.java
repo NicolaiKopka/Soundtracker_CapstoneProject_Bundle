@@ -1,7 +1,9 @@
 package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 
+import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerAddPlaylistDTO;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
@@ -24,6 +26,7 @@ public class UserFavoritesService {
     private final UserFavoritesRepo userFavoritesRepo;
     private final MovieDBApiConnect movieDBApiConnect;
     private final SpotifyApiConnect spotifyApiConnect;
+    private final DeezerApiConnect deezerApiConnect;
 
     public Collection<Movie> getAllFavoriteMoviesFromDbByUser(String username) {
 
@@ -64,6 +67,10 @@ public class UserFavoritesService {
         }
 
         return spotifyApiConnect.addSpotifyPlaylist(spotifyToken, user.getSpotifyId(), data);
+    }
+
+    public DeezerAddPlaylistDTO addDeezerPlaylist(DeezerAddPlaylistDTO playlistDTO) {
+        return deezerApiConnect.createNewAlbum(playlistDTO);
     }
     public UserFavoritesSaveObject createNewUserPlaylist(String username, String playlistName) {
         MyUser user = myUserRepo.findByUsername(username).orElseThrow();
@@ -118,14 +125,14 @@ public class UserFavoritesService {
 
         spotifyApiConnect.addTracksInUserPlaylistToNewSpotifyPlaylist(spotifyTrackIds, transferData.getSpotifyPlaylistId(), transferData.getSpotifyToken());
     }
-//    public void addTracksToExistingSpotifyPlaylist(String username, ) {
-//        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
-//
-//        UserFavoritesSaveObject saveObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
-//        List<String> spotifyTrackIds = saveObject.getUserPlaylists().get(playlistName).getSpotifyTrackIds();
-//
-//        SpotifyPlaylist newSpotifyPlaylist = spotifyApiConnect.addSpotifyPlaylist(spotifyToken, user.getSpotifyId(), transferData);
-//
-//        spotifyApiConnect.addTracksInUserPlaylistToNewSpotifyPlaylist(spotifyTrackIds, newSpotifyPlaylist.getId(), spotifyToken);
-//    }
+
+    public void addTracksToDeezerPlaylist(String username, DeezerAddPlaylistDTO playlistDTO) {
+        MyUser user = myUserRepo.findByUsername(username).orElseThrow();
+
+        UserFavoritesSaveObject saveObject = userFavoritesRepo.findByUserId(user.getId()).orElseThrow();
+        List<String> deezerTrackIds = saveObject.getUserPlaylists().get(playlistDTO.getPlaylistName()).getDeezerTrackIds();
+
+        deezerApiConnect.addTracksInUserPlaylistToNewDeezerPlaylist(deezerTrackIds, playlistDTO.getId(), playlistDTO.getDeezerToken());
+    }
+
 }

@@ -1,11 +1,11 @@
 package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 
 
+import com.github.NicolaiKopka.db_models.deezerModels.DeezerAddPlaylistDTO;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrackDTO;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.AddPlaylistTransferData;
-import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyPlaylist;
 import com.github.NicolaiKopka.db_models.spotifyModels.spotifyPlaylistModels.SpotifyUserPlaylists;
 import com.github.NicolaiKopka.db_models.userPlaylistModels.UserPlaylistSendObject;
 import com.github.NicolaiKopka.dto.AddToStreamingPlaylistDTO;
@@ -86,6 +86,16 @@ public class UserFavoritesController {
         }
     }
 
+    @PostMapping("/deezer-playlists/add")
+    public ResponseEntity<Object> addDeezerPlaylist(Principal principal, @RequestBody DeezerAddPlaylistDTO playlistDTO) {
+        try{
+            return ResponseEntity.ok(userFavoritesService.addDeezerPlaylist(playlistDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+    }
+
     @PostMapping("/create-user-playlist/{playlistName}")
     public ResponseEntity<Object> createNewUserPlaylist(Principal principal, @PathVariable String playlistName) {
         try {
@@ -126,6 +136,11 @@ public class UserFavoritesController {
         } catch (HttpClientErrorException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @PostMapping("/user-playlist/to-deezer")
+    public void addTracksToDeezerPlaylist(Principal principal, @RequestBody DeezerAddPlaylistDTO playlistDTO) {
+        userFavoritesService.addTracksToDeezerPlaylist(principal.getName(), playlistDTO);
     }
     @PutMapping("/{movieId}")
     public ResponseEntity<Object> addMovieToFavorites(@PathVariable int movieId, Principal principal) {

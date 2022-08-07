@@ -17,3 +17,7 @@ label {
     margin-bottom: 0.9rem;
 }
 
+.radio-container {
+    display: flex;
+    flex-direction: row;
+}

@@ -1,5 +1,6 @@
 package com.github.NicolaiKopka.web_page_services.user_pages.user_favorites;
 
+import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
@@ -13,6 +14,7 @@ import com.github.NicolaiKopka.users.MyUser;
 import com.github.NicolaiKopka.users.MyUserRepo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.*;
@@ -29,6 +31,7 @@ class UserFavoritesServiceTest {
         Movie movie2 = Movie.builder().title("movie2").build();
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
 
         MyUserRepo myUserRepo = Mockito.mock(MyUserRepo.class);
         Mockito.when(myUserRepo.findByUsername("user")).thenReturn(Optional.of(user));
@@ -40,7 +43,7 @@ class UserFavoritesServiceTest {
         Mockito.when(movieDBApiConnect.getMovieById(1)).thenReturn(movie1);
         Mockito.when(movieDBApiConnect.getMovieById(2)).thenReturn(movie2);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         Collection<Movie> actual = userFavoritesService.getAllFavoriteMoviesFromDbByUser("user");
 
         Assertions.assertThat(actual).contains(movie1, movie2);
@@ -55,11 +58,13 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         try{
             userFavoritesService.getAllFavoriteMoviesFromDbByUser(user.getUsername());
@@ -76,12 +81,14 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
         Mockito.when(userFavoritesRepo.findByUserId("1234")).thenReturn(Optional.empty());
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         try{
             userFavoritesService.getAllFavoriteMoviesFromDbByUser(user.getUsername());
@@ -104,13 +111,15 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
         UserFavoritesSaveObject expectedFavorites = new UserFavoritesSaveObject();
         expectedFavorites.setUserId("1234");
         expectedFavorites.setMovieIds(List.of(2));
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         userFavoritesService.addMovieToFavorites(2, "user");
 
         Mockito.verify(userFavoritesRepo).save(expectedFavorites);
@@ -128,7 +137,9 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         try{
             userFavoritesService.addMovieToFavorites(1, user.getUsername());
@@ -155,9 +166,11 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         userFavoritesService.deleteMovieFromFavorites(13, "testUser");
 
         Mockito.verify(userFavoritesRepo).save(expectedFavorites);
@@ -185,9 +198,11 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         SpotifyUserPlaylists actual = userFavoritesService.getAllSpotifyPlaylistsFromUser("testUser", "1234");
 
         Assertions.assertThat(actual).isEqualTo(spotifyUserPlaylists);
@@ -215,6 +230,8 @@ class UserFavoritesServiceTest {
         SpotifyUserPlaylists spotifyUserPlaylists = new SpotifyUserPlaylists();
         spotifyUserPlaylists.setItems(userPlaylists);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
         Mockito.when(spotifyApiConnect.getAllUserPlaylists("1234", "spotifyId"))
                 .thenReturn(spotifyUserPlaylists);
@@ -228,7 +245,7 @@ class UserFavoritesServiceTest {
 
         UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         SpotifyPlaylist actual = userFavoritesService.addSpotifyPlaylist("1234", "testUser", data);
 
@@ -257,6 +274,8 @@ class UserFavoritesServiceTest {
         SpotifyUserPlaylists spotifyUserPlaylists = new SpotifyUserPlaylists();
         spotifyUserPlaylists.setItems(userPlaylists);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
         Mockito.when(spotifyApiConnect.getAllUserPlaylists("1234", "spotifyId"))
                 .thenReturn(spotifyUserPlaylists);
@@ -270,7 +289,7 @@ class UserFavoritesServiceTest {
 
         UserFavoritesRepo userFavoritesRepo = Mockito.mock(UserFavoritesRepo.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         Assertions.assertThatThrownBy(() -> userFavoritesService.addSpotifyPlaylist("1234", "testUser", data))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -302,9 +321,11 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         userFavoritesService.createNewUserPlaylist("testUser", "newPlaylist");
 
         Mockito.verify(userFavoritesRepo).save(expected);
@@ -332,9 +353,11 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         Assertions.assertThatThrownBy(() -> userFavoritesService.createNewUserPlaylist("testUser", "newPlaylist"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -363,9 +386,11 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         Assertions.assertThatThrownBy(() -> userFavoritesService.createNewUserPlaylist("testUser", "New Playlist"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -409,9 +434,11 @@ class UserFavoritesServiceTest {
 
         MovieDBApiConnect movieDBApiConnect = Mockito.mock(MovieDBApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect,deezerApiConnect);
 
         userFavoritesService.addTrackToUserPlaylist("testUser", sendObject);
 
@@ -450,7 +477,9 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         userFavoritesService.addTrackToUserPlaylist("testUser", sendObject);
 
@@ -481,7 +510,9 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         Assertions.assertThatThrownBy(() -> userFavoritesService.addTrackToUserPlaylist("testUser", sendObject))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -525,7 +556,9 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         userFavoritesService.removeTrackFromPlaylist("testUser", sendObject);
 
         Mockito.verify(userFavoritesRepo).save(expected);
@@ -555,7 +588,9 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         Assertions.assertThatThrownBy(() -> userFavoritesService.removeTrackFromPlaylist("testUser", sendObject))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -600,7 +635,9 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         userFavoritesService.removeUserPlaylist("testUser", "playlist2");
 
         Mockito.verify(userFavoritesRepo).save(expected);
@@ -624,7 +661,9 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
 
         Assertions.assertThatThrownBy(() -> userFavoritesService.removeUserPlaylist("testUser", "playlist2"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -653,7 +692,9 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         userFavoritesService.getTracksOfUserPlaylist("testUser", "playlist1");
 
         Mockito.verify(spotifyApiConnect).getMultipleSpotifyTracksById(trackList);
@@ -683,12 +724,14 @@ class UserFavoritesServiceTest {
 
         SpotifyApiConnect spotifyApiConnect = Mockito.mock(SpotifyApiConnect.class);
 
+        DeezerApiConnect deezerApiConnect = Mockito.mock(DeezerApiConnect.class);
+
         AddToStreamingPlaylistDTO playlistDTO = new AddToStreamingPlaylistDTO();
         playlistDTO.setUserPlaylistName("playlist1");
         playlistDTO.setSpotifyToken("accessToken");
         playlistDTO.setSpotifyPlaylistId("playlistId");
 
-        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect);
+        UserFavoritesService userFavoritesService = new UserFavoritesService(myUserRepo, userFavoritesRepo, movieDBApiConnect, spotifyApiConnect, deezerApiConnect);
         userFavoritesService.addTracksToSpotifyPlaylist("testUser", playlistDTO);
 
         Mockito.verify(spotifyApiConnect).addTracksInUserPlaylistToNewSpotifyPlaylist(List.of("1234", "5678"), "playlistId", "accessToken");

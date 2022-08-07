@@ -4,6 +4,7 @@ import com.github.NicolaiKopka.api_services.DeezerApiConnect;
 import com.github.NicolaiKopka.api_services.MovieDBApiConnect;
 import com.github.NicolaiKopka.api_services.SpotifyApiConnect;
 import com.github.NicolaiKopka.db_models.AlbumReferenceDTO;
+import com.github.NicolaiKopka.db_models.StreamingTracks;
 import com.github.NicolaiKopka.db_models.movieDBModels.Movie;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyAlbumExternalURLs;
 import com.github.NicolaiKopka.db_models.spotifyModels.SpotifyTrack;
@@ -15,7 +16,6 @@ import com.github.NicolaiKopka.dto.StreamingStatusDTO;
 import com.github.NicolaiKopka.dto.UserFavoritesDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,8 +26,6 @@ import org.springframework.http.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -249,14 +247,13 @@ class AccountControllerIT {
         Mockito.when(spotifyApiConnect.getSpotifyAlbumTracksById("movieId"))
                 .thenReturn(trackList);
 
-        ResponseEntity<SpotifyTrackDTO[]> spotifyTracksResponse = restTemplate.exchange(
-                "/api/soundtracker/spotify/album/movieId",
+        ResponseEntity<StreamingTracks> spotifyTracksResponse = restTemplate.exchange(
+                "/api/soundtracker/spotify/album/movieId/undefined",
                 HttpMethod.GET,
                 new HttpEntity<>(createHeader(user1Token)),
-                SpotifyTrackDTO[].class);
+                StreamingTracks.class);
 
-        Assertions.assertThat(spotifyTracksResponse.getBody().length).isEqualTo(2);
-        Assertions.assertThat(spotifyTracksResponse.getBody()[0].getId()).isEqualTo("track1");
+        Assertions.assertThat(spotifyTracksResponse.getBody().getSpotifyTracks().get(0).getId()).isEqualTo("track1");
 
         //user creates new playlist by adding track to new playlist name. also adds track to respective playlist
         ResponseEntity<UserFavoritesDTO> newPlaylistResponse = restTemplate.exchange("/api/soundtracker/user-favorites/create-user-playlist/newPlaylist",
@@ -268,12 +265,12 @@ class AccountControllerIT {
 
         UserPlaylistSendObject sendObject = UserPlaylistSendObject.builder()
                 .playlistName("newPlaylist")
-                .spotifyTrackId(spotifyTracksResponse.getBody()[0].getId())
+                .spotifyTrackId(spotifyTracksResponse.getBody().getSpotifyTracks().get(0).getId())
                 .deezerTrackId("track1").build();
 
         UserPlaylistSendObject sendObject2 = UserPlaylistSendObject.builder()
                 .playlistName("newPlaylist")
-                .spotifyTrackId(spotifyTracksResponse.getBody()[1].getId())
+                .spotifyTrackId(spotifyTracksResponse.getBody().getSpotifyTracks().get(1).getId())
                 .deezerTrackId("track2").build();
 
         restTemplate.exchange("/api/soundtracker/user-favorites/user-playlist/add-track",

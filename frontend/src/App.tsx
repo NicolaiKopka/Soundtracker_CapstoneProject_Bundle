@@ -30,15 +30,15 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path={"/"} element={<MainPageGallery setErrorMessage={setErrorMessage}/>} />
-                    <Route path={"/login"} element={<LoginPage setErrorMessage={setErrorMessage}/>} />
-                    <Route path={"/register"} element={<RegisterPage setErrorMessage={setErrorMessage} />} />
+                    <Route path={"/login"} element={<LoginPage/>} />
+                    <Route path={"/register"} element={<RegisterPage/>} />
                     <Route path={"/logout"} element={<LogoutPage/>}/>
                     <Route path={"/favorites"} element={<UserFavoritesPage/>}/>
                     <Route path={"/spotify-redirect"} element={<SpotifyLoginRedirect/>} />
                     <Route path={"/deezer-redirect"} element={<DeezerLoginRedirect/>} />
                     <Route path={"/my-playlists"} element={<MyPlaylistsPage/>} />
                     <Route path={"/spotify-playlists"} element={<SpotifyPlaylistPage/>} />
-                    <Route path={"/tracks/:id"} element={<TrackList/>} />
+                    <Route path={"/tracks/:spotifyId/:deezerId"} element={<TrackList/>} />
                 </Routes>
             </BrowserRouter>
         </div>

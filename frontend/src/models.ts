@@ -8,10 +8,10 @@ export interface MovieItem {
     release_date: string;
 }
 
-export interface UserInfoDTO {
-    username: string
-    movieIds: Array<number>
-}
+// export interface UserInfoDTO {
+//     username: string
+//     movieIds: Array<number>
+// }
 
 export interface StreamingStatusDTO {
     movieName: string
@@ -61,6 +61,12 @@ export interface SpotifyTrackDTO {
     id: string
 }
 
+export interface DeezerTrack {
+    id: string
+    title: string
+    link: string
+}
+
 export interface UserFavoritesDTO {
     movieIds: Array<number>
     userPlaylists: UserPlaylistMap
@@ -74,6 +80,17 @@ export interface UserPlaylist {
     playlistName: string
     spotifyTrackIds: Array<string>
     deezerTrackIds: Array<string>
+}
+
+export interface DeezerAddPlaylistDTO {
+    deezerToken: string
+    playlistName: string
+    id: string
+}
+
+export interface StreamingTracks {
+    spotifyTracks: Array<SpotifyTrackDTO>
+    deezerTracks: Array<DeezerTrack>
 }
 
 

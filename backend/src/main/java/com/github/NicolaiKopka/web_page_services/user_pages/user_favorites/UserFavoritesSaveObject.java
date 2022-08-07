@@ -53,8 +53,8 @@ public class UserFavoritesSaveObject {
             currentPlaylist = userPlaylists.get(sendObject.getPlaylistName());
         }
 
-        if(currentPlaylist.getSpotifyTrackIds().contains(sendObject.getSpotifyTrackId()) ||
-                currentPlaylist.getDeezerTrackIds().contains(sendObject.getDeezerTrackId())) {
+        if(currentPlaylist.getSpotifyTrackIds().contains(sendObject.getSpotifyTrackId()) && !sendObject.getSpotifyTrackId().equals("0") ||
+                (currentPlaylist.getDeezerTrackIds().contains(sendObject.getDeezerTrackId()) && !sendObject.getDeezerTrackId().equals("0"))) {
             throw new IllegalArgumentException("Track already in playlist");
         }
 
@@ -69,8 +69,21 @@ public class UserFavoritesSaveObject {
             throw new IllegalArgumentException("Playlist not found");
         }
 
-        currentPlaylist.getSpotifyTrackIds().remove(sendObject.getSpotifyTrackId());
-        currentPlaylist.getDeezerTrackIds().remove(sendObject.getDeezerTrackId());
+        if(sendObject.getDeezerTrackId().equals("0")) {
+            int spotifyIndex = currentPlaylist.getSpotifyTrackIds().indexOf(sendObject.getSpotifyTrackId());
+            currentPlaylist.getSpotifyTrackIds().remove(sendObject.getSpotifyTrackId());
+            currentPlaylist.getDeezerTrackIds().remove(spotifyIndex);
+        }
+        else if(sendObject.getSpotifyTrackId().equals("0")) {
+            int deezerIndex = currentPlaylist.getDeezerTrackIds().indexOf(sendObject.getDeezerTrackId());
+            currentPlaylist.getSpotifyTrackIds().remove(deezerIndex);
+            currentPlaylist.getDeezerTrackIds().remove(sendObject.getDeezerTrackId());
+        } else {
+            currentPlaylist.getSpotifyTrackIds().remove(sendObject.getSpotifyTrackId());
+            currentPlaylist.getDeezerTrackIds().remove(sendObject.getDeezerTrackId());
+        }
+
+
     }
 
     public void removeUserPlaylist(String playlistName) {
