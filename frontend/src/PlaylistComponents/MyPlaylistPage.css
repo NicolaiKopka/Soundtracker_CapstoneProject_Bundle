@@ -16,7 +16,7 @@
 }
 
 .streaming-table {
-    margin: auto;
+    margin-bottom: 1.7rem;
     width: 22rem;
 }
 
@@ -35,19 +35,18 @@ td {
 }
 
 .playlist-inputs {
-    margin: 2rem 0;
+    margin-top: 1.3rem;
 }
 
-.playlist-inputs input {
-    margin: 0.5rem 0;
+.playlist-heading {
+    margin: 0.3rem 0;
 }
 
 .spotify-radios {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    width: 20rem;
-    margin: auto;
+    width: 18rem;
 }
 
 .spotify-radios label {
@@ -56,10 +55,6 @@ td {
 
 .spotify-input {
     margin: 1rem 0;
-}
-
-.playlist-heading {
-    margin-top: 2.3rem;
 }
 
 #deezer-img {

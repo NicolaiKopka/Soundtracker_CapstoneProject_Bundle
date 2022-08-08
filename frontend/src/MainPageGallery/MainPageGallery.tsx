@@ -5,6 +5,7 @@ import MainPageMovieCard from "./MainPageMovieCard";
 import "./MainPageGallery.css"
 import Header from "../Header/Header";
 import {Slide} from 'react-slideshow-image';
+import toast from "react-hot-toast";
 
 interface AppProps {
     setErrorMessage: Function
@@ -27,7 +28,7 @@ export default function MainPageGallery(props: AppProps) {
     function search(ev: FormEvent) {
         ev.preventDefault()
         searchForMovie(searchQuery).then(data => setSearchMovies(data))
-            .catch(() => props.setErrorMessage("No Movies Found"))
+            .catch(() => toast.error("No Movies Found"))
     }
 
     const getFavoriteMovies = () => {
@@ -60,7 +61,7 @@ export default function MainPageGallery(props: AppProps) {
                 </form>
             </div>
             {searchMovies.length > 0 && <Slide>{searchComponents}</Slide>}
-            <h2 className={"top-movies-header"}>Top 10 Movies</h2>
+            {/*<h2 className={"top-movies-header"}>Top 10 Movies</h2>*/}
             {components && components.length > 0 && <Slide>{components}</Slide>}
         </div>
     )

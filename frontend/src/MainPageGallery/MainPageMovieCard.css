@@ -8,18 +8,18 @@ button {
     display: flex;
     align-self: center;
     justify-content: center;
-    margin-top: 2rem;
+    margin-top: 1.7rem;
 }
 
 .movie-card img {
-    width: 180px;
+    width: 140px;
     border: none;
 }
 
 .movie-card {
     margin-bottom: 3rem;
-    width: 250px;
-    height: 370px;
+    width: 220px;
+    height: 330px;
     font-weight: 200;
     /*background-color: #7FB5FF;*/
     background-color: #C4DDFF;
@@ -30,7 +30,7 @@ button {
 }
 
 .card-inner {
-    padding: 1.2rem 0;
+    padding: 0.5rem 0;
     width: 100%;
     height: 100%;
     transition: transform 1s;
@@ -73,10 +73,10 @@ button {
     background-color: #C4DDFF;
     border-radius: 8px;
     padding: 0.5rem;
-    font-weight: 700;
+    font-weight: 400;
     margin-top: 0.7rem;
     box-shadow: 3px 2px 4px lightgrey;
-    width: 10rem;
+    width: 9rem;
 }
 
 .card-status {
