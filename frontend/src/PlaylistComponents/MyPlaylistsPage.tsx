@@ -19,10 +19,20 @@ export default function MyPlaylistsPage() {
     const [publicStatusDisabled, setPublicStatusDisabled] = useState(false)
     const [newPlaylistIsCollaborativeStatus, setNewPlaylistIsCollaborativeStatus] = useState(false)
     const [currentProvider, setCurrentProvider] = useState("")
+    const [deezerError, setDeezerError] = useState(false)
+    const [spotifyError, setSpotifyError] = useState(false)
 
     const refreshPlaylists = useCallback(() => {
-        getAllUserPlaylists().then(data => setUserPlaylists(data.userPlaylists))
+        getAllUserPlaylists().then(data => {
+            setUserPlaylists(data.userPlaylists)
+        }).then(() => {
+            setDeezerError(false)
+            setSpotifyError(false)
+            })
+            .catch(error => error.response.data)
     }, [])
+
+    const playlists = Object.keys(userPlaylists)
 
     useEffect(() => {
         if (newPlaylistIsCollaborativeStatus) {
@@ -44,6 +54,24 @@ export default function MyPlaylistsPage() {
         refreshPlaylists()
     }, [refreshPlaylists])
 
+    useEffect(() => {
+        checkErrors()
+    }, [currentProvider])
+
+    function checkErrors() {
+        setDeezerError(false)
+        setSpotifyError(false)
+        let currentPlaylists = Object.keys(userPlaylists)
+        currentPlaylists.forEach(key => {
+            if (currentProvider === "deezer" && userPlaylists[key].deezerTrackIds.includes("0")) {
+                setDeezerError(true)
+            }
+            if (currentProvider === "spotify" && userPlaylists[key].spotifyTrackIds.includes("0")) {
+                setSpotifyError(true)
+            }
+        })
+    }
+
     function toggleEditMode() {
         if (editMode) {
             setEditMode(false)
@@ -58,14 +86,13 @@ export default function MyPlaylistsPage() {
         } else {
             setStreamingMode(true)
             setEditMode(false)
+            checkErrors()
         }
     }
 
     function throwAlert() {
         alert("Spotify is currently in dev mode for this app. In order to login, your spotify email will have to be deposited in the current project. Contact for more information. If your mail is already deposited you can login.")
     }
-
-    const playlists = Object.keys(userPlaylists)
 
     return (
         <div>
@@ -88,7 +115,9 @@ export default function MyPlaylistsPage() {
                                 <div className={"spotify-div"}>
                                     <input className={"radio"} type="radio" name="radio"
                                            disabled={localStorage.getItem("spotify_jwt") === null}
-                                           onChange={ev => setCurrentProvider(ev.target.value)} value={"spotify"}
+                                           onChange={ev => {
+                                               setCurrentProvider(ev.target.value)
+                                           }} value={"spotify"}
                                            checked={currentProvider === "spotify"}/>
                                     <img alt={"spotify"} src={spotifyImg}/>
                                 </div>
@@ -97,7 +126,9 @@ export default function MyPlaylistsPage() {
                                 <div className={"spotify-div"}>
                                     <input className={"radio"} type="radio" name="radio"
                                            disabled={localStorage.getItem("deezer_jwt") === null}
-                                           onChange={ev => setCurrentProvider(ev.target.value)} value={"deezer"}
+                                           onChange={ev => {
+                                               setCurrentProvider(ev.target.value)
+                                           }} value={"deezer"}
                                            checked={currentProvider === "deezer"}/>
                                     <img alt={"deezer"} id={"deezer-img"} src={deezerImg}/>
                                 </div>
@@ -140,6 +171,8 @@ export default function MyPlaylistsPage() {
                         </>}
                     </div>}
                 <h2 className={"playlist-heading"}>My Playlists</h2>
+                {streamingMode && deezerError &&  <p className={"missing-warning"}>Some playlist tracks are missing on deezer</p>}
+                {streamingMode && spotifyError &&  <p className={"missing-warning"}>Some playlist tracks are missing on spotify</p>}
                 <div className={"playlist-wrapper"}>
                     {playlists.map(key => <UserPlaylistElement key={key} spotifyMode={streamingMode} editMode={editMode}
                                                                refreshPlaylists={refreshPlaylists}

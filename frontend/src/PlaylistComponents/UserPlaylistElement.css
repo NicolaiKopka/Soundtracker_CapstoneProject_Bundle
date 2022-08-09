@@ -21,3 +21,7 @@
 .delete-button {
     background-color: #FC4F4F;
 }
+
+.attention-border {
+    box-shadow: 0px 0 12px 4px #FC4F4F;
+}

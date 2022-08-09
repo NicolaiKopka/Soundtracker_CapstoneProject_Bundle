@@ -16,8 +16,6 @@ export default function SpotifyTrackElement(props: TrackListProps) {
 
 
 
-
-
     return (
         <div className={"my-playlist-track-element"}>
             <Spotify className={"spotify-player"} wide link={props.track.url}/>

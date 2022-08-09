@@ -8,11 +8,6 @@ export interface MovieItem {
     release_date: string;
 }
 
-// export interface UserInfoDTO {
-//     username: string
-//     movieIds: Array<number>
-// }
-
 export interface StreamingStatusDTO {
     movieName: string
     streamingServiceStatus: {
@@ -93,9 +88,3 @@ export interface StreamingTracks {
     deezerTracks: Array<DeezerTrack>
 }
 
-
-
-
-// const o = {}
-// let keys = Object.keys(o)
-// keys.forEach(key => o[key])
