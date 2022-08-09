@@ -1,4 +1,62 @@
 
 .playlist-wrapper {
-    margin-bottom: 2rem;
+    margin: 2rem 0;
+}
+
+.playlist-form-wrapper {
+    margin-top: 1.5rem;
+}
+
+.toggle-menu {
+    margin: 2rem 0;
+}
+
+.radio {
+    width: 2rem;
+}
+
+.streaming-table {
+    margin-bottom: 1.7rem;
+    width: 22rem;
+}
+
+td {
+    text-align: center;
+}
+
+.provider-section img {
+    width: 3.2rem;
+}
+
+.spotify-div {
+    display: flex;
+    justify-content: center;
+    width: 9rem;
+}
+
+.playlist-inputs {
+    margin-top: 1.3rem;
+}
+
+.playlist-heading {
+    margin: 0.3rem 0;
+}
+
+.spotify-radios {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 18rem;
+}
+
+.spotify-radios label {
+    font-size: 1.1rem;
+}
+
+.spotify-input {
+    margin: 1rem 0;
+}
+
+#deezer-img {
+    width: 4rem;
 }

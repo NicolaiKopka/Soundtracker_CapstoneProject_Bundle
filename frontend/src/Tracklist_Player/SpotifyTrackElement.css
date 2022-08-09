@@ -1,0 +1,22 @@
+.x-icon {
+    color: #FC4F4F;
+}
+
+.my-playlist-track-element{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.playlist-delete-button {
+    background-color: #C4DDFF;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+}
+
+.spotify-player {
+    width: 20rem;
+}

@@ -12,6 +12,8 @@ import Header from "../Header/Header";
 import "./TrackList.css"
 import DeezerTrackElement from "./DeezerTrackElement";
 import toast from "react-hot-toast";
+import spotifyImg from "../images/Spotify_Icon_RGB_Green.png";
+import deezerImg from "../images/Colored_Equalizer@2x.png";
 
 export default function TrackList() {
     const [spotifyTrackList, setSpotifyTrackList] = useState<Array<SpotifyTrackDTO>>([])
@@ -96,11 +98,29 @@ export default function TrackList() {
     return (
         <div>
             <Header/>
-            <div className="radio-container">
-                <input type="radio" name="radio" disabled={spotifyTrackList.length === 0} onChange={ev => setStreamingMode(ev.target.value)} value={"spotify"} checked={streamingMode === "spotify"}/>
-                <span>Spotify</span>
-                <input type="radio" name="radio" disabled={deezerTrackList.length === 0} onChange={ev => setStreamingMode(ev.target.value)} value={"deezer"} checked={streamingMode === "deezer"}/>
-                <span>Deezer</span>
+            <div className={"streaming-wrapper"}>
+                <table className={"streaming-table"}>
+                    <tr className={"provider-section"}>
+                        <td>
+                            <div className={"spotify-div"}>
+                                <input className={"radio"} type="radio" name="radio"
+                                       disabled={localStorage.getItem("spotify_jwt") === null}
+                                       onChange={ev => setStreamingMode(ev.target.value)} value={"spotify"}
+                                       checked={streamingMode === "spotify"}/>
+                                <img alt={"spotify"} src={spotifyImg}/>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={"spotify-div"}>
+                                <input className={"radio"} type="radio" name="radio"
+                                       disabled={true}
+                                       onChange={ev => setStreamingMode(ev.target.value)} value={"deezer"}
+                                       checked={streamingMode === "deezer"}/>
+                                <img alt={"deezer"} id={"deezer-img"} src={deezerImg}/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div className={"track-wrapper"}>
                 {currentPlaylistKey === "New Playlist" &&

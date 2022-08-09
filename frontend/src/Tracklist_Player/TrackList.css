@@ -21,3 +21,65 @@ label {
     display: flex;
     flex-direction: row;
 }
+
+
+/* copy section*/
+
+.radio {
+    width: 2rem;
+}
+
+.streaming-table {
+    margin: auto;
+    width: 22rem;
+}
+
+.streaming-wrapper {
+    margin: 2.3rem 0;
+}
+
+td {
+    text-align: center;
+}
+
+.provider-section img {
+    width: 3.2rem;
+}
+
+.spotify-div {
+    display: flex;
+    justify-content: center;
+    width: 9rem;
+}
+
+.playlist-inputs {
+    margin: 2rem 0;
+}
+
+.playlist-inputs input {
+    margin: 0.5rem 0;
+}
+
+.spotify-radios {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 20rem;
+    margin: auto;
+}
+
+.spotify-radios label {
+    font-size: 1.1rem;
+}
+
+.spotify-input {
+    margin: 1rem 0;
+}
+
+.playlist-heading {
+    margin-top: 2.3rem;
+}
+
+#deezer-img {
+    width: 4rem;
+}
