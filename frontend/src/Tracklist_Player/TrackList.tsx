@@ -53,7 +53,7 @@ export default function TrackList() {
                 setStreamingMode("spotify")
             }
         }
-    }, [updateUserPlaylists])
+    }, [updateUserPlaylists, deezerId, spotifyId])
 
     function addToPlaylist(index: number) {
         let deezerId = "0"

@@ -1,10 +1,10 @@
 // import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
 import Spotify from "react-spotify-embed";
-import {DeezerTrack, SpotifyTrackDTO} from "../models";
+import {SpotifyTrackDTO} from "../models";
 import {deleteTrackFromUserPlaylist} from "../api_methods";
 import toast from "react-hot-toast";
 import "./MyPlaylistTrackElement.css"
-import {useEffect, useRef} from "react";
+import {useRef} from "react";
 import Iframe from "react-iframe";
 
 interface TrackListProps {
@@ -12,7 +12,6 @@ interface TrackListProps {
     refreshPlaylist: Function
     playlistKey: string
     spotifyTrack: SpotifyTrackDTO
-    // deezerTrack: DeezerTrack
     editMode: boolean
     deezerId: string
     streamingMode: boolean

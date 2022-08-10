@@ -51,7 +51,7 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
                 ref.current.classList.add("attention-border")
             }
         }
-    }, [streamingMode, props.currentProvider])
+    }, [streamingMode, props.currentProvider, props.playlistKey, props.playlistMap])
 
     function switchShowStatus() {
         if(showStatus) {
