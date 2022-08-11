@@ -1,11 +1,11 @@
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import {
     addDeezerPlaylist,
     addSpotifyPlaylist, addTracksToDeezerPlaylist,
     addTracksToSpotifyPlaylist,
     deleteUserPlaylist,
-    getAllSpotifyTracksInPlaylist, getAllUserPlaylists
+    getAllSpotifyTracksInPlaylist
 } from "../api_methods";
 import "./UserPlaylistElement.css"
 import MyPlaylistTrackElement from "./MyPlaylistTrackElement";
@@ -37,9 +37,16 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
 
     const ref = useRef({} as HTMLButtonElement)
 
+    const getAllPlaylistTracks = useCallback(() => {
+        getAllSpotifyTracksInPlaylist(props.playlistKey)
+            .then(data => setSpotifyTracks(data))
+            .then(() => setDeezerTrackIds(props.playlistMap[props.playlistKey].deezerTrackIds))
+            .catch(error => error.response.data)
+    }, [props.playlistKey, props.playlistMap])
+
     useEffect(() => {
         getAllPlaylistTracks()
-    }, [props.playlistMap])
+    }, [props.playlistMap, getAllPlaylistTracks])
 
     useEffect(() => {
         setStreamingMode(props.spotifyMode)
@@ -64,13 +71,6 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             setShowStatus(true)
             getAllPlaylistTracks()
         }
-    }
-
-    function getAllPlaylistTracks() {
-        getAllSpotifyTracksInPlaylist(props.playlistKey)
-            .then(data => setSpotifyTracks(data))
-            .then(() => setDeezerTrackIds(props.playlistMap[props.playlistKey].deezerTrackIds))
-            .catch(error => error.response.data)
     }
 
     function deletePlaylist() {
@@ -110,7 +110,6 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
 
     const allPlaylistTrackElements = spotifyTracks?.map((track, index) =>
         <MyPlaylistTrackElement refreshPlaylist={props.refreshPlaylists}
-                                refreshTracks={getAllPlaylistTracks}
                                 playlistKey={props.playlistKey}
                                 editMode={props.editMode} spotifyTrack={track}
                                 deezerId={deezerTrackIds[index]} currentProvider={props.currentProvider}

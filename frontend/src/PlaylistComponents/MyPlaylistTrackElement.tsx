@@ -1,4 +1,4 @@
-// import {addTrackToUserPlaylist, createNewUserPlaylist, deleteTrackFromUserPlaylist} from "../api_methods";
+
 import Spotify from "react-spotify-embed";
 import {SpotifyTrackDTO} from "../models";
 import {deleteTrackFromUserPlaylist} from "../api_methods";
@@ -8,7 +8,6 @@ import {useEffect, useRef} from "react";
 import Iframe from "react-iframe";
 
 interface TrackListProps {
-    refreshTracks: Function
     refreshPlaylist: Function
     playlistKey: string
     spotifyTrack: SpotifyTrackDTO
@@ -37,7 +36,6 @@ export default function MyPlaylistTrackElement(props: TrackListProps) {
     function deleteFromPlaylist() {
         deleteTrackFromUserPlaylist(props.playlistKey, props.spotifyTrack.id, props.deezerId)
             .then(() => props.refreshPlaylist())
-            // .then(() => props.refreshTracks())
             .then(() => toast.success("Deleted from playlist"))
             .catch(error => error.response.data)
     }
