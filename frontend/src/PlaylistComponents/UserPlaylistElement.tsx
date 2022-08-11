@@ -5,7 +5,7 @@ import {
     addSpotifyPlaylist, addTracksToDeezerPlaylist,
     addTracksToSpotifyPlaylist,
     deleteUserPlaylist,
-    getAllSpotifyTracksInPlaylist
+    getAllSpotifyTracksInPlaylist, getAllUserPlaylists
 } from "../api_methods";
 import "./UserPlaylistElement.css"
 import MyPlaylistTrackElement from "./MyPlaylistTrackElement";
@@ -36,6 +36,10 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
     const [deezerTrackIds, setDeezerTrackIds] = useState<Array<string>>([])
 
     const ref = useRef({} as HTMLButtonElement)
+
+    useEffect(() => {
+        getAllPlaylistTracks()
+    }, [props.playlistMap])
 
     useEffect(() => {
         setStreamingMode(props.spotifyMode)

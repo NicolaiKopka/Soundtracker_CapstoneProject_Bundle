@@ -104,14 +104,14 @@ export default function TrackList() {
         currentKey={currentPlaylistKey}
         userPlaylists={userPlaylists}
         track={track}
-        index={index} addToPlaylist={addToPlaylist} deleteFromPlaylist={deleteFromPlaylist}/>)
+        index={index} addToPlaylist={addToPlaylist} deleteFromPlaylist={deleteFromPlaylist} newPlaylistName={newPlaylistName}/>)
 
     const deezerTrackElements = deezerTrackList.map((track, index) => <DeezerTrackElement
         key={track.id}
         currentKey={currentPlaylistKey}
         userPlaylists={userPlaylists}
         track={track}
-        index={index} addToPlaylist={addToPlaylist} deleteFromPlaylist={deleteFromPlaylist}/>)
+        index={index} addToPlaylist={addToPlaylist} deleteFromPlaylist={deleteFromPlaylist} newPlaylistName={newPlaylistName}/>)
 
     const playlists = Object.keys(userPlaylists)
 
@@ -144,7 +144,7 @@ export default function TrackList() {
             </div>
             <div className={"track-wrapper"}>
                 {currentPlaylistKey === "New Playlist" &&
-                    <input className={"form-spacer"} placeholder={"Enter new playlist name"} required={true}
+                    <input className={"form-spacer"} placeholder={"Enter new playlist name"}
                            value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>}
                 <div>
                     <label>Choose Playlist: </label>

@@ -17,7 +17,7 @@ export default function MyPlaylistsPage() {
     const [newPlaylistIsPublicStatus, setNewPlaylistIsPublicStatus] = useState(false)
     const [publicStatusDisabled, setPublicStatusDisabled] = useState(false)
     const [newPlaylistIsCollaborativeStatus, setNewPlaylistIsCollaborativeStatus] = useState(false)
-    const [currentProvider, setCurrentProvider] = useState("")
+    const [currentProvider, setCurrentProvider] = useState("none")
     const [deezerError, setDeezerError] = useState(false)
     const [spotifyError, setSpotifyError] = useState(false)
 
@@ -94,6 +94,7 @@ export default function MyPlaylistsPage() {
         alert("Spotify is currently in dev mode for this app. In order to login, your spotify email will have to be deposited in the current project. Contact for more information. If your mail is already deposited you can login.")
     }
 
+    console.log(currentProvider)
     return (
         <div>
             <Header/>

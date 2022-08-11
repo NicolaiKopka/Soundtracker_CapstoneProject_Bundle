@@ -19,9 +19,18 @@
 }
 
 .my-playlist-spotify {
-    width: 20rem;
+    width: 19rem;
 }
 
 .attention-border {
     box-shadow: 0px 0 12px 4px #FC4F4F;
+}
+
+.track-element-wrapper {
+    width: auto;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
 }
