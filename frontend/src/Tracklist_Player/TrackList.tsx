@@ -21,7 +21,7 @@ export default function TrackList() {
     const [userPlaylists, setUserPlaylists] = useState({} as UserPlaylistMap)
     const [currentPlaylistKey, setCurrentPlaylistKey] = useState("New Playlist")
     const [newPlaylistName, setNewPlaylistName] = useState("")
-    const [streamingMode, setStreamingMode] = useState("spotify")
+    const [streamingMode, setStreamingMode] = useState("")
 
     let {spotifyId, deezerId} = useParams()
 
@@ -38,7 +38,22 @@ export default function TrackList() {
 
     useEffect(() => {
         updateUserPlaylists()
-    }, [updateUserPlaylists])
+        if(localStorage.getItem("spotify_jwt") === null && localStorage.getItem("deezer_jwt") === null) {
+            setStreamingMode("spotify")
+        } else if(localStorage.getItem("spotify_jwt") === null) {
+            if(deezerId === "undefined") {
+                setStreamingMode("spotify")
+            } else {
+                setStreamingMode("deezer")
+            }
+        } else if(localStorage.getItem("deezer_jwt") === null) {
+            if(spotifyId === "undefined") {
+                setStreamingMode("deezer")
+            } else {
+                setStreamingMode("spotify")
+            }
+        }
+    }, [updateUserPlaylists, deezerId, spotifyId])
 
     function addToPlaylist(index: number) {
         let deezerId = "0"
@@ -89,9 +104,14 @@ export default function TrackList() {
         currentKey={currentPlaylistKey}
         userPlaylists={userPlaylists}
         track={track}
-        index={index} addToPlaylist={addToPlaylist} deleteFromPlaylist={deleteFromPlaylist}/>)
+        index={index} addToPlaylist={addToPlaylist} deleteFromPlaylist={deleteFromPlaylist} newPlaylistName={newPlaylistName}/>)
 
-    const deezerTrackElements = deezerTrackList.map((track, index) => <DeezerTrackElement key={track.id} track={track} index={index}/>)
+    const deezerTrackElements = deezerTrackList.map((track, index) => <DeezerTrackElement
+        key={track.id}
+        currentKey={currentPlaylistKey}
+        userPlaylists={userPlaylists}
+        track={track}
+        index={index} addToPlaylist={addToPlaylist} deleteFromPlaylist={deleteFromPlaylist} newPlaylistName={newPlaylistName}/>)
 
     const playlists = Object.keys(userPlaylists)
 
@@ -104,18 +124,18 @@ export default function TrackList() {
                         <td>
                             <div className={"spotify-div"}>
                                 <input className={"radio"} type="radio" name="radio"
-                                       disabled={localStorage.getItem("spotify_jwt") === null}
                                        onChange={ev => setStreamingMode(ev.target.value)} value={"spotify"}
-                                       checked={streamingMode === "spotify"}/>
+                                       disabled={spotifyId === "undefined"}
+                                       checked={(streamingMode === "spotify" && spotifyId !== "undefined")}/>
                                 <img alt={"spotify"} src={spotifyImg}/>
                             </div>
                         </td>
                         <td>
                             <div className={"spotify-div"}>
                                 <input className={"radio"} type="radio" name="radio"
-                                       disabled={true}
                                        onChange={ev => setStreamingMode(ev.target.value)} value={"deezer"}
-                                       checked={streamingMode === "deezer"}/>
+                                       disabled={deezerId === "undefined"}
+                                       checked={streamingMode === "deezer" && deezerId !== "undefined"}/>
                                 <img alt={"deezer"} id={"deezer-img"} src={deezerImg}/>
                             </div>
                         </td>
@@ -124,7 +144,7 @@ export default function TrackList() {
             </div>
             <div className={"track-wrapper"}>
                 {currentPlaylistKey === "New Playlist" &&
-                    <input className={"form-spacer"} placeholder={"Enter new playlist name"} required={true}
+                    <input className={"form-spacer"} placeholder={"Enter new playlist name"}
                            value={newPlaylistName} onChange={ev => setNewPlaylistName(ev.target.value)}/>}
                 <div>
                     <label>Choose Playlist: </label>

@@ -60,3 +60,7 @@ td {
 #deezer-img {
     width: 4rem;
 }
+
+.missing-warning {
+    color: #FC4F4F;
+}

@@ -10,11 +10,10 @@ interface TrackListProps {
     index: number
     addToPlaylist: (index: number) => void
     deleteFromPlaylist: (index: number) => void
+    newPlaylistName: string
 }
 
 export default function SpotifyTrackElement(props: TrackListProps) {
-
-
 
 
 
@@ -24,7 +23,7 @@ export default function SpotifyTrackElement(props: TrackListProps) {
             <div>
                 {props.userPlaylists[props.currentKey] !== undefined && props.userPlaylists[props.currentKey].spotifyTrackIds.includes(props.track.id) ?
                     <button className={"playlist-delete-button"} onClick={() => props.deleteFromPlaylist(props.index)}><i className="fa-solid fa-circle-xmark fa-xl x-icon"></i></button> :
-                    <button className={"playlist-delete-button"} onClick={() => props.addToPlaylist(props.index)}><i
+                    <button disabled={props.newPlaylistName.length === 0 && props.currentKey === "New Playlist"} className={"playlist-delete-button"} onClick={() => props.addToPlaylist(props.index)}><i
                         className="fa-solid fa-plus fa-xl plus-icon"></i></button>
                 }
             </div>

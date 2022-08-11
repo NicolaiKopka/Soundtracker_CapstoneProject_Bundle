@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {SpotifyTrackDTO, UserPlaylistMap} from "../models";
 import {
     addDeezerPlaylist,
@@ -31,23 +31,46 @@ interface MyPlaylistPageProps {
 export default function UserPlaylistElement(props: MyPlaylistPageProps) {
 
     const [showStatus, setShowStatus] = useState(false)
-    const [allPlaylistTracks, setAllPlaylistTracks] = useState<Array<SpotifyTrackDTO>>()
+    const [streamingMode, setStreamingMode] = useState<boolean>()
+    const [spotifyTracks, setSpotifyTracks] = useState<Array<SpotifyTrackDTO>>([])
     const [deezerTrackIds, setDeezerTrackIds] = useState<Array<string>>([])
+
+    const ref = useRef({} as HTMLButtonElement)
+
+    const getAllPlaylistTracks = useCallback(() => {
+        getAllSpotifyTracksInPlaylist(props.playlistKey)
+            .then(data => setSpotifyTracks(data))
+            .then(() => setDeezerTrackIds(props.playlistMap[props.playlistKey].deezerTrackIds))
+            .catch(error => error.response.data)
+    }, [props.playlistKey, props.playlistMap])
+
+    useEffect(() => {
+        getAllPlaylistTracks()
+    }, [props.playlistMap, getAllPlaylistTracks])
+
+    useEffect(() => {
+        setStreamingMode(props.spotifyMode)
+    }, [props.spotifyMode])
+
+    useEffect(() => {
+        ref.current.classList.remove("attention-border")
+        if(streamingMode) {
+            if(props.playlistMap[props.playlistKey].deezerTrackIds.includes("0") && props.currentProvider === "deezer") {
+                ref.current.classList.add("attention-border")
+            }
+            if(props.playlistMap[props.playlistKey].spotifyTrackIds.includes("0") && props.currentProvider === "spotify") {
+                ref.current.classList.add("attention-border")
+            }
+        }
+    }, [streamingMode, props.currentProvider, props.playlistKey, props.playlistMap])
 
     function switchShowStatus() {
         if(showStatus) {
             setShowStatus(false)
-        }else{
+        }else {
             setShowStatus(true)
             getAllPlaylistTracks()
         }
-    }
-
-    function getAllPlaylistTracks() {
-        getAllSpotifyTracksInPlaylist(props.playlistKey)
-            .then(data => setAllPlaylistTracks(data))
-            .then(() => setDeezerTrackIds(props.playlistMap[props.playlistKey].deezerTrackIds))
-            .catch(error => error.response.data)
     }
 
     function deletePlaylist() {
@@ -85,13 +108,16 @@ export default function UserPlaylistElement(props: MyPlaylistPageProps) {
             })
     }
 
-    const allPlaylistTrackElements = allPlaylistTracks?.map((track, index) =>
-        <MyPlaylistTrackElement refreshTracks={getAllPlaylistTracks} playlistKey={props.playlistKey} editMode={props.editMode} track={track} deezerId={deezerTrackIds[index]}/>)
-
+    const allPlaylistTrackElements = spotifyTracks?.map((track, index) =>
+        <MyPlaylistTrackElement refreshPlaylist={props.refreshPlaylists}
+                                playlistKey={props.playlistKey}
+                                editMode={props.editMode} spotifyTrack={track}
+                                deezerId={deezerTrackIds[index]} currentProvider={props.currentProvider}
+                                streamingMode={props.spotifyMode}/>)
 
     return (
         <div>
-            <button className={"playlist-button"} onClick={switchShowStatus}>{props.playlistKey}<i
+            <button ref={ref} className={"playlist-button"} onClick={switchShowStatus}>{props.playlistKey}<i
                 className="fa-solid fa-arrow-down spacer-left"></i></button>
             {props.editMode &&
                 <button className={"playlist-button delete-button"} onClick={deletePlaylist}><i className="fa-solid fa-trash-can spacer"></i>Delete Playlist</button>}
