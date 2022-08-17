@@ -11,6 +11,16 @@
     margin: 1rem 0;
 }
 
+@media (min-width: 470px) {
+    .my-playlist-track-element{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem 0;
+    }
+}
+
 .playlist-delete-button {
     background-color: #C4DDFF;
     border: none;
