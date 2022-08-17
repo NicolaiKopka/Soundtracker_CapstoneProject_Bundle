@@ -60,9 +60,9 @@ export default function MainPageGallery(props: AppProps) {
                     <button className={"send-button"} type={"submit"}>Search</button>
                 </form>
             </div>
-            {searchMovies.length > 0 && <Slide>{searchComponents}</Slide>}
+            {searchMovies.length > 0 && <Slide pauseOnHover={true} cssClass={"slider"}>{searchComponents}</Slide>}
             {/*<h2 className={"top-movies-header"}>Top 10 Movies</h2>*/}
-            {components && components.length > 0 && <Slide>{components}</Slide>}
+            {components && components.length > 0 && <Slide pauseOnHover={true} cssClass={"slider"}>{components}</Slide>}
         </div>
     )
 

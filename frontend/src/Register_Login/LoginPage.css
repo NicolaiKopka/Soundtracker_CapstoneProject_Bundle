@@ -32,3 +32,10 @@ a {
 .form-items {
     margin-top: 1rem;
 }
+
+@media (min-width: 470px) {
+    .login-inputs {
+        display: flex;
+        flex-direction: column;
+    }
+}

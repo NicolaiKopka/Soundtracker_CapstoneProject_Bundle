@@ -33,7 +33,7 @@ export default function LoginPage() {
         <div className={"login-form-wrapper"}>
             <Header />
             <div className={"login-form"}>
-                <form onSubmit={login}>
+                <form className={"login-inputs"} onSubmit={login}>
                     <input className={"form-items"} required={true} value={username} placeholder={"username"} onChange={ev => setUsername(ev.target.value)}/>
                     <input type={"password"} className={"form-items"} required={true} value={password} placeholder={"password"} onChange={ev => setPassword(ev.target.value)}/>
                     <button className={"login-button"} type={"submit"}>Login</button>

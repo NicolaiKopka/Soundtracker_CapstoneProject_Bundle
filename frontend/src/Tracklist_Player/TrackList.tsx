@@ -21,7 +21,7 @@ export default function TrackList() {
     const [userPlaylists, setUserPlaylists] = useState({} as UserPlaylistMap)
     const [currentPlaylistKey, setCurrentPlaylistKey] = useState("New Playlist")
     const [newPlaylistName, setNewPlaylistName] = useState("")
-    const [streamingMode, setStreamingMode] = useState("")
+    const [streamingMode, setStreamingMode] = useState("spotify")
 
     let {spotifyId, deezerId} = useParams()
 
